@@ -1,4 +1,4 @@
-import type { Diagnosis, FailureClass, IncidentContext } from '../shared/types';
+import type { Diagnosis, IncidentContext } from '../shared/types';
 import { redact } from '../shared/redact';
 import { CONFIG_AGENT } from './config';
 import { runDiagnosisAgent, stepNameOf, type DiagnosisAgentName } from './diagnosis';
@@ -7,15 +7,6 @@ import type { AgentDeps } from './runtime';
 import { materializeRepo } from './workdir';
 
 const SPECS = { config: CONFIG_AGENT, reality: REALITY_AGENT } as const;
-
-const REALITY_CLASSES: FailureClass[] = ['drift', 'apply_runtime', 'provider_api_error', 'unknown'];
-
-/** SPEC §4: Config always runs; Reality runs for apply-stage failures and the runtime-ish classes. */
-export function selectAgents(ctx: IncidentContext): DiagnosisAgentName[] {
-  const failureClass = ctx.triage?.failureClass.choice ?? 'unknown';
-  const stage = ctx.triage?.stage ?? ctx.artifacts.stage;
-  return stage === 'apply' || REALITY_CLASSES.includes(failureClass) ? ['config', 'reality'] : ['config'];
-}
 
 const errorMessage = (error: unknown) => redact(error instanceof Error ? error.message : String(error));
 

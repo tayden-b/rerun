@@ -125,6 +125,16 @@ export class GitHubRestClient implements GitHubClient {
     };
   }
 
+  async markReadyForReview(number: number): Promise<void> {
+    // REST cannot clear the draft flag; GitHub exposes it only as a GraphQL mutation.
+    const { data } = await this.octokit.pulls.get({ ...this.r, pull_number: number });
+    if (!data.draft) return;
+    await this.octokit.graphql(
+      'mutation($id: ID!) { markPullRequestReadyForReview(input: { pullRequestId: $id }) { clientMutationId } }',
+      { id: data.node_id },
+    );
+  }
+
   async mergePullRequest(
     number: number,
     opts: { method?: 'squash' | 'merge' | 'rebase' } = {},

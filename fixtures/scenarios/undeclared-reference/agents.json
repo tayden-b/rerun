@@ -1,0 +1,94 @@
+{
+  "repo": [
+    {
+      "path": "main.tf",
+      "oldText": "    cluster = random_pet.cluster.id\n  }\n}\n\nresource \"time_rotating\"",
+      "newText": "    cluster = random_pet.clustr.id\n  }\n}\n\nresource \"time_rotating\""
+    }
+  ],
+  "agents": {
+    "config": [
+      {
+        "toolCalls": [
+          {
+            "toolName": "grep_log",
+            "input": {
+              "pattern": "undeclared|random_pet",
+              "log": "plan"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2210,
+          "outputTokens": 88
+        }
+      },
+      {
+        "toolCalls": [
+          {
+            "toolName": "search_files",
+            "input": {
+              "pattern": "random_pet\\."
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2560,
+          "outputTokens": 70
+        }
+      },
+      {
+        "output": {
+          "rootCause": "main.tf:36 in random_id.release keepers references random_pet.clustr, but the declared resource is random_pet.cluster.",
+          "evidence": [
+            {
+              "kind": "log",
+              "ref": "plan:diagnostic",
+              "excerpt": "A managed resource \"random_pet\" \"clustr\" has not been declared in the root module."
+            },
+            {
+              "kind": "file",
+              "ref": "main.tf:36",
+              "excerpt": "cluster = random_pet.clustr.id"
+            }
+          ],
+          "suggestedChange": "In main.tf line 36 change random_pet.clustr.id to random_pet.cluster.id.",
+          "confidence": 0.96
+        },
+        "usage": {
+          "inputTokens": 3720,
+          "outputTokens": 260
+        }
+      }
+    ],
+    "fix": [
+      {
+        "toolCalls": [
+          {
+            "toolName": "edit_file",
+            "input": {
+              "path": "main.tf",
+              "oldText": "    cluster = random_pet.clustr.id\n  }\n}\n\nresource \"time_rotating\"",
+              "newText": "    cluster = random_pet.cluster.id\n  }\n}\n\nresource \"time_rotating\"",
+              "rationale": "random_pet.clustr is not declared; the resource is random_pet.cluster."
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 3150,
+          "outputTokens": 120
+        }
+      },
+      {
+        "output": {
+          "title": "Reference random_pet.cluster in random_id.release",
+          "summary": "random_id.release keepers read random_pet.clustr, which does not exist, so the plan failed. It now reads random_pet.cluster, the declared resource."
+        },
+        "usage": {
+          "inputTokens": 3400,
+          "outputTokens": 130
+        }
+      }
+    ]
+  }
+}

@@ -4,6 +4,7 @@ import path from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 import { productionDeps } from '../../evals/deps';
 import { runEval } from '../../evals/harness';
+import { NotImplemented } from '../../evals/live';
 import { renderMarkdown } from '../../evals/report';
 import { main } from '../../evals/cli';
 import { evalResultsSchema } from '../../evals/schema';
@@ -88,9 +89,18 @@ describe('eval harness (recorded provider, offline)', () => {
     expect(error).not.toContain('abcdefghijklmnopqrstuvwxyz0123456789');
   });
 
-  it('live rows record the Wave 2 stub as an error with the live columns present', async () => {
+  it('live rows record a failing live runner as an error with the live columns present', async () => {
     const results = await runEval(
-      { providers: ['recorded'], scenariosDir: TEST_SCENARIOS_DIR, perturbations: 0, seed: 1, live: true },
+      {
+        providers: ['recorded'],
+        scenariosDir: TEST_SCENARIOS_DIR,
+        perturbations: 0,
+        seed: 1,
+        live: true,
+        runLive: async () => {
+          throw new NotImplemented('wired in Wave 2 integration');
+        },
+      },
       productionDeps,
     );
     expect(results.live.ran).toBe(true);

@@ -1,0 +1,177 @@
+{
+  "repo": [
+    {
+      "path": "main.tf",
+      "oldText": "  announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}'\"",
+      "newText": "  announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}' && exit 1\""
+    }
+  ],
+  "agents": {
+    "config": [
+      {
+        "toolCalls": [
+          {
+            "toolName": "grep_log",
+            "input": {
+              "pattern": "Error|exit",
+              "log": "apply",
+              "context": 2
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2140,
+          "outputTokens": 96
+        }
+      },
+      {
+        "toolCalls": [
+          {
+            "toolName": "search_files",
+            "input": {
+              "pattern": "announce_command"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2610,
+          "outputTokens": 74
+        }
+      },
+      {
+        "toolCalls": [
+          {
+            "toolName": "read_file",
+            "input": {
+              "path": "main.tf"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2890,
+          "outputTokens": 58
+        }
+      },
+      {
+        "output": {
+          "rootCause": "local.announce_command in main.tf ends in `&& exit 1`, so the local-exec provisioner on terraform_data.announce (main.tf:90) exits 1 on every create and the apply fails.",
+          "evidence": [
+            {
+              "kind": "log",
+              "ref": "apply:diagnostic",
+              "excerpt": "Error running command 'echo 'platform platform-demo released with 556f7658' && exit 1': exit status 1."
+            },
+            {
+              "kind": "file",
+              "ref": "main.tf:10",
+              "excerpt": "announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}' && exit 1\""
+            }
+          ],
+          "suggestedChange": "In main.tf, drop `&& exit 1` from local.announce_command.",
+          "confidence": 0.93
+        },
+        "usage": {
+          "inputTokens": 4120,
+          "outputTokens": 312
+        }
+      }
+    ],
+    "reality": [
+      {
+        "toolCalls": [
+          {
+            "toolName": "get_state_resource",
+            "input": {
+              "address": "terraform_data.announce"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2050,
+          "outputTokens": 61
+        }
+      },
+      {
+        "toolCalls": [
+          {
+            "toolName": "grep_log",
+            "input": {
+              "pattern": "terraform_data.announce",
+              "log": "apply"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2380,
+          "outputTokens": 57
+        }
+      },
+      {
+        "output": {
+          "rootCause": "Nothing outside the configuration is wrong: terraform_data.announce was replaced because its command changed, the old instance was destroyed cleanly, and the new one fails only on the provisioner's own exit code.",
+          "evidence": [
+            {
+              "kind": "log",
+              "ref": "apply:planned_change",
+              "excerpt": "terraform_data.announce: Plan to replace"
+            },
+            {
+              "kind": "log",
+              "ref": "apply:provision_errored",
+              "excerpt": "terraform_data.announce: (local-exec) Provisioning errored"
+            }
+          ],
+          "suggestedChange": "Fix local.announce_command in main.tf; no state or workspace change is needed.",
+          "confidence": 0.82
+        },
+        "usage": {
+          "inputTokens": 3310,
+          "outputTokens": 240
+        }
+      }
+    ],
+    "fix": [
+      {
+        "toolCalls": [
+          {
+            "toolName": "read_file",
+            "input": {
+              "path": "main.tf"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 3020,
+          "outputTokens": 52
+        }
+      },
+      {
+        "toolCalls": [
+          {
+            "toolName": "edit_file",
+            "input": {
+              "path": "main.tf",
+              "oldText": "  announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}' && exit 1\"",
+              "newText": "  announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}'\"",
+              "rationale": "The announce command ends in `&& exit 1`, which fails the provisioner on every apply."
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 3480,
+          "outputTokens": 118
+        }
+      },
+      {
+        "output": {
+          "title": "Stop the announce provisioner from exiting 1",
+          "summary": "local.announce_command ended in `&& exit 1`, so the local-exec provisioner on terraform_data.announce failed every apply. The command now only echoes the release; nothing else changes."
+        },
+        "usage": {
+          "inputTokens": 3900,
+          "outputTokens": 140
+        }
+      }
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { runDiagnosis, selectAgents } from '../../src/agents/diagnose';
+import { runDiagnosis } from '../../src/agents/diagnose';
 import { finalizeDiagnosis } from '../../src/agents/diagnosis';
-import { answer, fakeContext, fakeDeps, fakeTriage, scriptedModel, toolCalls } from './fakes';
+import { answer, fakeContext, fakeDeps, scriptedModel, toolCalls } from './fakes';
 
 const configAnswer = {
   rootCause:
@@ -17,18 +17,6 @@ const configAnswer = {
   suggestedChange: 'In outputs.tf line 6 change random_pet.servce.id to random_pet.service.id.',
   confidence: 0.95,
 };
-
-describe('selectAgents', () => {
-  it('runs Reality only for apply-stage or runtime-ish classes', () => {
-    expect(selectAgents(fakeContext())).toEqual(['config']);
-    expect(selectAgents(fakeContext({ triage: fakeTriage('apply_runtime', 'apply') }))).toEqual([
-      'config',
-      'reality',
-    ]);
-    expect(selectAgents(fakeContext({ triage: fakeTriage('drift', 'plan') }))).toEqual(['config', 'reality']);
-    expect(selectAgents(fakeContext({ triage: undefined }))).toEqual(['config', 'reality']);
-  });
-});
 
 describe('runDiagnosis', () => {
   it('returns a confidence-0 diagnosis for a failed agent and keeps the other', async () => {

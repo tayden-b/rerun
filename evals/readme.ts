@@ -15,11 +15,12 @@ const { values } = parseArgs({
 async function main(): Promise<number> {
   const readmePath = path.resolve(values.readme);
   const results = evalResultsSchema.parse(JSON.parse(readFileSync(path.resolve(values.results), 'utf8')));
-  const next = replaceEvalsSection(readFileSync(readmePath, 'utf8'), renderMarkdown(results));
-  writeFileSync(
-    readmePath,
-    await format(next, { ...(await resolveConfig(readmePath)), filepath: readmePath }),
-  );
+  // Only the generated tables are formatted, so text outside the markers is left byte-for-byte.
+  const body = await format(renderMarkdown(results), {
+    ...(await resolveConfig(readmePath)),
+    parser: 'markdown',
+  });
+  writeFileSync(readmePath, replaceEvalsSection(readFileSync(readmePath, 'utf8'), body));
   console.log(`Updated the evals section of ${path.relative(process.cwd(), readmePath)}`);
   return 0;
 }

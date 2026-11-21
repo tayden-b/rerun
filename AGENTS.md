@@ -40,18 +40,19 @@ Touch only the paths your brief assigns. Everything else is read-only; if you ne
 
 ## Commands
 
-| Command                                             | What it does                                                                                                                                                            |
-| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run dev`                                       | Next dev server (live mode unless `RERUN_MODE=demo`)                                                                                                                    |
-| `npm run demo`                                      | `RERUN_MODE=demo`, mock MCP on :8080 in-process, runs the real incident workflow over recorded fixtures (fake GitHub, fake verifier, scripted model), Next dev on :3000 |
-| `npm run mock-mcp`                                  | Mock Terraform MCP server only, `http://127.0.0.1:8080/mcp` (`?scenario=` or `MOCK_SCENARIO`)                                                                           |
-| `npm run lint`                                      | ESLint + Prettier check (`npm run format` writes)                                                                                                                       |
-| `npm run typecheck`                                 | `next typegen` (route/layout types such as `LayoutProps`), then `tsc --noEmit`                                                                                          |
-| `npm test`                                          | Vitest: `src/**/*.test.ts`, `test/**/*.test.ts`                                                                                                                         |
-| `npm run build`                                     | Production `next build`                                                                                                                                                 |
-| `npm run db:migrate`                                | `drizzle-kit generate`, then apply migrations to `DATABASE_URL`                                                                                                         |
-| `npm run eval`, `eval:readme`, `record`, `test:e2e` | Stubs that exit 1 until W1-F / W0-B / W1-E implement them                                                                                                               |
-| `docker compose up terraform-mcp`                   | Real Terraform MCP server on `127.0.0.1:8080` (needs `TFE_TOKEN`)                                                                                                       |
+| Command                                 | What it does                                                                                                                                                            |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                           | Next dev server (live mode unless `RERUN_MODE=demo`)                                                                                                                    |
+| `npm run demo`                          | `RERUN_MODE=demo`, mock MCP on :8081 in-process, runs the real incident workflow over recorded fixtures (fake GitHub, fake verifier, scripted model), Next dev on :3000 |
+| `npm run mock-mcp`                      | Mock Terraform MCP server only, `http://127.0.0.1:8081/mcp` (`?scenario=` or `MOCK_SCENARIO`)                                                                           |
+| `npm run lint`                          | ESLint + Prettier check (`npm run format` writes)                                                                                                                       |
+| `npm run typecheck`                     | `next typegen` (route/layout types such as `LayoutProps`), then `tsc --noEmit`                                                                                          |
+| `npm test`                              | Vitest: `src/**/*.test.ts`, `test/**/*.test.ts`                                                                                                                         |
+| `npm run build`                         | Production `next build`                                                                                                                                                 |
+| `npm run db:migrate`                    | `drizzle-kit generate`, then apply migrations to `DATABASE_URL`                                                                                                         |
+| `npm run eval`, `eval:readme`, `record` | Triage eval (`evals/`), README/badge renderer, fixture recorder (`scripts/record.ts`)                                                                                   |
+| `npm run test:e2e`                      | Playwright dashboard and demo specs. Run `npx playwright install chromium` once after `npm ci`                                                                          |
+| `docker compose up terraform-mcp`       | Real Terraform MCP server on `127.0.0.1:8080` (needs `TFE_TOKEN`)                                                                                                       |
 
 ## Environment
 

@@ -339,7 +339,7 @@ After the call, run checklist step 9.
 
 ### Fallback if live is slow
 
-If no incident appeared by 2:30, switch to demo mode. It runs the same workflow on the recorded `apply-time-exit-1` run and reaches Awaiting approval about 12 s after start. In the **app** terminal:
+If no incident appeared by 2:30, switch to demo mode. It runs the same workflow on the recorded `apply-time-exit-1` run and reaches Awaiting approval about 20 s after start. In the **app** terminal:
 
 ```bash
 # Ctrl-C to stop npm run dev, then:
@@ -347,4 +347,4 @@ docker compose stop
 npm run demo -- --fresh
 ```
 
-`docker compose stop` frees port 8080 for the mock MCP server. Reload `http://localhost:3000` (the top bar now shows `demo`), open the incident, and continue at 2:30. Approve resolves in about 4 s. Do not click the PR link in demo mode: the PR exists only in memory and the link points at an unrelated PR. After the demo, `scripts/reset.sh` in the **fixtures** tab undoes the live break.
+The mock MCP server listens on 8081, so it does not clash with the sidecar on 8080. Reload `http://localhost:3000` (the top bar now shows `demo`), open the incident, and continue at 2:30. Approve resolves in about 4 s. Do not click the PR link in demo mode: the PR exists only in memory and the link points at an unrelated PR. After the demo, `scripts/reset.sh` in the **fixtures** tab undoes the live break.

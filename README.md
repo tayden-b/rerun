@@ -206,12 +206,12 @@ Dated 2026-11-21; versions as pinned in this repository.
 
 ## Quickstart
 
-Demo mode needs no credentials. It runs the real incident workflow on the recorded `apply-time-exit-1` run, started through the signed webhook: a mock MCP server serves the recorded fixtures, Jev answers are replayed, the agents are scripted, and GitHub and the verifier are fakes. The incident reaches Awaiting approval in a few seconds.
+Demo mode needs no credentials. It runs the real incident workflow on the recorded `apply-time-exit-1` run, started through the signed webhook: a mock MCP server serves the recorded fixtures, Jev answers are replayed, the agents are scripted, and GitHub and the verifier are fakes. The incident reaches Awaiting approval in about 20 seconds.
 
 ```bash
 git clone https://github.com/tayden-b/rerun && cd rerun
 npm ci
-npm run demo -- --fresh   # app on http://localhost:3000, mock Terraform MCP server on :8080; --fresh starts a new incident
+npm run demo -- --fresh   # app on http://localhost:3000, mock Terraform MCP server on :8081; --fresh starts a new incident
 ```
 
 Live mode needs an HCP Terraform workspace that applies from a GitHub repository (fork [rerun-fixtures](https://github.com/tayden-b/rerun-fixtures)), Docker, and the keys listed in `.env.example`.

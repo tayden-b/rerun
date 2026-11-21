@@ -43,7 +43,7 @@ function safePayload(value: unknown): unknown {
 }
 
 const shortInput = (input: unknown) => {
-  const text = typeof input === 'string' ? input : JSON.stringify(input ?? {});
+  const text = redact(typeof input === 'string' ? input : JSON.stringify(input ?? {}));
   return text.length > 80 ? `${text.slice(0, 77)}...` : text;
 };
 

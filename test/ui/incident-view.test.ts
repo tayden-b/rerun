@@ -33,7 +33,7 @@ describe('buildIncidentView on seeded demo data', () => {
     expect(view.patch?.files[0].path).toBe('main.tf');
     expect(view.verify?.ok).toBe(true);
     expect(view.pr?.number).toBe(12);
-    expect(view.title).toBe('Remove the forced exit from the bootstrap provisioner');
+    expect(view.title).toBe('Stop the announce provisioner from exiting 1');
     expect(view.steps.find((s) => s.step === 'await')?.state).toBe('running');
     expect(view.steps.find((s) => s.step === 'confirm')?.state).toBe('pending');
     expect(view.usage[0].inputTokens).toBeGreaterThan(0);

@@ -40,7 +40,7 @@ test('war room renders the awaiting-approval investigation', async ({ page }) =>
   await expect(page.getByTestId('diff-block')).toHaveCount(1);
   await expect(page.getByTestId('diff-removed')).toContainText('exit 1');
   await expect(page.getByTestId('terminal-output')).toContainText(
-    'Plan: 1 to add, 0 to change, 0 to destroy.',
+    'Plan: 1 to add, 0 to change, 1 to destroy.',
   );
   await expect(page.getByTestId('approve')).toBeEnabled();
 

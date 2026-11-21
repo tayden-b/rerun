@@ -97,9 +97,9 @@ export function WarRoom({ detail, org, now }: { detail: IncidentDetail; org: str
             >
               <div className="bg-card grid gap-2 rounded-lg border p-4 text-xs" data-testid="cost-card">
                 {view.usage.map((u) => (
-                  <div key={u.model} className="flex justify-between">
-                    <span className="text-muted-foreground font-mono">{u.model}</span>
-                    <span className="text-muted-foreground font-mono tabular-nums">
+                  <div key={u.model} className="flex justify-between gap-4">
+                    <span className="text-muted-foreground truncate font-mono">{u.model}</span>
+                    <span className="text-muted-foreground shrink-0 font-mono tabular-nums">
                       {formatTokens(u.inputTokens)} in · {formatTokens(u.outputTokens)} out
                     </span>
                   </div>

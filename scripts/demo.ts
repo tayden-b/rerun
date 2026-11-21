@@ -6,6 +6,7 @@ import { rmSync } from 'node:fs';
 // real incident workflow for the recorded `apply-time-exit-1` run, kicked off through the signed HCP
 // Terraform webhook once the server is up (when the run has no incident yet, or with --fresh).
 process.env.RERUN_MODE = 'demo';
+process.env.RERUN_DEMO_PACE ??= '1';
 const SCENARIO = process.env.RERUN_DEMO_SCENARIO ?? 'apply-time-exit-1';
 
 async function waitFor(url: string, timeoutMs: number): Promise<void> {

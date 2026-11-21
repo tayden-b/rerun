@@ -23,6 +23,7 @@ import type {
 } from '../shared/types';
 import { watchForNextRun, type RunLister } from '../watch/runs';
 import { patchToDiff } from './diff';
+import { loadTranscript, transcriptToolDurations } from './demo';
 import { incidentServices } from './services';
 import { startIncident } from './start';
 import { completedResult, enterStatus, getStatus, markCompleted, stepEvents, updateCost } from './store';
@@ -119,7 +120,7 @@ async function withMcp<T>(scenario: string | null, fn: (mcp: TerraformMcp) => Pr
 }
 
 /** Stores agent events, shaped the way the dashboard reads them (tool/args/ok, string model, usage.model). */
-function agentEmitter(db: Db, incidentId: string): AgentDeps['emit'] {
+function agentEmitter(db: Db, incidentId: string, toolDurations?: Map<string, number>): AgentDeps['emit'] {
   return async (event: AgentEvent) => {
     const raw = event.payload;
     const p: Record<string, unknown> | null =
@@ -127,7 +128,11 @@ function agentEmitter(db: Db, incidentId: string): AgentDeps['emit'] {
     if (p && (event.kind === 'tool_call' || event.kind === 'tool_result')) {
       p.tool = p.toolName;
       if (event.kind === 'tool_call') p.args = p.input;
-      else p.ok = p.isError !== true;
+      else {
+        p.ok = p.isError !== true;
+        const simulated = toolDurations?.get(String(p.toolCallId));
+        if (p.durationMs === undefined && simulated !== undefined) p.durationMs = simulated;
+      }
     }
     if (p && event.kind === 'agent_step') {
       const model = p.model as { modelId?: unknown } | string | undefined;
@@ -177,7 +182,13 @@ async function agentDeps(db: Db, incidentId: string, scenario: string | null, fi
     model: services.model(scenario ?? undefined),
     files,
     mcpTools: await mcp.tools(),
-    emit: agentEmitter(db, incidentId),
+    emit: agentEmitter(
+      db,
+      incidentId,
+      services.config.mode === 'demo' && scenario
+        ? transcriptToolDurations(loadTranscript(scenario))
+        : undefined,
+    ),
   };
   return { deps, close: () => mcp.close() };
 }

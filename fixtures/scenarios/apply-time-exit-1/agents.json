@@ -16,7 +16,8 @@
               "pattern": "Error|exit",
               "log": "apply",
               "context": 2
-            }
+            },
+            "durationMs": 23
           }
         ],
         "usage": {
@@ -30,7 +31,8 @@
             "toolName": "search_files",
             "input": {
               "pattern": "announce_command"
-            }
+            },
+            "durationMs": 14
           }
         ],
         "usage": {
@@ -44,7 +46,8 @@
             "toolName": "read_file",
             "input": {
               "path": "main.tf"
-            }
+            },
+            "durationMs": 9
           }
         ],
         "usage": {
@@ -83,7 +86,8 @@
             "toolName": "get_state_resource",
             "input": {
               "address": "terraform_data.announce"
-            }
+            },
+            "durationMs": 11
           }
         ],
         "usage": {
@@ -98,7 +102,8 @@
             "input": {
               "pattern": "terraform_data.announce",
               "log": "apply"
-            }
+            },
+            "durationMs": 19
           }
         ],
         "usage": {
@@ -137,7 +142,8 @@
             "toolName": "read_file",
             "input": {
               "path": "main.tf"
-            }
+            },
+            "durationMs": 8
           }
         ],
         "usage": {
@@ -154,7 +160,8 @@
               "oldText": "  announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}' && exit 1\"",
               "newText": "  announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}'\"",
               "rationale": "The announce command ends in `&& exit 1`, which fails the provisioner on every apply."
-            }
+            },
+            "durationMs": 6
           }
         ],
         "usage": {

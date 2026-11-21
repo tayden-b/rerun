@@ -83,7 +83,7 @@ One workflow run per incident (`workflows/`); every step writes events that the 
 6. **Propose.** Rerun opens the pull request with the evidence in its body. The router (`autoPr` iff `config_fixable` ≥ 0.70, `blast_radius` ≤ 1.0 and `needs_human` ≤ 0.40) decides between a ready-for-review PR and a draft flagged for a human.
 7. **Approve.** A human reads the war room and presses Approve, which merges the PR, or Request changes, which posts a PR comment.
 
-   ![The approval bar: Approve and merge or Request changes, with the incident cost, duration and tokens](docs/media/approve.png)
+   ![The approval bar: Approve and merge or Request changes on the fix branch](docs/media/approve.png)
 
 8. **Confirm.** The fixtures repository's GitHub Actions applies the merge. Rerun watches the next run: `applied` resolves the incident, `errored` opens a new incident linked to this one.
 

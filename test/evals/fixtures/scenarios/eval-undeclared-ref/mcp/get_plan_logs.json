@@ -1,0 +1,4 @@
+{
+  "placeholder": true,
+  "result": "Terraform v1.14.3\non linux_amd64\nInitializing plugins and modules...\n╷\n│ Error: Reference to undeclared resource\n│\n│   on main.tf line 41, in resource \"terraform_data\" \"bootstrap\":\n│   41:   input = random_pet.servce.id\n│\n│ A managed resource \"random_pet\" \"servce\" has not been declared in the root module.\n╵\nOperation failed: failed running terraform plan (exit 1)\n"
+}

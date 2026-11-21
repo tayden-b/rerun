@@ -14,3 +14,16 @@ npm run demo   # mock Terraform MCP on :8080, seeded placeholder incident, app o
 ```
 
 Live mode needs the variables in `.env.example` and the Terraform MCP sidecar: `docker compose up terraform-mcp`.
+
+## Evals
+
+`npm run eval` scores triage on every recorded scenario; `npm run eval:readme` renders `evals/results.json` here.
+
+<!-- evals:start -->
+
+| Provider | Scenarios | Class accuracy | Route accuracy | Mean latency | Mean input tokens | Cost / incident |
+| -------- | --------- | -------------- | -------------- | ------------ | ----------------- | --------------- |
+| jev      | —         | —              | —              | —            | —                 | —               |
+| llm      | —         | —              | —              | —            | —                 | —               |
+
+<!-- evals:end -->

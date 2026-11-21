@@ -1,0 +1,8 @@
+{
+  "placeholder": true,
+  "result": {
+    "id": "run-EVALFIXTURE0002",
+    "type": "runs",
+    "attributes": { "status": "errored", "message": "scenario: undeclared-reference", "has-changes": false }
+  }
+}

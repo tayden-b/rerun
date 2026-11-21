@@ -21,6 +21,14 @@ function addressOf(node: Record<string, unknown>): string | undefined {
   return undefined;
 }
 
+/** `aws_instance.web[0]` / `aws_instance.web["a"]` for a state v4 instance with an `index_key`. */
+function instanceAddress(addr: string, instance: unknown): string {
+  const key = (instance as { index_key?: unknown } | null)?.index_key;
+  if (typeof key === 'number') return `${addr}[${key}]`;
+  if (typeof key === 'string') return `${addr}[${JSON.stringify(key)}]`;
+  return addr;
+}
+
 /**
  * Walks plan JSON or state JSON and returns every object whose address is `address`
  * (or an instance of it, e.g. `foo.bar[0]`), labelled with where it was found.
@@ -39,6 +47,20 @@ export function findByAddress(root: unknown, address: string): { found: Found[];
     if (addr) {
       addresses.add(addr);
       if (addr === address || addr.startsWith(`${address}[`)) found.push({ at, value: obj });
+      else if (
+        address.startsWith(`${addr}[`) &&
+        typeof obj.address !== 'string' &&
+        Array.isArray(obj.instances)
+      ) {
+        obj.instances.forEach((instance: unknown, i) => {
+          if (instanceAddress(addr, instance) === address) {
+            found.push({ at: `${at}.instances[${i}]`, value: { ...obj, instances: [instance] } });
+          }
+        });
+      }
+      if (typeof obj.address !== 'string' && Array.isArray(obj.instances)) {
+        for (const instance of obj.instances) addresses.add(instanceAddress(addr, instance));
+      }
     }
     for (const [key, child] of Object.entries(obj)) walk(child, at ? `${at}.${key}` : key);
   };

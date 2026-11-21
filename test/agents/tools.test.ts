@@ -1,8 +1,9 @@
-import type { ToolExecutionOptions } from 'ai';
+import type { StepResult, ToolExecutionOptions, ToolSet } from 'ai';
 import { describe, expect, it } from 'vitest';
 import { artifactTools, grepLogs, logTools, providerDocTools } from '../../src/agents/tools/artifacts';
 import { compact, TOOL_OUTPUT_MAX_CHARS } from '../../src/agents/tools/compact';
 import { fileTools, writeRefusal, writeTools } from '../../src/agents/tools/files';
+import { emitStep, type AgentEvent } from '../../src/agents/runtime';
 import { materializeRepo } from '../../src/agents/workdir';
 import { fakeMcpTools, UNDECLARED_REFERENCE_FILES, UNDECLARED_REFERENCE_PLAN_LOG } from './fakes';
 
@@ -80,15 +81,54 @@ describe('write guard', () => {
     expect(writeRefusal('.github/workflows/apply.yml', 'a', 'b', 'config_syntax')).toMatch(/protected/);
     expect(writeRefusal('README.md', 'a', 'b', 'config_syntax')).toMatch(/not a Terraform file/);
     expect(writeRefusal('main.tf', '', 'provider "aws" {}\n', 'config_syntax')).toMatch(/adding providers/);
+    expect(writeRefusal('main.tf', 'a', 'b', 'config_syntax')).toBeNull();
+  });
+
+  it('refuses every form of provider addition but allows module source repairs', () => {
+    const versions = (entries: string) => `terraform {\n  required_providers {\n${entries}  }\n}\n`;
+    const random = '    random = {\n      source  = "hashicorp/random"\n      version = "3.6.0"\n    }\n';
+    const before = versions(random);
+    const swapped = versions(random.replace('hashicorp/random', 'hashicorp/aws'));
+    expect(writeRefusal('versions.tf', before, swapped, 'provider_version')).toMatch(/random source/);
+    expect(
+      writeRefusal('versions.tf', before, versions(`${random}    aws = "5.0.0"\n`), 'provider_version'),
+    ).toMatch(/required_providers.aws/);
+    expect(
+      writeRefusal('versions.tf', before, versions(random.replace('3.6.0', '3.7.0')), 'provider_version'),
+    ).toBeNull();
+    const aws = 'provider "aws" {\n  region = "us-east-1"\n}\n';
+    const alias = 'provider "aws" {\n  alias  = "west"\n  region = "us-west-2"\n}\n';
+    expect(writeRefusal('main.tf', aws, `${aws}${alias}`, 'config_reference')).toMatch(/provider "aws"/);
+    const mod = (source: string) => `module "net" {\n  source = "${source}"\n}\n`;
+    expect(
+      writeRefusal('main.tf', mod('./modules/netwrk'), mod('./modules/network'), 'module_source'),
+    ).toBeNull();
     expect(
       writeRefusal(
-        'versions.tf',
-        'source = "hashicorp/random"',
-        'source = "hashicorp/aws"',
-        'provider_version',
+        'main.tf',
+        mod('terraform-aws-modules/vpc/aws'),
+        mod('terraform-aws-modules/vpc/azure'),
+        'module_source',
       ),
-    ).toMatch(/adding providers/);
-    expect(writeRefusal('main.tf', 'a', 'b', 'config_syntax')).toBeNull();
+    ).toBeNull();
+  });
+
+  it('keeps both of two concurrent edits to the same file', async () => {
+    const wd = await materializeRepo({ files: UNDECLARED_REFERENCE_FILES });
+    const t = writeTools(wd, 'config_reference');
+    const original = wd.read('variables.tf') ?? '';
+    const lines = original.split('\n').filter((line) => line.trim().length > 0);
+    const [first, last] = [lines[0], lines.at(-1) ?? ''];
+    const results = await Promise.all([
+      run(t.edit_file, { path: 'variables.tf', oldText: first, newText: `${first} # one`, rationale: 'r' }),
+      run(t.edit_file, { path: 'variables.tf', oldText: last, newText: `${last} # two`, rationale: 'r' }),
+    ]);
+    expect(results.every((r) => String(r).startsWith('Wrote'))).toBe(true);
+    const after = wd.read('variables.tf') ?? '';
+    expect(after).toContain('# one');
+    expect(after).toContain('# two');
+    expect(wd.diff()[0].after).toBe(after);
+    await wd.cleanup();
   });
 
   it('edit_file replaces exactly one occurrence and records the rationale', async () => {
@@ -123,6 +163,21 @@ describe('artifact tools', () => {
   const stateVersion = JSON.stringify({
     resources: [
       { mode: 'managed', type: 'random_pet', name: 'service', instances: [{ attributes: { id: 'a-b' } }] },
+      {
+        mode: 'managed',
+        type: 'random_pet',
+        name: 'pool',
+        instances: [
+          { index_key: 0, attributes: { id: 'p-0' } },
+          { index_key: 1, attributes: { id: 'p-1' } },
+        ],
+      },
+      {
+        mode: 'managed',
+        type: 'random_pet',
+        name: 'zone',
+        instances: [{ index_key: 'b', attributes: { id: 'z-b' } }],
+      },
     ],
   });
 
@@ -137,8 +192,11 @@ describe('artifact tools', () => {
     });
     expect(await run(t.get_plan_resource, { address: 'terraform_data.bootstrap' })).toContain('"create"');
     expect(await run(t.get_state_resource, { address: 'random_pet.service' })).toContain('"a-b"');
+    expect(await run(t.get_state_resource, { address: 'random_pet.pool[1]' })).toContain('"p-1"');
+    expect(await run(t.get_state_resource, { address: 'random_pet.zone["b"]' })).toContain('"z-b"');
+    expect(await run(t.get_state_resource, { address: 'random_pet.pool' })).toContain('"p-0"');
     expect(await run(t.get_state_resource, { address: 'terraform_data.bootstrap' })).toMatch(
-      /No resource .* Addresses present \(1\): random_pet.service/,
+      /No resource .* Addresses present \(6\): .*random_pet.service/,
     );
     const none = artifactTools({ run: {}, workspace: {}, stage: 'plan', errorExcerpt: '' });
     expect(await run(none.get_plan_resource, { address: 'x.y' })).toBe(
@@ -173,5 +231,26 @@ describe('artifact tools', () => {
     );
     expect(calls).toHaveLength(1);
     expect(providerDocTools(undefined)).toEqual({});
+  });
+});
+
+describe('emitStep', () => {
+  it('redacts credentials in tool-call titles before truncating them', async () => {
+    const events: AgentEvent[] = [];
+    const secret = `sk-ant-${'a'.repeat(70)}`;
+    const call = { type: 'tool-call', toolCallId: 'c1', toolName: 'grep_log', input: { pattern: secret } };
+    const step = {
+      content: [call],
+      toolCalls: [call],
+      stepNumber: 0,
+      finishReason: 'tool-calls',
+      text: '',
+      model: { provider: 'mock', modelId: 'mock' },
+      usage: { inputTokens: 1, outputTokens: 1 },
+    } as unknown as StepResult<ToolSet>;
+    await emitStep({ emit: (e) => void events.push(e) }, 'inc-1', 'fix', step);
+    const emitted = events.find((e) => e.kind === 'tool_call');
+    expect(emitted?.title).toContain('[REDACTED:anthropic_key]');
+    expect(JSON.stringify(events)).not.toContain('sk-ant-aaaa');
   });
 });

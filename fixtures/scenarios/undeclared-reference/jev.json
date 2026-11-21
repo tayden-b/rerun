@@ -1,0 +1,38 @@
+{
+  "placeholder": true,
+  "answers": {
+    "failure_class": {
+      "choice": "config_reference",
+      "confidence": 0.91,
+      "probabilities": {
+        "config_syntax": 0.05,
+        "config_reference": 0.91,
+        "missing_input": 0.02,
+        "provider_version": 0.0,
+        "provider_auth": 0.0,
+        "provider_api_error": 0.0,
+        "apply_runtime": 0.0,
+        "precondition_failed": 0.0,
+        "module_source": 0.01,
+        "dependency_cycle": 0.0,
+        "drift": 0.0,
+        "unknown": 0.01
+      }
+    },
+    "config_fixable": { "noul": 0.94 },
+    "blast_radius": {
+      "score": 0.12,
+      "confidence": 0.89,
+      "probabilities": { "0": 0.89, "1": 0.1, "2": 0.01, "3": 0.0 },
+      "legend": {
+        "0": "Nothing is destroyed or replaced",
+        "1": "Only stateless or trivially recreatable resources",
+        "2": "Stateful or shared resources are replaced",
+        "3": "Data-bearing or network-critical resources are destroyed"
+      }
+    },
+    "needs_human": { "noul": 0.14 }
+  },
+  "inputTokens": 1312,
+  "latencyMs": 788
+}

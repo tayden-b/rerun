@@ -1,0 +1,41 @@
+{
+  "placeholder": true,
+  "tool": "get_state_version",
+  "args": {},
+  "result": {
+    "data": {
+      "type": "state-versions",
+      "id": "sv-PLACEHOLDER01",
+      "attributes": {
+        "created-at": "2026-11-20T14:40:00Z",
+        "serial": 12,
+        "status": "finalized",
+        "terraform-version": "1.14.9",
+        "resources": [
+          {
+            "count": 1,
+            "module": "root",
+            "name": "service",
+            "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+            "type": "random_pet"
+          },
+          {
+            "count": 1,
+            "module": "root",
+            "name": "ca",
+            "provider": "provider[\"registry.terraform.io/hashicorp/tls\"]",
+            "type": "tls_private_key"
+          }
+        ]
+      },
+      "relationships": {
+        "run": {
+          "data": {
+            "type": "runs",
+            "id": "run-PLACEHOLDER0000"
+          }
+        }
+      }
+    }
+  }
+}

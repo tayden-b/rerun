@@ -17,17 +17,19 @@
     "test:e2e": "playwright test",
     "eval": "node scripts/not-implemented.mjs eval W1-F",
     "eval:readme": "node scripts/not-implemented.mjs eval:readme W1-F",
-    "record": "node scripts/not-implemented.mjs record W1-A",
+    "record": "tsx scripts/record.ts",
     "mock-mcp": "tsx scripts/mock-mcp.ts",
     "demo": "tsx scripts/demo.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",
-    "db:migrate": "drizzle-kit generate && tsx scripts/db-migrate.ts"
+    "db:migrate": "drizzle-kit generate && tsx scripts/db-migrate.ts",
+    "prompts": "tsx src/agents/prompts/build.ts && prettier --write src/agents/prompts/generated.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "3.0.143",
     "@libsql/client": "0.18.0",
     "@modelcontextprotocol/sdk": "1.32.2",
     "@next/env": "16.4.6",
+    "@octokit/rest": "22.0.1",
     "ai": "6.0.333",
     "class-variance-authority": "0.7.1",
     "cn": "0.5.2",

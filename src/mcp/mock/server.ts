@@ -8,20 +8,26 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
   type CallToolResult,
+  type Tool,
 } from '@modelcontextprotocol/sdk/types.js';
-import { ALLOWED_TOOLS, isAllowedTool } from '../allowlist';
+import { isAllowedTool } from '../allowlist';
+import { SCENARIOS_DIR, TOOLS_LIST_PATH, fixtureCandidates, type ToolFixture } from '../fixtures';
 
-// W0-A stub: serves recorded fixtures for the SPEC §5 tool names with permissive schemas.
-// W1-A replaces the internals (real schemas from fixtures/mcp/tools-list.json); keep the exports.
+// Mock Terraform MCP server (SPEC §1 demo mode): a real streamable-HTTP MCP server with the tool names and
+// input schemas recorded from terraform-mcp-server 1.4 (`fixtures/mcp/tools-list.json`). Each call returns
+// `fixtures/scenarios/<scenario>/mcp/<tool>.<argHash>.json` if present, else `<tool>.json` (see
+// `argHash` in `../fixtures.ts`). The scenario comes from `?scenario=`, then the server option, then
+// `MOCK_SCENARIO`, then `DEFAULT_SCENARIO`.
 
 export const DEFAULT_SCENARIO = 'apply-time-exit-1';
-export const FIXTURES_DIR = path.join(process.cwd(), 'fixtures', 'scenarios');
+export const FIXTURES_DIR = SCENARIOS_DIR;
 
 export interface MockServerOptions {
   port?: number;
   host?: string;
   scenario?: string;
   fixturesDir?: string;
+  toolsListPath?: string;
 }
 
 export interface MockServerHandle {
@@ -29,51 +35,61 @@ export interface MockServerHandle {
   close(): Promise<void>;
 }
 
-/** Fixture file shape: `{ "placeholder"?: true, "result": <tool output> }`; strings are returned verbatim. */
-export function readFixture(fixturesDir: string, scenario: string, tool: string): CallToolResult {
-  const file = path.join(fixturesDir, scenario, 'mcp', `${tool}.json`);
-  if (!existsSync(file)) {
-    return {
-      isError: true,
-      content: [
-        {
-          type: 'text',
-          text: JSON.stringify({
-            error: 'no_fixture',
-            scenario,
-            tool,
-            path: path.relative(process.cwd(), file),
-          }),
-        },
-      ],
-    };
-  }
-  const parsed = JSON.parse(readFileSync(file, 'utf8')) as { result?: unknown };
-  const result = parsed.result ?? parsed;
-  return { content: [{ type: 'text', text: typeof result === 'string' ? result : JSON.stringify(result) }] };
+function errorResult(payload: Record<string, unknown>): CallToolResult {
+  return { isError: true, content: [{ type: 'text', text: JSON.stringify(payload) }] };
 }
 
-function createMcpServer(scenario: string, fixturesDir: string): Server {
+export function loadToolsList(file: string = TOOLS_LIST_PATH): Tool[] {
+  const parsed = JSON.parse(readFileSync(file, 'utf8')) as { tools: Tool[] };
+  return parsed.tools.filter((t) => isAllowedTool(t.name));
+}
+
+/** Fixture file shape: `ToolFixture`; string results are returned verbatim, anything else as JSON text. */
+export function readFixture(
+  fixturesDir: string,
+  scenario: string,
+  tool: string,
+  args: Record<string, unknown> = {},
+): CallToolResult {
+  const dir = path.join(fixturesDir, scenario, 'mcp');
+  const tried = fixtureCandidates(tool, args).map((name) => path.join(dir, name));
+  const file = tried.find((f) => existsSync(f));
+  if (!file) {
+    return errorResult({
+      error: 'no_fixture',
+      scenario,
+      tool,
+      path: path.relative(process.cwd(), tried[tried.length - 1]),
+      tried: tried.map((f) => path.relative(process.cwd(), f)),
+    });
+  }
+  const fixture = JSON.parse(readFileSync(file, 'utf8')) as ToolFixture;
+  const result = fixture.result;
+  const text = typeof result === 'string' ? result : JSON.stringify(result);
+  return { ...(fixture.isError ? { isError: true } : {}), content: [{ type: 'text', text }] };
+}
+
+function createMcpServer(scenario: string, fixturesDir: string, tools: Tool[]): Server {
   const server = new Server(
-    { name: 'rerun-mock-terraform-mcp', version: '0.0.0' },
+    { name: 'rerun-mock-terraform-mcp', version: '0.1.0' },
     { capabilities: { tools: {} } },
   );
-  server.setRequestHandler(ListToolsRequestSchema, () => ({
-    tools: ALLOWED_TOOLS.map((name) => ({
-      name,
-      description: `Mock of terraform-mcp-server tool ${name} (scenario fixtures).`,
-      inputSchema: { type: 'object' as const, additionalProperties: true },
-    })),
-  }));
+  const byName = new Map(tools.map((t) => [t.name, t]));
+  server.setRequestHandler(ListToolsRequestSchema, () => ({ tools }));
   server.setRequestHandler(CallToolRequestSchema, (request): CallToolResult => {
-    const tool = request.params.name;
-    if (!isAllowedTool(tool)) {
-      return {
-        isError: true,
-        content: [{ type: 'text', text: `Tool ${tool} is not in the Rerun allowlist` }],
-      };
+    const name = request.params.name;
+    const def = byName.get(name);
+    if (!def) {
+      return errorResult({
+        error: 'tool_not_allowed',
+        tool: name,
+        message: `Tool ${name} is not in the Rerun allowlist`,
+      });
     }
-    return readFixture(fixturesDir, scenario, tool);
+    const args = (request.params.arguments ?? {}) as Record<string, unknown>;
+    const missing = (def.inputSchema.required ?? []).filter((k) => args[k] === undefined);
+    if (missing.length > 0) return errorResult({ error: 'missing_arguments', tool: name, missing });
+    return readFixture(fixturesDir, scenario, name, args);
   });
   return server;
 }
@@ -81,7 +97,7 @@ function createMcpServer(scenario: string, fixturesDir: string): Server {
 async function handle(
   req: IncomingMessage,
   res: ServerResponse,
-  opts: Required<Omit<MockServerOptions, 'port' | 'host'>>,
+  opts: { scenario: string; fixturesDir: string; tools: Tool[] },
 ) {
   const url = new URL(req.url ?? '/', 'http://localhost');
   if (url.pathname !== '/mcp') {
@@ -89,7 +105,7 @@ async function handle(
     return;
   }
   const scenario = url.searchParams.get('scenario') ?? opts.scenario;
-  const server = createMcpServer(scenario, opts.fixturesDir);
+  const server = createMcpServer(scenario, opts.fixturesDir, opts.tools);
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
     enableJsonResponse: true,
@@ -102,11 +118,12 @@ async function handle(
   await transport.handleRequest(req, res);
 }
 
-/** Starts a stateless streamable-HTTP MCP server at `/mcp`; `?scenario=` overrides the scenario per request. */
+/** Starts a stateless streamable-HTTP MCP server at `/mcp`; `port: 0` picks a free port. */
 export async function startMockServer(options: MockServerOptions = {}): Promise<MockServerHandle> {
   const opts = {
     scenario: options.scenario ?? process.env.MOCK_SCENARIO ?? DEFAULT_SCENARIO,
     fixturesDir: options.fixturesDir ?? FIXTURES_DIR,
+    tools: loadToolsList(options.toolsListPath),
   };
   const http = createServer((req, res) => {
     handle(req, res, opts).catch((err: unknown) => {
@@ -122,6 +139,10 @@ export async function startMockServer(options: MockServerOptions = {}): Promise<
   const { port } = http.address() as AddressInfo;
   return {
     url: `http://${host}:${port}/mcp`,
-    close: () => new Promise<void>((resolve, reject) => http.close((err) => (err ? reject(err) : resolve()))),
+    close: () =>
+      new Promise<void>((resolve, reject) => {
+        http.closeAllConnections();
+        http.close((err) => (err ? reject(err) : resolve()));
+      }),
   };
 }

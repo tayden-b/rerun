@@ -1,0 +1,26 @@
+{
+  "placeholder": true,
+  "tool": "get_plan_details",
+  "args": {
+    "plan_id": "plan-PLACEHOLDER01"
+  },
+  "result": {
+    "data": {
+      "type": "plans",
+      "id": "plan-PLACEHOLDER01",
+      "attributes": {
+        "has-changes": true,
+        "log-read-url": "https://archivist.terraform.io/v1/object/[REDACTED:signed_url]",
+        "resource-additions": 1,
+        "resource-changes": 0,
+        "resource-destructions": 0,
+        "resource-imports": 0,
+        "status": "finished",
+        "status-timestamps": {
+          "started-at": "2026-11-20T15:02:14Z",
+          "finished-at": "2026-11-20T15:02:41Z"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Fake `docker` for verifier unit tests. Per terraform subcommand (FMT, INIT, VALIDATE, PLAN):
+#   FAKE_<CMD>_EXIT, FAKE_<CMD>_STDOUT, FAKE_<CMD>_STDERR, FAKE_<CMD>_SLEEP (seconds).
+# Every invocation is appended to $FAKE_DOCKER_LOG.
+set -u
+log="${FAKE_DOCKER_LOG:-/dev/null}"
+if [ "${1:-}" = "kill" ]; then
+  echo "kill $2" >>"$log"
+  exit 0
+fi
+image_seen=0
+sub=""
+for arg in "$@"; do
+  if [ "$image_seen" = 1 ]; then sub="$arg"; break; fi
+  case "$arg" in hashicorp/terraform:*) image_seen=1 ;; esac
+done
+token="unset"
+if [ -n "${TF_TOKEN_app_terraform_io:-}" ]; then token="set"; fi
+echo "run $sub token=$token args=$*" >>"$log"
+key=$(echo "$sub" | tr '[:lower:]' '[:upper:]')
+eval "code=\${FAKE_${key}_EXIT:-0}"
+eval "out=\${FAKE_${key}_STDOUT:-}"
+eval "err=\${FAKE_${key}_STDERR:-}"
+eval "nap=\${FAKE_${key}_SLEEP:-0}"
+if [ "$nap" != "0" ]; then exec sleep "$nap"; fi
+[ -n "$out" ] && printf '%s\n' "$out"
+[ -n "$err" ] && printf '%s\n' "$err" >&2
+exit "$code"

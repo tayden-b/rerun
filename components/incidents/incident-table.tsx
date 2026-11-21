@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { ArrowUpRightIcon } from 'lucide-react';
 import type { Incident } from '@/src/db/incidents';
-import { FailureClassBadge } from '@/components/incidents/failure-class-badge';
 import { RelativeTime } from '@/components/incidents/relative-time';
 import { StatusPill } from '@/components/incidents/status-pill';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -33,11 +32,11 @@ export function IncidentTable({ incidents, org, now }: { incidents: Incident[]; 
   );
 
   return (
-    <div className="grid gap-3">
+    <div className="grid gap-4">
       <div className="flex items-center gap-2">
         <Select value={status} onValueChange={setStatus}>
           <SelectTrigger size="sm" className="w-44" aria-label="Filter by status">
-            <SelectValue />
+            <SelectValue>{status === ALL ? 'All statuses' : statusMeta(status).label}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL}>All statuses</SelectItem>
@@ -50,7 +49,9 @@ export function IncidentTable({ incidents, org, now }: { incidents: Incident[]; 
         </Select>
         <Select value={failureClass} onValueChange={setFailureClass}>
           <SelectTrigger size="sm" className="w-44" aria-label="Filter by failure class">
-            <SelectValue />
+            <SelectValue>
+              {failureClass === ALL ? 'All classes' : failureClassLabel(failureClass)}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL}>All classes</SelectItem>
@@ -68,10 +69,9 @@ export function IncidentTable({ incidents, org, now }: { incidents: Incident[]; 
       <div className="bg-card overflow-hidden rounded-lg border">
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="w-44 pl-4">Status</TableHead>
-              <TableHead>Workspace</TableHead>
-              <TableHead>Class</TableHead>
+            <TableRow className="text-muted-foreground hover:bg-transparent [&>th]:text-xs [&>th]:font-normal [&>th]:text-muted-foreground">
+              <TableHead className="w-48 pl-4">Status</TableHead>
+              <TableHead>Failure</TableHead>
               <TableHead>Run</TableHead>
               <TableHead>PR</TableHead>
               <TableHead className="text-right">Cost</TableHead>
@@ -81,7 +81,7 @@ export function IncidentTable({ incidents, org, now }: { incidents: Incident[]; 
           <TableBody>
             {rows.length === 0 && (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={7} className="text-muted-foreground h-20 text-center text-sm">
+                <TableCell colSpan={6} className="text-muted-foreground h-20 text-center text-sm">
                   No incidents match these filters.
                 </TableCell>
               </TableRow>
@@ -99,14 +99,12 @@ export function IncidentTable({ incidents, org, now }: { incidents: Incident[]; 
                 <TableCell>
                   <Link
                     href={`/incidents/${incident.id}`}
-                    className="hover:text-foreground font-medium"
+                    className="text-foreground text-sm"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {incident.workspace}
+                    {failureClassLabel(incident.failureClass)}
+                    {incident.stage && <span className="text-muted-foreground"> at {incident.stage}</span>}
                   </Link>
-                </TableCell>
-                <TableCell>
-                  <FailureClassBadge value={incident.failureClass} />
                 </TableCell>
                 <TableCell>
                   <ExternalLink href={runUrl(org, incident.workspace, incident.runId)}>
@@ -144,7 +142,7 @@ export function ExternalLink({ href, children }: { href: string; children: React
       target="_blank"
       rel="noreferrer"
       onClick={(e) => e.stopPropagation()}
-      className="text-muted-foreground hover:text-foreground inline-flex items-center gap-0.5 font-mono text-xs transition-colors"
+      className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 font-mono text-xs transition-colors"
     >
       {children}
       <ArrowUpRightIcon className="size-3 opacity-60" />

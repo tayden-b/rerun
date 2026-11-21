@@ -36,12 +36,10 @@ export function ConfirmationBar({
   incidentId,
   pr,
   canDecide,
-  meta,
 }: {
   incidentId: string;
   pr?: PullRequest;
   canDecide: boolean;
-  meta: React.ReactNode;
 }) {
   const router = useRouter();
   const [decision, setDecision] = useState<Decision>('idle');
@@ -71,7 +69,7 @@ export function ConfirmationBar({
       data-testid="confirmation"
       className="bg-background/90 sticky bottom-0 z-10 border-t backdrop-blur supports-backdrop-filter:bg-background/75"
     >
-      <div className="mx-auto grid w-full max-w-6xl gap-2 px-6 py-3">
+      <div className="mx-auto grid w-full max-w-6xl gap-3 px-6 py-3">
         {commenting && (
           <Textarea
             autoFocus
@@ -96,7 +94,9 @@ export function ConfirmationBar({
                     ? `Merge PR #${pr.number}${pr.draft ? ' (draft)' : ''}`
                     : 'No pull request yet'}
             </ItemTitle>
-            <ItemDescription className="text-xs">{meta}</ItemDescription>
+            <ItemDescription className="font-mono text-xs">
+              {pr ? pr.branch : 'Rerun is still working on this incident.'}
+            </ItemDescription>
           </ItemContent>
           <ItemActions>
             {commenting ? (
@@ -125,7 +125,6 @@ export function ConfirmationBar({
               onClick={() => decide('approve')}
               disabled={!canDecide || busy}
               data-testid="approve"
-              className="bg-brand text-brand-foreground hover:bg-brand/90"
             >
               <CheckIcon />
               {decision === 'approved' ? 'Approved' : 'Approve and merge'}

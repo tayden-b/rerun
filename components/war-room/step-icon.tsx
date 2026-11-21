@@ -6,8 +6,8 @@ export function traceStatus(state: StepState): 'running' | 'error' | 'pending' |
 }
 
 export function StepIcon({ state }: { state: StepState }) {
-  if (state === 'running') return <LoaderCircleIcon className="text-brand animate-spin" />;
+  if (state === 'running') return <LoaderCircleIcon className="text-brand motion-safe:animate-spin" />;
   if (state === 'error') return <CircleXIcon />;
-  if (state === 'pending') return <CircleDashedIcon className="opacity-50" />;
+  if (state === 'pending') return <CircleDashedIcon />;
   return <CheckIcon className="text-success" />;
 }

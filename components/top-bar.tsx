@@ -16,7 +16,21 @@ export function TopBar() {
         <span className="text-muted-foreground font-mono text-xs" data-testid="workspace">
           {config.workspace}
         </span>
-        <Badge variant="outline" className="text-muted-foreground ml-auto font-mono" data-testid="mode-badge">
+        <nav className="ml-auto flex items-center gap-4 text-sm">
+          <Link
+            href="/"
+            className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+          >
+            Incidents
+          </Link>
+          <Link
+            href="/about"
+            className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+          >
+            About
+          </Link>
+        </nav>
+        <Badge variant="outline" className="text-muted-foreground font-mono" data-testid="mode-badge">
           {config.mode}
         </Badge>
       </div>

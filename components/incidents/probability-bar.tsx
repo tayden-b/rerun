@@ -15,7 +15,7 @@ export interface ProbabilityBarProps {
 export function ProbabilityBar({ label, value, valueText, detail, emphasis = 'brand' }: ProbabilityBarProps) {
   const clamped = clamp01(value);
   return (
-    <div data-testid="probability-bar" className="grid gap-1.5">
+    <div data-testid="probability-bar" className="grid gap-2">
       <div className="flex items-baseline justify-between gap-3 text-xs">
         <span className="text-foreground">{label}</span>
         <span className="text-muted-foreground font-mono tabular-nums">
@@ -34,7 +34,7 @@ export function ProbabilityBar({ label, value, valueText, detail, emphasis = 'br
         <div
           data-slot="probability-bar-fill"
           className={cn(
-            'h-full rounded-full transition-[width] duration-500',
+            'h-full rounded-full transition-[width] duration-200',
             emphasis === 'brand' ? 'bg-brand' : 'bg-muted-foreground/60',
           )}
           style={{ width: `${clamped * 100}%` }}

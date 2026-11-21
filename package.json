@@ -20,7 +20,8 @@
     "record": "tsx scripts/record.ts",
     "mock-mcp": "tsx scripts/mock-mcp.ts",
     "demo": "tsx scripts/demo.ts",
-    "db:migrate": "drizzle-kit generate && tsx scripts/db-migrate.ts"
+    "db:migrate": "drizzle-kit generate && tsx scripts/db-migrate.ts",
+    "prompts": "tsx src/agents/prompts/build.ts && prettier --write src/agents/prompts/generated.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "3.0.143",

@@ -42,7 +42,7 @@ export function Verification({ verify }: { verify: VerifyResult }) {
         </TraceCollapsibleTrigger>
         <TraceCollapsibleContent className="ml-0 border-l-0 pl-0">
           <CodeBlock size="sm" className="bg-background">
-            <CodeBlockContent className="max-h-80 text-[11px]" data-testid="terminal-output">
+            <CodeBlockContent className="max-h-80 text-xs" data-testid="terminal-output">
               {COMMANDS.flatMap(({ key, command }) => {
                 const output = verify[key];
                 return [

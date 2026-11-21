@@ -11,9 +11,9 @@ import { listIncidents } from '@/src/db/incidents';
 
 export default function Home() {
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-8">
-      <header className="mb-5">
-        <h1 className="text-lg font-semibold tracking-tight">Incidents</h1>
+    <main className="mx-auto w-full max-w-6xl px-6 pt-8 pb-12">
+      <header className="mb-6">
+        <h1 className="text-xl font-semibold tracking-tight">Incidents</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           Failed runs in this workspace and what Rerun did about them.
         </p>

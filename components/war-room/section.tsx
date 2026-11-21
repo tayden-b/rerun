@@ -11,7 +11,7 @@ export function Section({
   return (
     <section className={cn('grid gap-3', className)} {...props}>
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="text-sm font-medium">{title}</h2>
+        <h2 className="text-foreground text-sm font-medium">{title}</h2>
         {meta && <div className="text-muted-foreground text-xs">{meta}</div>}
       </div>
       {children}
@@ -21,7 +21,7 @@ export function Section({
 
 export function SectionSkeleton({ caption, lines = 3 }: { caption: string; lines?: number }) {
   return (
-    <div className="bg-card grid gap-2.5 rounded-lg border p-4" aria-busy="true">
+    <div className="bg-card grid gap-3 rounded-lg border p-4" aria-busy="true">
       {Array.from({ length: lines }, (_, i) => (
         <Skeleton key={i} className="h-3.5" style={{ width: `${90 - i * 18}%` }} />
       ))}

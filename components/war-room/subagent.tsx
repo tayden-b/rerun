@@ -1,7 +1,6 @@
 'use client';
 
 import { BotIcon } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import {
   Trace,
   TraceCollapsible,
@@ -31,35 +30,31 @@ export function Subagent({ agent }: { agent: SubagentView }) {
             <BotIcon />
           </TraceIcon>
           <TraceTitle className="text-foreground">{AGENT_LABEL[agent.agent]}</TraceTitle>
-          {agent.model && (
-            <Badge variant="outline" className="text-muted-foreground rounded-md font-mono font-normal">
-              {agent.model}
-            </Badge>
-          )}
           <TraceDescription className="text-xs">
+            {agent.model && <span className="font-mono">{agent.model} · </span>}
             {calls} tool {calls === 1 ? 'call' : 'calls'} · {formatDuration(agent.durationMs)}
           </TraceDescription>
         </TraceLine>
       </TraceCollapsibleTrigger>
-      <TraceCollapsibleContent className="grid gap-2.5">
-        {agent.task && <p className="text-xs">{agent.task}</p>}
-        <Trace className="gap-1.5">
+      <TraceCollapsibleContent className="grid gap-3">
+        {agent.task && <p className="text-sm">{agent.task}</p>}
+        <Trace className="gap-2">
           {agent.tools.map((call) => (
             <ToolCall key={call.id} call={call} />
           ))}
         </Trace>
         {agent.diagnosis ? (
-          <div className="bg-card rounded-md border px-3 py-2.5">
-            <div className="text-muted-foreground mb-1 flex items-center justify-between text-[11px] tracking-wide uppercase">
+          <div className="bg-background rounded-md border px-3 py-3">
+            <div className="text-muted-foreground mb-1 flex items-center justify-between text-xs">
               <span>Diagnosis</span>
-              <span className="font-mono normal-case">
+              <span className="font-mono tabular-nums">
                 {formatPercent(agent.diagnosis.confidence)} confident
               </span>
             </div>
-            <p className="text-foreground text-[13px] leading-relaxed">{agent.diagnosis.rootCause}</p>
+            <p className="text-foreground text-sm leading-relaxed">{agent.diagnosis.rootCause}</p>
           </div>
         ) : agent.state === 'running' ? (
-          <div className="grid gap-1.5 rounded-md border px-3 py-2.5" aria-busy="true">
+          <div className="grid gap-2 rounded-md border px-3 py-3" aria-busy="true">
             <Skeleton className="h-3 w-3/4" />
             <Skeleton className="h-3 w-1/2" />
           </div>

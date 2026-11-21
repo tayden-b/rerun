@@ -6,7 +6,6 @@ import type { IncidentDetail } from '@/src/db/incidents';
 import { ExternalLink } from '@/components/incidents/incident-table';
 import { RelativeTime } from '@/components/incidents/relative-time';
 import { StatusPill } from '@/components/incidents/status-pill';
-import { Badge } from '@/components/ui/badge';
 import { ConfirmationBar } from '@/components/war-room/confirmation-bar';
 import { FixDiff } from '@/components/war-room/fix-diff';
 import { Investigation } from '@/components/war-room/investigation';
@@ -28,17 +27,16 @@ export function WarRoom({ detail, org, now }: { detail: IncidentDetail; org: str
   const prUrl = detail.prUrl ?? view.pr?.url;
   const fixStep = view.steps.find((s) => s.step === 'fix');
   const verifyStep = view.steps.find((s) => s.step === 'verify');
-  const tokens = view.usage.reduce((sum, u) => sum + u.inputTokens + u.outputTokens, 0);
 
   return (
     <>
-      <main className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-6 pt-5 pb-10">
-        <header className="grid gap-2">
+      <main className="mx-auto grid w-full max-w-6xl flex-1 content-start gap-8 px-6 pt-8 pb-12">
+        <header className="grid gap-3">
           <Link
             href="/"
             className="text-muted-foreground hover:text-foreground flex w-fit items-center gap-1 text-xs transition-colors"
           >
-            <ChevronLeftIcon className="size-3.5" />
+            <ChevronLeftIcon className="size-4" />
             Incidents
           </Link>
           <h1 className="text-xl font-semibold tracking-tight text-balance" data-testid="incident-title">
@@ -46,26 +44,24 @@ export function WarRoom({ detail, org, now }: { detail: IncidentDetail; org: str
           </h1>
           <div className="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
             <StatusPill status={detail.status} />
-            {detail.route && (
-              <Badge variant="outline" className="text-muted-foreground rounded-md font-normal">
-                {ROUTE_LABELS[detail.route as Route] ?? detail.route}
-              </Badge>
-            )}
+            {detail.route && <span>{ROUTE_LABELS[detail.route as Route] ?? detail.route}</span>}
             <ExternalLink href={runUrl(org, detail.workspace, detail.runId)}>{detail.runId}</ExternalLink>
             {prUrl && (
               <ExternalLink href={prUrl}>{prLabel(prUrl, detail.prNumber ?? view.pr?.number)}</ExternalLink>
             )}
-            <span className="font-mono">{detail.workspace}</span>
             <RelativeTime iso={detail.createdAt} now={now} />
           </div>
         </header>
 
-        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="grid min-w-0 gap-8">
-            <Section title="Investigation" meta={formatDuration(view.totalDurationMs)}>
+            <Section
+              title="Investigation"
+              meta={view.totalDurationMs ? formatDuration(view.totalDurationMs) : undefined}
+            >
               <Investigation view={view} />
             </Section>
-            <Section title="Fix" meta={view.patch ? view.patch.title : undefined}>
+            <Section title="Fix">
               {view.patch ? (
                 <FixDiff patch={view.patch} />
               ) : (
@@ -91,44 +87,43 @@ export function WarRoom({ detail, org, now }: { detail: IncidentDetail; org: str
               )}
             </Section>
           </div>
-          <aside className="grid gap-4 lg:sticky lg:top-16">
+          <aside className="grid gap-8 lg:sticky lg:top-20">
             <TriageCard triage={view.triage} />
-            <div className="bg-card grid gap-2 rounded-lg border p-4 text-xs" data-testid="cost-card">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Cost</span>
-                <span className="font-mono tabular-nums">{formatCost(detail.costUsd)}</span>
+            <Section
+              title="Cost"
+              meta={
+                <span className="text-foreground font-mono tabular-nums">{formatCost(detail.costUsd)}</span>
+              }
+            >
+              <div className="bg-card grid gap-2 rounded-lg border p-4 text-xs" data-testid="cost-card">
+                {view.usage.map((u) => (
+                  <div key={u.model} className="flex justify-between">
+                    <span className="text-muted-foreground font-mono">{u.model}</span>
+                    <span className="text-muted-foreground font-mono tabular-nums">
+                      {formatTokens(u.inputTokens)} in · {formatTokens(u.outputTokens)} out
+                    </span>
+                  </div>
+                ))}
+                {view.jevTokens > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground font-mono">jev</span>
+                    <span className="text-muted-foreground font-mono tabular-nums">
+                      {formatTokens(view.jevTokens)} in
+                    </span>
+                  </div>
+                )}
               </div>
-              {view.usage.map((u) => (
-                <div key={u.model} className="flex justify-between">
-                  <span className="text-muted-foreground font-mono">{u.model}</span>
-                  <span className="text-muted-foreground font-mono tabular-nums">
-                    {formatTokens(u.inputTokens)} in · {formatTokens(u.outputTokens)} out
-                  </span>
-                </div>
-              ))}
-              {view.jevTokens > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground font-mono">jev</span>
-                  <span className="text-muted-foreground font-mono tabular-nums">
-                    {formatTokens(view.jevTokens)} in
-                  </span>
-                </div>
-              )}
-            </div>
+            </Section>
           </aside>
         </div>
       </main>
-      <ConfirmationBar
-        incidentId={detail.id}
-        pr={view.pr}
-        canDecide={detail.status === 'awaiting_approval'}
-        meta={
-          <span className="font-mono tabular-nums">
-            {formatCost(detail.costUsd)} · {formatDuration(view.totalDurationMs)} · {formatTokens(tokens)}{' '}
-            tokens
-          </span>
-        }
-      />
+      {!SETTLED.has(detail.status) && view.pr && (
+        <ConfirmationBar
+          incidentId={detail.id}
+          pr={view.pr}
+          canDecide={detail.status === 'awaiting_approval'}
+        />
+      )}
     </>
   );
 }

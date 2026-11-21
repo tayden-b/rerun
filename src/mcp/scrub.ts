@@ -6,10 +6,12 @@ const RULES: [RegExp, string][] = [
     /https:\/\/archivist\.terraform\.io\/v1\/object\/[A-Za-z0-9+/=_-]+/g,
     'https://archivist.terraform.io/v1/object/[REDACTED:signed_url]',
   ],
+  // Plan JSON and state carry provider-generated private keys (e.g. `tls_private_key`) in clear text.
+  [/-----BEGIN ([A-Z0-9 ]*)PRIVATE KEY-----[\s\S]*?-----END \1PRIVATE KEY-----/g, '[REDACTED:private_key]'],
   [/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, 'recorder@example.com'],
 ];
 
-/** `redact()` plus signed log URLs and email addresses. Applied to recorded fixtures and to emitted trace payloads. */
+/** `redact()` plus signed log URLs, PEM private keys and email addresses. Applied to recorded fixtures and to emitted trace payloads. */
 export function scrubToolOutput(text: string): string {
   let out = redact(text);
   for (const [pattern, replacement] of RULES) out = out.replace(pattern, replacement);

@@ -21,7 +21,8 @@ async function main(): Promise<void> {
 
   async function seedPlaceholderIncident(scenario: string): Promise<void> {
     const db = await getDb();
-    const run = fixture<{ result: { id: string } }>(scenario, 'mcp/get_run_details.json').result;
+    const run = fixture<{ result: { data: { id: string } } }>(scenario, 'mcp/get_run_details.json').result
+      .data;
     const expected = fixture<{ failureClass: never; stage: never; route: never }>(scenario, 'expected.json');
     if ((await listIncidents(db)).some((incident) => incident.runId === run.id)) return;
 

@@ -1,38 +1,1571 @@
 {
-  "placeholder": true,
   "tool": "get_plan_json_output",
   "args": {
-    "plan_id": "plan-PLACEHOLDER01"
+    "plan_id": "plan-mMQLxk4PUjP9d7dc"
   },
   "result": {
     "format_version": "1.2",
-    "terraform_version": "1.14.3",
+    "terraform_version": "1.14.9",
+    "variables": {
+      "cert_validity_hours": {
+        "value": 2160
+      },
+      "environment": {
+        "value": "demo"
+      },
+      "health_check_url": {
+        "value": "https://httpbin.org/status/200"
+      },
+      "min_cert_validity_hours": {
+        "value": 720
+      },
+      "secret_rotation_days": {
+        "value": 30
+      },
+      "team": {
+        "value": "platform"
+      }
+    },
+    "planned_values": {
+      "outputs": {
+        "certificate_expires_at": {
+          "sensitive": false,
+          "type": "string",
+          "value": "2027-02-19T00:24:30.763246766Z"
+        },
+        "cluster_name": {
+          "sensitive": false,
+          "type": "string",
+          "value": "platform-demo-equipped-skunk"
+        },
+        "release_id": {
+          "sensitive": false,
+          "type": "string",
+          "value": "556f7658"
+        },
+        "service_names": {
+          "sensitive": false,
+          "type": [
+            "object",
+            {
+              "api": "string",
+              "worker": "string"
+            }
+          ],
+          "value": {
+            "api": "platform-demo-api-chamois",
+            "worker": "platform-demo-worker-crawdad"
+          }
+        },
+        "signing_rotates_at": {
+          "sensitive": false,
+          "type": "string",
+          "value": "2026-12-21T00:24:30Z"
+        },
+        "upstream_status": {
+          "sensitive": false,
+          "type": "number",
+          "value": 200
+        }
+      },
+      "root_module": {
+        "resources": [
+          {
+            "address": "random_id.release",
+            "mode": "managed",
+            "type": "random_id",
+            "name": "release",
+            "provider_name": "registry.terraform.io/hashicorp/random",
+            "schema_version": 0,
+            "values": {
+              "b64_std": "VW92WA==",
+              "b64_url": "VW92WA",
+              "byte_length": 4,
+              "dec": "1433368152",
+              "hex": "556f7658",
+              "id": "VW92WA",
+              "keepers": {
+                "cluster": "platform-demo-equipped-skunk"
+              },
+              "prefix": null
+            },
+            "sensitive_values": {
+              "keepers": {}
+            }
+          },
+          {
+            "address": "random_pet.cluster",
+            "mode": "managed",
+            "type": "random_pet",
+            "name": "cluster",
+            "provider_name": "registry.terraform.io/hashicorp/random",
+            "schema_version": 0,
+            "values": {
+              "id": "platform-demo-equipped-skunk",
+              "keepers": null,
+              "length": 2,
+              "prefix": "platform-demo",
+              "separator": "-"
+            },
+            "sensitive_values": {}
+          },
+          {
+            "address": "terraform_data.announce",
+            "mode": "managed",
+            "type": "terraform_data",
+            "name": "announce",
+            "provider_name": "terraform.io/builtin/terraform",
+            "schema_version": 0,
+            "values": {
+              "input": {
+                "api": "platform-demo-api-chamois",
+                "cluster": "platform-demo-equipped-skunk",
+                "environment": "demo",
+                "managed_by": "terraform",
+                "team": "platform",
+                "worker": "platform-demo-worker-crawdad"
+              },
+              "triggers_replace": ["echo 'platform platform-demo released with 556f7658' && exit 1"]
+            },
+            "sensitive_values": {
+              "input": {},
+              "output": {},
+              "triggers_replace": [false]
+            }
+          },
+          {
+            "address": "terraform_data.release_gate",
+            "mode": "managed",
+            "type": "terraform_data",
+            "name": "release_gate",
+            "provider_name": "terraform.io/builtin/terraform",
+            "schema_version": 0,
+            "values": {
+              "id": "293b1a03-231e-34c4-3723-8f32a425c97e",
+              "input": {
+                "cert_expiry": "2027-02-19T00:24:30.763246766Z",
+                "cluster": "platform-demo-equipped-skunk"
+              },
+              "output": {
+                "cert_expiry": "2027-02-19T00:24:30.763246766Z",
+                "cluster": "platform-demo-equipped-skunk"
+              },
+              "triggers_replace": null
+            },
+            "sensitive_values": {
+              "input": {},
+              "output": {}
+            }
+          },
+          {
+            "address": "time_rotating.signing",
+            "mode": "managed",
+            "type": "time_rotating",
+            "name": "signing",
+            "provider_name": "registry.terraform.io/hashicorp/time",
+            "schema_version": 0,
+            "values": {
+              "day": 21,
+              "hour": 0,
+              "id": "2026-11-21T00:24:30Z",
+              "minute": 24,
+              "month": 12,
+              "rfc3339": "2026-11-21T00:24:30Z",
+              "rotation_days": 30,
+              "rotation_hours": null,
+              "rotation_minutes": null,
+              "rotation_months": null,
+              "rotation_rfc3339": "2026-12-21T00:24:30Z",
+              "rotation_years": null,
+              "second": 30,
+              "triggers": null,
+              "unix": 1797812670,
+              "year": 2026
+            },
+            "sensitive_values": {}
+          },
+          {
+            "address": "tls_private_key.platform",
+            "mode": "managed",
+            "type": "tls_private_key",
+            "name": "platform",
+            "provider_name": "registry.terraform.io/hashicorp/tls",
+            "schema_version": 1,
+            "values": {
+              "algorithm": "ECDSA",
+              "ecdsa_curve": "P256",
+              "id": "ad277df850bd3770c0b67da1fd05d8cb345e796e",
+              "private_key_openssh": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAaAAAABNl\nY2RzYS1zaGEyLW5pc3RwMjU2AAAACG5pc3RwMjU2AAAAQQTQeuy6ouRsk8mVvYdU\ne0EjSIRrW+BVBUaPa2NE3yn43sLLydrgqoWH+CDNRXAn5c8ENg7lZNM9x+dF+l1A\nFdf0AAAAmLfJgyq3yYMqAAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAy\nNTYAAABBBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4\nIM1FcCflzwQ2DuVk0z3H50X6XUAV1/QAAAAgQgG6QeAHxRZfUn5dZNJq5NTUBkfV\n8uuDGDRDw11ho1YAAAAA\n-----END OPENSSH PRIVATE KEY-----\n",
+              "private_key_pem": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIEIBukHgB8UWX1J+XWTSauTU1AZH1fLrgxg0Q8NdYaNWoAoGCCqGSM49\nAwEHoUQDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vgVQVGj2tjRN8p+N7Cy8na4KqF\nh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END EC PRIVATE KEY-----\n",
+              "private_key_pem_pkcs8": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgQgG6QeAHxRZfUn5d\nZNJq5NTUBkfV8uuDGDRDw11ho1ahRANCAATQeuy6ouRsk8mVvYdUe0EjSIRrW+BV\nBUaPa2NE3yn43sLLydrgqoWH+CDNRXAn5c8ENg7lZNM9x+dF+l1AFdf0\n-----END PRIVATE KEY-----\n",
+              "public_key_fingerprint_md5": "f4:90:5e:d3:26:48:8f:e9:2f:c4:35:59:1f:73:6f:9e",
+              "public_key_fingerprint_sha256": "SHA256:B9od0kho5DlLderr4vdABgPQ0/u6PYUesVI7ktKiie0",
+              "public_key_openssh": "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4IM1FcCflzwQ2DuVk0z3H50X6XUAV1/Q=\n",
+              "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vg\nVQVGj2tjRN8p+N7Cy8na4KqFh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END PUBLIC KEY-----\n",
+              "rsa_bits": 2048
+            },
+            "sensitive_values": {
+              "private_key_openssh": true,
+              "private_key_pem": true,
+              "private_key_pem_pkcs8": true
+            }
+          },
+          {
+            "address": "tls_self_signed_cert.platform",
+            "mode": "managed",
+            "type": "tls_self_signed_cert",
+            "name": "platform",
+            "provider_name": "registry.terraform.io/hashicorp/tls",
+            "schema_version": 0,
+            "values": {
+              "allowed_uses": ["key_encipherment", "digital_signature", "server_auth"],
+              "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIBuTCCAWCgAwIBAgIRAMLHrK+gv3pf8eGxIGqgboIwCgYIKoZIzj0EAwIwQzER\nMA8GA1UEChMIcGxhdGZvcm0xLjAsBgNVBAMTJXBsYXRmb3JtLWRlbW8tZXF1aXBw\nZWQtc2t1bmsuaW50ZXJuYWwwHhcNMjYxMTIxMDAyNDMwWhcNMjcwMjE5MDAyNDMw\nWjBDMREwDwYDVQQKEwhwbGF0Zm9ybTEuMCwGA1UEAxMlcGxhdGZvcm0tZGVtby1l\ncXVpcHBlZC1za3Vuay5pbnRlcm5hbDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IA\nBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4IM1FcCfl\nzwQ2DuVk0z3H50X6XUAV1/SjNTAzMA4GA1UdDwEB/wQEAwIFoDATBgNVHSUEDDAK\nBggrBgEFBQcDATAMBgNVHRMBAf8EAjAAMAoGCCqGSM49BAMCA0cAMEQCID4T6XLO\nUtJuUSTyBTYGO/+CjZeZ89K/dEpEdxArQ0SJAiBSNO+3sFzZ4u97XFHcbwo+tHDB\nUPjOYvGCER4czVJrKQ==\n-----END CERTIFICATE-----\n",
+              "dns_names": null,
+              "early_renewal_hours": 0,
+              "id": "258907000746251462426530745314457972354",
+              "ip_addresses": null,
+              "is_ca_certificate": false,
+              "key_algorithm": "ECDSA",
+              "max_path_length": null,
+              "private_key_pem": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIEIBukHgB8UWX1J+XWTSauTU1AZH1fLrgxg0Q8NdYaNWoAoGCCqGSM49\nAwEHoUQDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vgVQVGj2tjRN8p+N7Cy8na4KqF\nh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END EC PRIVATE KEY-----\n",
+              "private_key_pem_wo": null,
+              "private_key_pem_wo_version": null,
+              "ready_for_renewal": false,
+              "set_authority_key_id": false,
+              "set_subject_key_id": false,
+              "subject": [
+                {
+                  "common_name": "platform-demo-equipped-skunk.internal",
+                  "country": null,
+                  "email_address": null,
+                  "locality": null,
+                  "organization": "platform",
+                  "organizational_unit": null,
+                  "postal_code": null,
+                  "province": null,
+                  "serial_number": null,
+                  "street_address": null
+                }
+              ],
+              "uris": null,
+              "validity_end_time": "2027-02-19T00:24:30.763246766Z",
+              "validity_period_hours": 2160,
+              "validity_start_time": "2026-11-21T00:24:30.763246766Z"
+            },
+            "sensitive_values": {
+              "allowed_uses": [false, false, false],
+              "private_key_pem": true,
+              "private_key_pem_wo": true,
+              "subject": [{}]
+            }
+          }
+        ],
+        "child_modules": [
+          {
+            "resources": [
+              {
+                "address": "module.api_name.random_pet.this",
+                "mode": "managed",
+                "type": "random_pet",
+                "name": "this",
+                "provider_name": "registry.terraform.io/hashicorp/random",
+                "schema_version": 0,
+                "values": {
+                  "id": "platform-demo-api-chamois",
+                  "keepers": null,
+                  "length": 1,
+                  "prefix": "platform-demo-api",
+                  "separator": "-"
+                },
+                "sensitive_values": {}
+              }
+            ],
+            "address": "module.api_name"
+          },
+          {
+            "resources": [
+              {
+                "address": "module.worker_name.random_pet.this",
+                "mode": "managed",
+                "type": "random_pet",
+                "name": "this",
+                "provider_name": "registry.terraform.io/hashicorp/random",
+                "schema_version": 0,
+                "values": {
+                  "id": "platform-demo-worker-crawdad",
+                  "keepers": null,
+                  "length": 1,
+                  "prefix": "platform-demo-worker",
+                  "separator": "-"
+                },
+                "sensitive_values": {}
+              }
+            ],
+            "address": "module.worker_name"
+          }
+        ]
+      }
+    },
     "resource_changes": [
       {
-        "address": "terraform_data.bootstrap",
+        "address": "random_id.release",
         "mode": "managed",
-        "type": "terraform_data",
-        "name": "bootstrap",
-        "provider_name": "terraform.io/builtin/terraform",
+        "type": "random_id",
+        "name": "release",
+        "provider_name": "registry.terraform.io/hashicorp/random",
         "change": {
-          "actions": ["create"],
-          "before": null,
+          "actions": ["no-op"],
+          "before": {
+            "b64_std": "VW92WA==",
+            "b64_url": "VW92WA",
+            "byte_length": 4,
+            "dec": "1433368152",
+            "hex": "556f7658",
+            "id": "VW92WA",
+            "keepers": {
+              "cluster": "platform-demo-equipped-skunk"
+            },
+            "prefix": null
+          },
           "after": {
-            "input": "rerun-fixtures",
-            "triggers_replace": null
+            "b64_std": "VW92WA==",
+            "b64_url": "VW92WA",
+            "byte_length": 4,
+            "dec": "1433368152",
+            "hex": "556f7658",
+            "id": "VW92WA",
+            "keepers": {
+              "cluster": "platform-demo-equipped-skunk"
+            },
+            "prefix": null
+          },
+          "after_unknown": {},
+          "before_sensitive": {
+            "keepers": {}
+          },
+          "after_sensitive": {
+            "keepers": {}
           }
         }
       },
       {
-        "address": "random_pet.service",
+        "address": "random_pet.cluster",
         "mode": "managed",
         "type": "random_pet",
-        "name": "service",
+        "name": "cluster",
         "provider_name": "registry.terraform.io/hashicorp/random",
         "change": {
-          "actions": ["no-op"]
+          "actions": ["no-op"],
+          "before": {
+            "id": "platform-demo-equipped-skunk",
+            "keepers": null,
+            "length": 2,
+            "prefix": "platform-demo",
+            "separator": "-"
+          },
+          "after": {
+            "id": "platform-demo-equipped-skunk",
+            "keepers": null,
+            "length": 2,
+            "prefix": "platform-demo",
+            "separator": "-"
+          },
+          "after_unknown": {},
+          "before_sensitive": {},
+          "after_sensitive": {}
+        }
+      },
+      {
+        "address": "terraform_data.announce",
+        "mode": "managed",
+        "type": "terraform_data",
+        "name": "announce",
+        "provider_name": "terraform.io/builtin/terraform",
+        "change": {
+          "actions": ["delete", "create"],
+          "before": {
+            "id": "f41cb0c5-f8fd-b840-4c05-8eda6f16d59a",
+            "input": {
+              "api": "platform-demo-api-chamois",
+              "cluster": "platform-demo-equipped-skunk",
+              "environment": "demo",
+              "managed_by": "terraform",
+              "team": "platform",
+              "worker": "platform-demo-worker-crawdad"
+            },
+            "output": {
+              "api": "platform-demo-api-chamois",
+              "cluster": "platform-demo-equipped-skunk",
+              "environment": "demo",
+              "managed_by": "terraform",
+              "team": "platform",
+              "worker": "platform-demo-worker-crawdad"
+            },
+            "triggers_replace": ["echo 'platform platform-demo released with 556f7658'"]
+          },
+          "after": {
+            "input": {
+              "api": "platform-demo-api-chamois",
+              "cluster": "platform-demo-equipped-skunk",
+              "environment": "demo",
+              "managed_by": "terraform",
+              "team": "platform",
+              "worker": "platform-demo-worker-crawdad"
+            },
+            "triggers_replace": ["echo 'platform platform-demo released with 556f7658' && exit 1"]
+          },
+          "after_unknown": {
+            "id": true,
+            "input": {},
+            "output": true,
+            "triggers_replace": [false]
+          },
+          "before_sensitive": {
+            "input": {},
+            "output": {},
+            "triggers_replace": [false]
+          },
+          "after_sensitive": {
+            "input": {},
+            "output": {},
+            "triggers_replace": [false]
+          },
+          "replace_paths": [["triggers_replace"]]
+        },
+        "action_reason": "replace_because_cannot_update"
+      },
+      {
+        "address": "terraform_data.release_gate",
+        "mode": "managed",
+        "type": "terraform_data",
+        "name": "release_gate",
+        "provider_name": "terraform.io/builtin/terraform",
+        "change": {
+          "actions": ["no-op"],
+          "before": {
+            "id": "293b1a03-231e-34c4-3723-8f32a425c97e",
+            "input": {
+              "cert_expiry": "2027-02-19T00:24:30.763246766Z",
+              "cluster": "platform-demo-equipped-skunk"
+            },
+            "output": {
+              "cert_expiry": "2027-02-19T00:24:30.763246766Z",
+              "cluster": "platform-demo-equipped-skunk"
+            },
+            "triggers_replace": null
+          },
+          "after": {
+            "id": "293b1a03-231e-34c4-3723-8f32a425c97e",
+            "input": {
+              "cert_expiry": "2027-02-19T00:24:30.763246766Z",
+              "cluster": "platform-demo-equipped-skunk"
+            },
+            "output": {
+              "cert_expiry": "2027-02-19T00:24:30.763246766Z",
+              "cluster": "platform-demo-equipped-skunk"
+            },
+            "triggers_replace": null
+          },
+          "after_unknown": {},
+          "before_sensitive": {
+            "input": {},
+            "output": {}
+          },
+          "after_sensitive": {
+            "input": {},
+            "output": {}
+          }
+        }
+      },
+      {
+        "address": "time_rotating.signing",
+        "mode": "managed",
+        "type": "time_rotating",
+        "name": "signing",
+        "provider_name": "registry.terraform.io/hashicorp/time",
+        "change": {
+          "actions": ["no-op"],
+          "before": {
+            "day": 21,
+            "hour": 0,
+            "id": "2026-11-21T00:24:30Z",
+            "minute": 24,
+            "month": 12,
+            "rfc3339": "2026-11-21T00:24:30Z",
+            "rotation_days": 30,
+            "rotation_hours": null,
+            "rotation_minutes": null,
+            "rotation_months": null,
+            "rotation_rfc3339": "2026-12-21T00:24:30Z",
+            "rotation_years": null,
+            "second": 30,
+            "triggers": null,
+            "unix": 1797812670,
+            "year": 2026
+          },
+          "after": {
+            "day": 21,
+            "hour": 0,
+            "id": "2026-11-21T00:24:30Z",
+            "minute": 24,
+            "month": 12,
+            "rfc3339": "2026-11-21T00:24:30Z",
+            "rotation_days": 30,
+            "rotation_hours": null,
+            "rotation_minutes": null,
+            "rotation_months": null,
+            "rotation_rfc3339": "2026-12-21T00:24:30Z",
+            "rotation_years": null,
+            "second": 30,
+            "triggers": null,
+            "unix": 1797812670,
+            "year": 2026
+          },
+          "after_unknown": {},
+          "before_sensitive": {},
+          "after_sensitive": {}
+        }
+      },
+      {
+        "address": "tls_private_key.platform",
+        "mode": "managed",
+        "type": "tls_private_key",
+        "name": "platform",
+        "provider_name": "registry.terraform.io/hashicorp/tls",
+        "change": {
+          "actions": ["no-op"],
+          "before": {
+            "algorithm": "ECDSA",
+            "ecdsa_curve": "P256",
+            "id": "ad277df850bd3770c0b67da1fd05d8cb345e796e",
+            "private_key_openssh": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAaAAAABNl\nY2RzYS1zaGEyLW5pc3RwMjU2AAAACG5pc3RwMjU2AAAAQQTQeuy6ouRsk8mVvYdU\ne0EjSIRrW+BVBUaPa2NE3yn43sLLydrgqoWH+CDNRXAn5c8ENg7lZNM9x+dF+l1A\nFdf0AAAAmLfJgyq3yYMqAAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAy\nNTYAAABBBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4\nIM1FcCflzwQ2DuVk0z3H50X6XUAV1/QAAAAgQgG6QeAHxRZfUn5dZNJq5NTUBkfV\n8uuDGDRDw11ho1YAAAAA\n-----END OPENSSH PRIVATE KEY-----\n",
+            "private_key_pem": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIEIBukHgB8UWX1J+XWTSauTU1AZH1fLrgxg0Q8NdYaNWoAoGCCqGSM49\nAwEHoUQDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vgVQVGj2tjRN8p+N7Cy8na4KqF\nh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END EC PRIVATE KEY-----\n",
+            "private_key_pem_pkcs8": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgQgG6QeAHxRZfUn5d\nZNJq5NTUBkfV8uuDGDRDw11ho1ahRANCAATQeuy6ouRsk8mVvYdUe0EjSIRrW+BV\nBUaPa2NE3yn43sLLydrgqoWH+CDNRXAn5c8ENg7lZNM9x+dF+l1AFdf0\n-----END PRIVATE KEY-----\n",
+            "public_key_fingerprint_md5": "f4:90:5e:d3:26:48:8f:e9:2f:c4:35:59:1f:73:6f:9e",
+            "public_key_fingerprint_sha256": "SHA256:B9od0kho5DlLderr4vdABgPQ0/u6PYUesVI7ktKiie0",
+            "public_key_openssh": "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4IM1FcCflzwQ2DuVk0z3H50X6XUAV1/Q=\n",
+            "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vg\nVQVGj2tjRN8p+N7Cy8na4KqFh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END PUBLIC KEY-----\n",
+            "rsa_bits": 2048
+          },
+          "after": {
+            "algorithm": "ECDSA",
+            "ecdsa_curve": "P256",
+            "id": "ad277df850bd3770c0b67da1fd05d8cb345e796e",
+            "private_key_openssh": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAaAAAABNl\nY2RzYS1zaGEyLW5pc3RwMjU2AAAACG5pc3RwMjU2AAAAQQTQeuy6ouRsk8mVvYdU\ne0EjSIRrW+BVBUaPa2NE3yn43sLLydrgqoWH+CDNRXAn5c8ENg7lZNM9x+dF+l1A\nFdf0AAAAmLfJgyq3yYMqAAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAy\nNTYAAABBBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4\nIM1FcCflzwQ2DuVk0z3H50X6XUAV1/QAAAAgQgG6QeAHxRZfUn5dZNJq5NTUBkfV\n8uuDGDRDw11ho1YAAAAA\n-----END OPENSSH PRIVATE KEY-----\n",
+            "private_key_pem": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIEIBukHgB8UWX1J+XWTSauTU1AZH1fLrgxg0Q8NdYaNWoAoGCCqGSM49\nAwEHoUQDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vgVQVGj2tjRN8p+N7Cy8na4KqF\nh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END EC PRIVATE KEY-----\n",
+            "private_key_pem_pkcs8": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgQgG6QeAHxRZfUn5d\nZNJq5NTUBkfV8uuDGDRDw11ho1ahRANCAATQeuy6ouRsk8mVvYdUe0EjSIRrW+BV\nBUaPa2NE3yn43sLLydrgqoWH+CDNRXAn5c8ENg7lZNM9x+dF+l1AFdf0\n-----END PRIVATE KEY-----\n",
+            "public_key_fingerprint_md5": "f4:90:5e:d3:26:48:8f:e9:2f:c4:35:59:1f:73:6f:9e",
+            "public_key_fingerprint_sha256": "SHA256:B9od0kho5DlLderr4vdABgPQ0/u6PYUesVI7ktKiie0",
+            "public_key_openssh": "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4IM1FcCflzwQ2DuVk0z3H50X6XUAV1/Q=\n",
+            "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vg\nVQVGj2tjRN8p+N7Cy8na4KqFh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END PUBLIC KEY-----\n",
+            "rsa_bits": 2048
+          },
+          "after_unknown": {},
+          "before_sensitive": {
+            "private_key_openssh": true,
+            "private_key_pem": true,
+            "private_key_pem_pkcs8": true
+          },
+          "after_sensitive": {
+            "private_key_openssh": true,
+            "private_key_pem": true,
+            "private_key_pem_pkcs8": true
+          }
+        }
+      },
+      {
+        "address": "tls_self_signed_cert.platform",
+        "mode": "managed",
+        "type": "tls_self_signed_cert",
+        "name": "platform",
+        "provider_name": "registry.terraform.io/hashicorp/tls",
+        "change": {
+          "actions": ["no-op"],
+          "before": {
+            "allowed_uses": ["key_encipherment", "digital_signature", "server_auth"],
+            "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIBuTCCAWCgAwIBAgIRAMLHrK+gv3pf8eGxIGqgboIwCgYIKoZIzj0EAwIwQzER\nMA8GA1UEChMIcGxhdGZvcm0xLjAsBgNVBAMTJXBsYXRmb3JtLWRlbW8tZXF1aXBw\nZWQtc2t1bmsuaW50ZXJuYWwwHhcNMjYxMTIxMDAyNDMwWhcNMjcwMjE5MDAyNDMw\nWjBDMREwDwYDVQQKEwhwbGF0Zm9ybTEuMCwGA1UEAxMlcGxhdGZvcm0tZGVtby1l\ncXVpcHBlZC1za3Vuay5pbnRlcm5hbDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IA\nBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4IM1FcCfl\nzwQ2DuVk0z3H50X6XUAV1/SjNTAzMA4GA1UdDwEB/wQEAwIFoDATBgNVHSUEDDAK\nBggrBgEFBQcDATAMBgNVHRMBAf8EAjAAMAoGCCqGSM49BAMCA0cAMEQCID4T6XLO\nUtJuUSTyBTYGO/+CjZeZ89K/dEpEdxArQ0SJAiBSNO+3sFzZ4u97XFHcbwo+tHDB\nUPjOYvGCER4czVJrKQ==\n-----END CERTIFICATE-----\n",
+            "dns_names": null,
+            "early_renewal_hours": 0,
+            "id": "258907000746251462426530745314457972354",
+            "ip_addresses": null,
+            "is_ca_certificate": false,
+            "key_algorithm": "ECDSA",
+            "max_path_length": null,
+            "private_key_pem": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIEIBukHgB8UWX1J+XWTSauTU1AZH1fLrgxg0Q8NdYaNWoAoGCCqGSM49\nAwEHoUQDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vgVQVGj2tjRN8p+N7Cy8na4KqF\nh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END EC PRIVATE KEY-----\n",
+            "private_key_pem_wo": null,
+            "private_key_pem_wo_version": null,
+            "ready_for_renewal": false,
+            "set_authority_key_id": false,
+            "set_subject_key_id": false,
+            "subject": [
+              {
+                "common_name": "platform-demo-equipped-skunk.internal",
+                "country": null,
+                "email_address": null,
+                "locality": null,
+                "organization": "platform",
+                "organizational_unit": null,
+                "postal_code": null,
+                "province": null,
+                "serial_number": null,
+                "street_address": null
+              }
+            ],
+            "uris": null,
+            "validity_end_time": "2027-02-19T00:24:30.763246766Z",
+            "validity_period_hours": 2160,
+            "validity_start_time": "2026-11-21T00:24:30.763246766Z"
+          },
+          "after": {
+            "allowed_uses": ["key_encipherment", "digital_signature", "server_auth"],
+            "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIBuTCCAWCgAwIBAgIRAMLHrK+gv3pf8eGxIGqgboIwCgYIKoZIzj0EAwIwQzER\nMA8GA1UEChMIcGxhdGZvcm0xLjAsBgNVBAMTJXBsYXRmb3JtLWRlbW8tZXF1aXBw\nZWQtc2t1bmsuaW50ZXJuYWwwHhcNMjYxMTIxMDAyNDMwWhcNMjcwMjE5MDAyNDMw\nWjBDMREwDwYDVQQKEwhwbGF0Zm9ybTEuMCwGA1UEAxMlcGxhdGZvcm0tZGVtby1l\ncXVpcHBlZC1za3Vuay5pbnRlcm5hbDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IA\nBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4IM1FcCfl\nzwQ2DuVk0z3H50X6XUAV1/SjNTAzMA4GA1UdDwEB/wQEAwIFoDATBgNVHSUEDDAK\nBggrBgEFBQcDATAMBgNVHRMBAf8EAjAAMAoGCCqGSM49BAMCA0cAMEQCID4T6XLO\nUtJuUSTyBTYGO/+CjZeZ89K/dEpEdxArQ0SJAiBSNO+3sFzZ4u97XFHcbwo+tHDB\nUPjOYvGCER4czVJrKQ==\n-----END CERTIFICATE-----\n",
+            "dns_names": null,
+            "early_renewal_hours": 0,
+            "id": "258907000746251462426530745314457972354",
+            "ip_addresses": null,
+            "is_ca_certificate": false,
+            "key_algorithm": "ECDSA",
+            "max_path_length": null,
+            "private_key_pem": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIEIBukHgB8UWX1J+XWTSauTU1AZH1fLrgxg0Q8NdYaNWoAoGCCqGSM49\nAwEHoUQDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vgVQVGj2tjRN8p+N7Cy8na4KqF\nh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END EC PRIVATE KEY-----\n",
+            "private_key_pem_wo": null,
+            "private_key_pem_wo_version": null,
+            "ready_for_renewal": false,
+            "set_authority_key_id": false,
+            "set_subject_key_id": false,
+            "subject": [
+              {
+                "common_name": "platform-demo-equipped-skunk.internal",
+                "country": null,
+                "email_address": null,
+                "locality": null,
+                "organization": "platform",
+                "organizational_unit": null,
+                "postal_code": null,
+                "province": null,
+                "serial_number": null,
+                "street_address": null
+              }
+            ],
+            "uris": null,
+            "validity_end_time": "2027-02-19T00:24:30.763246766Z",
+            "validity_period_hours": 2160,
+            "validity_start_time": "2026-11-21T00:24:30.763246766Z"
+          },
+          "after_unknown": {},
+          "before_sensitive": {
+            "allowed_uses": [false, false, false],
+            "private_key_pem": true,
+            "private_key_pem_wo": true,
+            "subject": [{}]
+          },
+          "after_sensitive": {
+            "allowed_uses": [false, false, false],
+            "private_key_pem": true,
+            "private_key_pem_wo": true,
+            "subject": [{}]
+          }
+        }
+      },
+      {
+        "address": "module.api_name.random_pet.this",
+        "module_address": "module.api_name",
+        "mode": "managed",
+        "type": "random_pet",
+        "name": "this",
+        "provider_name": "registry.terraform.io/hashicorp/random",
+        "change": {
+          "actions": ["no-op"],
+          "before": {
+            "id": "platform-demo-api-chamois",
+            "keepers": null,
+            "length": 1,
+            "prefix": "platform-demo-api",
+            "separator": "-"
+          },
+          "after": {
+            "id": "platform-demo-api-chamois",
+            "keepers": null,
+            "length": 1,
+            "prefix": "platform-demo-api",
+            "separator": "-"
+          },
+          "after_unknown": {},
+          "before_sensitive": {},
+          "after_sensitive": {}
+        }
+      },
+      {
+        "address": "module.worker_name.random_pet.this",
+        "module_address": "module.worker_name",
+        "mode": "managed",
+        "type": "random_pet",
+        "name": "this",
+        "provider_name": "registry.terraform.io/hashicorp/random",
+        "change": {
+          "actions": ["no-op"],
+          "before": {
+            "id": "platform-demo-worker-crawdad",
+            "keepers": null,
+            "length": 1,
+            "prefix": "platform-demo-worker",
+            "separator": "-"
+          },
+          "after": {
+            "id": "platform-demo-worker-crawdad",
+            "keepers": null,
+            "length": 1,
+            "prefix": "platform-demo-worker",
+            "separator": "-"
+          },
+          "after_unknown": {},
+          "before_sensitive": {},
+          "after_sensitive": {}
         }
       }
-    ]
+    ],
+    "output_changes": {
+      "certificate_expires_at": {
+        "actions": ["no-op"],
+        "before": "2027-02-19T00:24:30.763246766Z",
+        "after": "2027-02-19T00:24:30.763246766Z",
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      },
+      "cluster_name": {
+        "actions": ["no-op"],
+        "before": "platform-demo-equipped-skunk",
+        "after": "platform-demo-equipped-skunk",
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      },
+      "release_id": {
+        "actions": ["no-op"],
+        "before": "556f7658",
+        "after": "556f7658",
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      },
+      "service_names": {
+        "actions": ["no-op"],
+        "before": {
+          "api": "platform-demo-api-chamois",
+          "worker": "platform-demo-worker-crawdad"
+        },
+        "after": {
+          "api": "platform-demo-api-chamois",
+          "worker": "platform-demo-worker-crawdad"
+        },
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      },
+      "signing_rotates_at": {
+        "actions": ["no-op"],
+        "before": "2026-12-21T00:24:30Z",
+        "after": "2026-12-21T00:24:30Z",
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      },
+      "upstream_status": {
+        "actions": ["no-op"],
+        "before": 200,
+        "after": 200,
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    "prior_state": {
+      "format_version": "1.0",
+      "terraform_version": "1.14.9",
+      "values": {
+        "outputs": {
+          "certificate_expires_at": {
+            "sensitive": false,
+            "value": "2027-02-19T00:24:30.763246766Z",
+            "type": "string"
+          },
+          "cluster_name": {
+            "sensitive": false,
+            "value": "platform-demo-equipped-skunk",
+            "type": "string"
+          },
+          "release_id": {
+            "sensitive": false,
+            "value": "556f7658",
+            "type": "string"
+          },
+          "service_names": {
+            "sensitive": false,
+            "value": {
+              "api": "platform-demo-api-chamois",
+              "worker": "platform-demo-worker-crawdad"
+            },
+            "type": [
+              "object",
+              {
+                "api": "string",
+                "worker": "string"
+              }
+            ]
+          },
+          "signing_rotates_at": {
+            "sensitive": false,
+            "value": "2026-12-21T00:24:30Z",
+            "type": "string"
+          },
+          "upstream_status": {
+            "sensitive": false,
+            "value": 200,
+            "type": "number"
+          }
+        },
+        "root_module": {
+          "resources": [
+            {
+              "address": "data.http.upstream",
+              "mode": "data",
+              "type": "http",
+              "name": "upstream",
+              "provider_name": "registry.terraform.io/hashicorp/http",
+              "schema_version": 0,
+              "values": {
+                "body": "",
+                "ca_cert_pem": null,
+                "client_cert_pem": null,
+                "client_key_pem": null,
+                "id": "https://httpbin.org/status/200",
+                "insecure": null,
+                "method": null,
+                "request_body": null,
+                "request_headers": {
+                  "Accept": "application/json"
+                },
+                "request_timeout_ms": null,
+                "response_body": "",
+                "response_body_base64": "",
+                "response_headers": {
+                  "Access-Control-Allow-Credentials": "true",
+                  "Access-Control-Allow-Origin": "*",
+                  "Access-Control-Expose-Headers": "Retry-After, RateLimit, RateLimit-Policy, WWW-Authenticate",
+                  "Content-Length": "0",
+                  "Content-Type": "text/html; charset=utf-8",
+                  "Date": "Sat, 21 Nov 2026 00:40:43 GMT",
+                  "X-Content-Type-Options": "nosniff"
+                },
+                "retry": null,
+                "status_code": 200,
+                "url": "https://httpbin.org/status/200"
+              },
+              "sensitive_values": {
+                "request_headers": {},
+                "response_headers": {}
+              }
+            },
+            {
+              "address": "random_id.release",
+              "mode": "managed",
+              "type": "random_id",
+              "name": "release",
+              "provider_name": "registry.terraform.io/hashicorp/random",
+              "schema_version": 0,
+              "values": {
+                "b64_std": "VW92WA==",
+                "b64_url": "VW92WA",
+                "byte_length": 4,
+                "dec": "1433368152",
+                "hex": "556f7658",
+                "id": "VW92WA",
+                "keepers": {
+                  "cluster": "platform-demo-equipped-skunk"
+                },
+                "prefix": null
+              },
+              "sensitive_values": {
+                "keepers": {}
+              },
+              "depends_on": ["random_pet.cluster"]
+            },
+            {
+              "address": "random_pet.cluster",
+              "mode": "managed",
+              "type": "random_pet",
+              "name": "cluster",
+              "provider_name": "registry.terraform.io/hashicorp/random",
+              "schema_version": 0,
+              "values": {
+                "id": "platform-demo-equipped-skunk",
+                "keepers": null,
+                "length": 2,
+                "prefix": "platform-demo",
+                "separator": "-"
+              },
+              "sensitive_values": {}
+            },
+            {
+              "address": "terraform_data.announce",
+              "mode": "managed",
+              "type": "terraform_data",
+              "name": "announce",
+              "provider_name": "terraform.io/builtin/terraform",
+              "schema_version": 0,
+              "values": {
+                "id": "f41cb0c5-f8fd-b840-4c05-8eda6f16d59a",
+                "input": {
+                  "api": "platform-demo-api-chamois",
+                  "cluster": "platform-demo-equipped-skunk",
+                  "environment": "demo",
+                  "managed_by": "terraform",
+                  "team": "platform",
+                  "worker": "platform-demo-worker-crawdad"
+                },
+                "output": {
+                  "api": "platform-demo-api-chamois",
+                  "cluster": "platform-demo-equipped-skunk",
+                  "environment": "demo",
+                  "managed_by": "terraform",
+                  "team": "platform",
+                  "worker": "platform-demo-worker-crawdad"
+                },
+                "triggers_replace": ["echo 'platform platform-demo released with 556f7658'"]
+              },
+              "sensitive_values": {
+                "input": {},
+                "output": {},
+                "triggers_replace": [false]
+              },
+              "depends_on": [
+                "module.api_name.random_pet.this",
+                "module.worker_name.random_pet.this",
+                "random_id.release",
+                "random_pet.cluster"
+              ]
+            },
+            {
+              "address": "terraform_data.release_gate",
+              "mode": "managed",
+              "type": "terraform_data",
+              "name": "release_gate",
+              "provider_name": "terraform.io/builtin/terraform",
+              "schema_version": 0,
+              "values": {
+                "id": "293b1a03-231e-34c4-3723-8f32a425c97e",
+                "input": {
+                  "cert_expiry": "2027-02-19T00:24:30.763246766Z",
+                  "cluster": "platform-demo-equipped-skunk"
+                },
+                "output": {
+                  "cert_expiry": "2027-02-19T00:24:30.763246766Z",
+                  "cluster": "platform-demo-equipped-skunk"
+                },
+                "triggers_replace": null
+              },
+              "sensitive_values": {
+                "input": {},
+                "output": {}
+              },
+              "depends_on": [
+                "random_pet.cluster",
+                "tls_private_key.platform",
+                "tls_self_signed_cert.platform"
+              ]
+            },
+            {
+              "address": "time_rotating.signing",
+              "mode": "managed",
+              "type": "time_rotating",
+              "name": "signing",
+              "provider_name": "registry.terraform.io/hashicorp/time",
+              "schema_version": 0,
+              "values": {
+                "day": 21,
+                "hour": 0,
+                "id": "2026-11-21T00:24:30Z",
+                "minute": 24,
+                "month": 12,
+                "rfc3339": "2026-11-21T00:24:30Z",
+                "rotation_days": 30,
+                "rotation_hours": null,
+                "rotation_minutes": null,
+                "rotation_months": null,
+                "rotation_rfc3339": "2026-12-21T00:24:30Z",
+                "rotation_years": null,
+                "second": 30,
+                "triggers": null,
+                "unix": 1797812670,
+                "year": 2026
+              },
+              "sensitive_values": {}
+            },
+            {
+              "address": "tls_private_key.platform",
+              "mode": "managed",
+              "type": "tls_private_key",
+              "name": "platform",
+              "provider_name": "registry.terraform.io/hashicorp/tls",
+              "schema_version": 1,
+              "values": {
+                "algorithm": "ECDSA",
+                "ecdsa_curve": "P256",
+                "id": "ad277df850bd3770c0b67da1fd05d8cb345e796e",
+                "private_key_openssh": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAaAAAABNl\nY2RzYS1zaGEyLW5pc3RwMjU2AAAACG5pc3RwMjU2AAAAQQTQeuy6ouRsk8mVvYdU\ne0EjSIRrW+BVBUaPa2NE3yn43sLLydrgqoWH+CDNRXAn5c8ENg7lZNM9x+dF+l1A\nFdf0AAAAmLfJgyq3yYMqAAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAy\nNTYAAABBBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4\nIM1FcCflzwQ2DuVk0z3H50X6XUAV1/QAAAAgQgG6QeAHxRZfUn5dZNJq5NTUBkfV\n8uuDGDRDw11ho1YAAAAA\n-----END OPENSSH PRIVATE KEY-----\n",
+                "private_key_pem": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIEIBukHgB8UWX1J+XWTSauTU1AZH1fLrgxg0Q8NdYaNWoAoGCCqGSM49\nAwEHoUQDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vgVQVGj2tjRN8p+N7Cy8na4KqF\nh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END EC PRIVATE KEY-----\n",
+                "private_key_pem_pkcs8": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgQgG6QeAHxRZfUn5d\nZNJq5NTUBkfV8uuDGDRDw11ho1ahRANCAATQeuy6ouRsk8mVvYdUe0EjSIRrW+BV\nBUaPa2NE3yn43sLLydrgqoWH+CDNRXAn5c8ENg7lZNM9x+dF+l1AFdf0\n-----END PRIVATE KEY-----\n",
+                "public_key_fingerprint_md5": "f4:90:5e:d3:26:48:8f:e9:2f:c4:35:59:1f:73:6f:9e",
+                "public_key_fingerprint_sha256": "SHA256:B9od0kho5DlLderr4vdABgPQ0/u6PYUesVI7ktKiie0",
+                "public_key_openssh": "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4IM1FcCflzwQ2DuVk0z3H50X6XUAV1/Q=\n",
+                "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vg\nVQVGj2tjRN8p+N7Cy8na4KqFh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END PUBLIC KEY-----\n",
+                "rsa_bits": 2048
+              },
+              "sensitive_values": {
+                "private_key_openssh": true,
+                "private_key_pem": true,
+                "private_key_pem_pkcs8": true
+              }
+            },
+            {
+              "address": "tls_self_signed_cert.platform",
+              "mode": "managed",
+              "type": "tls_self_signed_cert",
+              "name": "platform",
+              "provider_name": "registry.terraform.io/hashicorp/tls",
+              "schema_version": 0,
+              "values": {
+                "allowed_uses": ["key_encipherment", "digital_signature", "server_auth"],
+                "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIBuTCCAWCgAwIBAgIRAMLHrK+gv3pf8eGxIGqgboIwCgYIKoZIzj0EAwIwQzER\nMA8GA1UEChMIcGxhdGZvcm0xLjAsBgNVBAMTJXBsYXRmb3JtLWRlbW8tZXF1aXBw\nZWQtc2t1bmsuaW50ZXJuYWwwHhcNMjYxMTIxMDAyNDMwWhcNMjcwMjE5MDAyNDMw\nWjBDMREwDwYDVQQKEwhwbGF0Zm9ybTEuMCwGA1UEAxMlcGxhdGZvcm0tZGVtby1l\ncXVpcHBlZC1za3Vuay5pbnRlcm5hbDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IA\nBNB67Lqi5GyTyZW9h1R7QSNIhGtb4FUFRo9rY0TfKfjewsvJ2uCqhYf4IM1FcCfl\nzwQ2DuVk0z3H50X6XUAV1/SjNTAzMA4GA1UdDwEB/wQEAwIFoDATBgNVHSUEDDAK\nBggrBgEFBQcDATAMBgNVHRMBAf8EAjAAMAoGCCqGSM49BAMCA0cAMEQCID4T6XLO\nUtJuUSTyBTYGO/+CjZeZ89K/dEpEdxArQ0SJAiBSNO+3sFzZ4u97XFHcbwo+tHDB\nUPjOYvGCER4czVJrKQ==\n-----END CERTIFICATE-----\n",
+                "dns_names": null,
+                "early_renewal_hours": 0,
+                "id": "258907000746251462426530745314457972354",
+                "ip_addresses": null,
+                "is_ca_certificate": false,
+                "key_algorithm": "ECDSA",
+                "max_path_length": null,
+                "private_key_pem": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIEIBukHgB8UWX1J+XWTSauTU1AZH1fLrgxg0Q8NdYaNWoAoGCCqGSM49\nAwEHoUQDQgAE0HrsuqLkbJPJlb2HVHtBI0iEa1vgVQVGj2tjRN8p+N7Cy8na4KqF\nh/ggzUVwJ+XPBDYO5WTTPcfnRfpdQBXX9A==\n-----END EC PRIVATE KEY-----\n",
+                "private_key_pem_wo": null,
+                "private_key_pem_wo_version": null,
+                "ready_for_renewal": false,
+                "set_authority_key_id": false,
+                "set_subject_key_id": false,
+                "subject": [
+                  {
+                    "common_name": "platform-demo-equipped-skunk.internal",
+                    "country": null,
+                    "email_address": null,
+                    "locality": null,
+                    "organization": "platform",
+                    "organizational_unit": null,
+                    "postal_code": null,
+                    "province": null,
+                    "serial_number": null,
+                    "street_address": null
+                  }
+                ],
+                "uris": null,
+                "validity_end_time": "2027-02-19T00:24:30.763246766Z",
+                "validity_period_hours": 2160,
+                "validity_start_time": "2026-11-21T00:24:30.763246766Z"
+              },
+              "sensitive_values": {
+                "allowed_uses": [false, false, false],
+                "private_key_pem": true,
+                "private_key_pem_wo": true,
+                "subject": [{}]
+              },
+              "depends_on": ["random_pet.cluster", "tls_private_key.platform"]
+            }
+          ],
+          "child_modules": [
+            {
+              "resources": [
+                {
+                  "address": "module.api_name.random_pet.this",
+                  "mode": "managed",
+                  "type": "random_pet",
+                  "name": "this",
+                  "provider_name": "registry.terraform.io/hashicorp/random",
+                  "schema_version": 0,
+                  "values": {
+                    "id": "platform-demo-api-chamois",
+                    "keepers": null,
+                    "length": 1,
+                    "prefix": "platform-demo-api",
+                    "separator": "-"
+                  },
+                  "sensitive_values": {}
+                }
+              ],
+              "address": "module.api_name"
+            },
+            {
+              "resources": [
+                {
+                  "address": "module.worker_name.random_pet.this",
+                  "mode": "managed",
+                  "type": "random_pet",
+                  "name": "this",
+                  "provider_name": "registry.terraform.io/hashicorp/random",
+                  "schema_version": 0,
+                  "values": {
+                    "id": "platform-demo-worker-crawdad",
+                    "keepers": null,
+                    "length": 1,
+                    "prefix": "platform-demo-worker",
+                    "separator": "-"
+                  },
+                  "sensitive_values": {}
+                }
+              ],
+              "address": "module.worker_name"
+            }
+          ]
+        }
+      }
+    },
+    "configuration": {
+      "provider_config": {
+        "http": {
+          "name": "http",
+          "full_name": "registry.terraform.io/hashicorp/http",
+          "version_constraint": "3.6.3"
+        },
+        "random": {
+          "name": "random",
+          "full_name": "registry.terraform.io/hashicorp/random",
+          "version_constraint": "3.9.1"
+        },
+        "terraform": {
+          "name": "terraform",
+          "full_name": "terraform.io/builtin/terraform"
+        },
+        "time": {
+          "name": "time",
+          "full_name": "registry.terraform.io/hashicorp/time",
+          "version_constraint": "0.14.2"
+        },
+        "tls": {
+          "name": "tls",
+          "full_name": "registry.terraform.io/hashicorp/tls",
+          "version_constraint": "4.4.2"
+        }
+      },
+      "root_module": {
+        "outputs": {
+          "certificate_expires_at": {
+            "expression": {
+              "references": [
+                "tls_self_signed_cert.platform.validity_end_time",
+                "tls_self_signed_cert.platform"
+              ]
+            },
+            "description": "When the platform certificate expires."
+          },
+          "cluster_name": {
+            "expression": {
+              "references": ["random_pet.cluster.id", "random_pet.cluster"]
+            },
+            "description": "Generated cluster name."
+          },
+          "release_id": {
+            "expression": {
+              "references": ["random_id.release.hex", "random_id.release"]
+            },
+            "description": "Identifier of the current release."
+          },
+          "service_names": {
+            "expression": {
+              "references": [
+                "module.api_name.name",
+                "module.api_name",
+                "module.worker_name.name",
+                "module.worker_name"
+              ]
+            },
+            "description": "Names generated by the naming module."
+          },
+          "signing_rotates_at": {
+            "expression": {
+              "references": ["time_rotating.signing.rotation_rfc3339", "time_rotating.signing"]
+            },
+            "description": "When the signing material next rotates."
+          },
+          "upstream_status": {
+            "expression": {
+              "references": ["data.http.upstream.status_code", "data.http.upstream"]
+            },
+            "description": "HTTP status returned by the upstream health check."
+          }
+        },
+        "resources": [
+          {
+            "address": "random_id.release",
+            "mode": "managed",
+            "type": "random_id",
+            "name": "release",
+            "provider_config_key": "random",
+            "expressions": {
+              "byte_length": {
+                "constant_value": 4
+              },
+              "keepers": {
+                "references": ["random_pet.cluster.id", "random_pet.cluster"]
+              }
+            },
+            "schema_version": 0
+          },
+          {
+            "address": "random_pet.cluster",
+            "mode": "managed",
+            "type": "random_pet",
+            "name": "cluster",
+            "provider_config_key": "random",
+            "expressions": {
+              "length": {
+                "constant_value": 2
+              },
+              "prefix": {
+                "references": ["local.name_prefix"]
+              }
+            },
+            "schema_version": 0
+          },
+          {
+            "address": "terraform_data.announce",
+            "mode": "managed",
+            "type": "terraform_data",
+            "name": "announce",
+            "provider_config_key": "terraform",
+            "provisioners": [
+              {
+                "type": "local-exec",
+                "expressions": {
+                  "command": {
+                    "references": ["local.announce_command"]
+                  }
+                }
+              }
+            ],
+            "expressions": {
+              "input": {
+                "references": [
+                  "local.tags",
+                  "random_pet.cluster.id",
+                  "random_pet.cluster",
+                  "module.api_name.name",
+                  "module.api_name",
+                  "module.worker_name.name",
+                  "module.worker_name"
+                ]
+              },
+              "triggers_replace": {
+                "references": ["local.announce_command"]
+              }
+            },
+            "schema_version": 0
+          },
+          {
+            "address": "terraform_data.release_gate",
+            "mode": "managed",
+            "type": "terraform_data",
+            "name": "release_gate",
+            "provider_config_key": "terraform",
+            "expressions": {
+              "input": {
+                "references": [
+                  "random_pet.cluster.id",
+                  "random_pet.cluster",
+                  "tls_self_signed_cert.platform.validity_end_time",
+                  "tls_self_signed_cert.platform"
+                ]
+              }
+            },
+            "schema_version": 0
+          },
+          {
+            "address": "time_rotating.signing",
+            "mode": "managed",
+            "type": "time_rotating",
+            "name": "signing",
+            "provider_config_key": "time",
+            "expressions": {
+              "rotation_days": {
+                "references": ["var.secret_rotation_days"]
+              }
+            },
+            "schema_version": 0
+          },
+          {
+            "address": "tls_private_key.platform",
+            "mode": "managed",
+            "type": "tls_private_key",
+            "name": "platform",
+            "provider_config_key": "tls",
+            "expressions": {
+              "algorithm": {
+                "constant_value": "ECDSA"
+              },
+              "ecdsa_curve": {
+                "constant_value": "P256"
+              }
+            },
+            "schema_version": 1
+          },
+          {
+            "address": "tls_self_signed_cert.platform",
+            "mode": "managed",
+            "type": "tls_self_signed_cert",
+            "name": "platform",
+            "provider_config_key": "tls",
+            "expressions": {
+              "allowed_uses": {
+                "constant_value": ["key_encipherment", "digital_signature", "server_auth"]
+              },
+              "private_key_pem": {
+                "references": ["tls_private_key.platform.private_key_pem", "tls_private_key.platform"]
+              },
+              "subject": [
+                {
+                  "common_name": {
+                    "references": ["random_pet.cluster.id", "random_pet.cluster"]
+                  },
+                  "organization": {
+                    "references": ["var.team"]
+                  }
+                }
+              ],
+              "validity_period_hours": {
+                "references": ["var.cert_validity_hours"]
+              }
+            },
+            "schema_version": 0
+          },
+          {
+            "address": "data.http.upstream",
+            "mode": "data",
+            "type": "http",
+            "name": "upstream",
+            "provider_config_key": "http",
+            "expressions": {
+              "request_headers": {
+                "constant_value": {
+                  "Accept": "application/json"
+                }
+              },
+              "url": {
+                "references": ["var.health_check_url"]
+              }
+            },
+            "schema_version": 0
+          }
+        ],
+        "module_calls": {
+          "api_name": {
+            "source": "./modules/naming",
+            "expressions": {
+              "component": {
+                "constant_value": "api"
+              },
+              "prefix": {
+                "references": ["local.name_prefix"]
+              }
+            },
+            "module": {
+              "outputs": {
+                "name": {
+                  "expression": {
+                    "references": ["random_pet.this.id", "random_pet.this"]
+                  },
+                  "description": "Generated name for the component."
+                }
+              },
+              "resources": [
+                {
+                  "address": "random_pet.this",
+                  "mode": "managed",
+                  "type": "random_pet",
+                  "name": "this",
+                  "provider_config_key": "random",
+                  "expressions": {
+                    "length": {
+                      "constant_value": 1
+                    },
+                    "prefix": {
+                      "references": ["var.prefix", "var.component"]
+                    },
+                    "separator": {
+                      "constant_value": "-"
+                    }
+                  },
+                  "schema_version": 0
+                }
+              ],
+              "variables": {
+                "component": {
+                  "description": "Component the name is for, e.g. api or worker."
+                },
+                "prefix": {
+                  "description": "Name prefix, usually <team>-<environment>."
+                }
+              }
+            }
+          },
+          "worker_name": {
+            "source": "./modules/naming",
+            "expressions": {
+              "component": {
+                "constant_value": "worker"
+              },
+              "prefix": {
+                "references": ["local.name_prefix"]
+              }
+            },
+            "module": {
+              "outputs": {
+                "name": {
+                  "expression": {
+                    "references": ["random_pet.this.id", "random_pet.this"]
+                  },
+                  "description": "Generated name for the component."
+                }
+              },
+              "resources": [
+                {
+                  "address": "random_pet.this",
+                  "mode": "managed",
+                  "type": "random_pet",
+                  "name": "this",
+                  "provider_config_key": "random",
+                  "expressions": {
+                    "length": {
+                      "constant_value": 1
+                    },
+                    "prefix": {
+                      "references": ["var.prefix", "var.component"]
+                    },
+                    "separator": {
+                      "constant_value": "-"
+                    }
+                  },
+                  "schema_version": 0
+                }
+              ],
+              "variables": {
+                "component": {
+                  "description": "Component the name is for, e.g. api or worker."
+                },
+                "prefix": {
+                  "description": "Name prefix, usually <team>-<environment>."
+                }
+              }
+            }
+          }
+        },
+        "variables": {
+          "cert_validity_hours": {
+            "default": 2160,
+            "description": "Validity period of the platform's self-signed certificate."
+          },
+          "environment": {
+            "default": "demo",
+            "description": "Deployment environment used in names and tags."
+          },
+          "health_check_url": {
+            "default": "https://httpbin.org/status/200",
+            "description": "Upstream endpoint the platform depends on."
+          },
+          "min_cert_validity_hours": {
+            "default": 720,
+            "description": "Guardrail: certificates must be valid for at least this many hours."
+          },
+          "secret_rotation_days": {
+            "default": 30,
+            "description": "How often the platform's signing material rotates."
+          },
+          "team": {
+            "default": "platform",
+            "description": "Owning team, used as the name prefix."
+          }
+        }
+      }
+    },
+    "relevant_attributes": [
+      {
+        "resource": "random_pet.cluster",
+        "attribute": ["id"]
+      },
+      {
+        "resource": "random_id.release",
+        "attribute": ["hex"]
+      },
+      {
+        "resource": "module.api_name.random_pet.this",
+        "attribute": ["id"]
+      },
+      {
+        "resource": "module.worker_name.random_pet.this",
+        "attribute": ["id"]
+      }
+    ],
+    "checks": [
+      {
+        "address": {
+          "kind": "check",
+          "name": "certificate_validity",
+          "to_display": "check.certificate_validity"
+        },
+        "status": "pass",
+        "instances": [
+          {
+            "address": {
+              "to_display": "check.certificate_validity"
+            },
+            "status": "pass"
+          }
+        ]
+      },
+      {
+        "address": {
+          "kind": "resource",
+          "mode": "data",
+          "name": "upstream",
+          "to_display": "data.http.upstream",
+          "type": "http"
+        },
+        "status": "pass",
+        "instances": [
+          {
+            "address": {
+              "to_display": "data.http.upstream"
+            },
+            "status": "pass"
+          }
+        ]
+      },
+      {
+        "address": {
+          "kind": "resource",
+          "mode": "managed",
+          "name": "release_gate",
+          "to_display": "terraform_data.release_gate",
+          "type": "terraform_data"
+        },
+        "status": "pass",
+        "instances": [
+          {
+            "address": {
+              "to_display": "terraform_data.release_gate"
+            },
+            "status": "pass"
+          }
+        ]
+      }
+    ],
+    "timestamp": "2026-11-21T00:40:43Z",
+    "applyable": true,
+    "complete": true,
+    "errored": false
   }
 }

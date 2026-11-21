@@ -1,0 +1,9 @@
+{
+  "tool": "whoami",
+  "args": {},
+  "result": {
+    "username": "rerun-recorder",
+    "email": "recorder@example.com",
+    "is_service_account": false
+  }
+}

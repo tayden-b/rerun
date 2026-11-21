@@ -86,7 +86,7 @@ describe('npm run demo', () => {
     const html = await waitFor(
       async () => {
         const body = await (await fetch(baseUrl)).text();
-        return body.includes('run-PLACEHOLDER0001') ? body : undefined;
+        return body.includes('run-3ytwwidAGVQdc3HA') ? body : undefined;
       },
       60_000,
       'the seeded incident on /',

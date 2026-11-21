@@ -29,12 +29,11 @@ describe('mock Terraform MCP server (W0-A stub)', () => {
     const client = await connect(server.url);
     const res = await client.callTool({
       name: 'get_run_details',
-      arguments: { run_id: 'run-PLACEHOLDER0001' },
+      arguments: { run_id: 'run-3ytwwidAGVQdc3HA' },
     });
     const [content] = res.content as { type: string; text: string }[];
     expect(JSON.parse(content.text)).toMatchObject({
-      id: 'run-PLACEHOLDER0001',
-      attributes: { status: 'errored' },
+      data: { id: 'run-3ytwwidAGVQdc3HA', attributes: { status: 'errored' } },
     });
     await client.close();
   });

@@ -1,0 +1,80 @@
+{
+  "tool": "get_workspace_details",
+  "args": {},
+  "result": {
+    "data": {
+      "type": "tool",
+      "id": "get_workspace_details",
+      "attributes": {
+        "readme": "### CLI-driven runs\n\n1. Add a code block to your Terraform configuration files to set up the cloud integration. You can add this configuration block to any .tf file in the directory where you run Terraform.\n\nExample code\n\n```hcl\nterraform { \n  cloud { \n    \n    organization = \"hashi-org-TF\" \n\n    workspaces { \n      name = \"rerun-fixtures\" \n    } \n  } \n}\n```\n\n\n2. Run terraform init to initialize the workspace.\n3. Run terraform apply to start the first run for this workspace.\n\nFor more details, see the [CLI workflow guide](https://developer.hashicorp.com/terraform/cloud-docs/run/cli).\n",
+        "success": true,
+        "workspace": {
+          "actions": {
+            "is-destroyable": true
+          },
+          "allow-destroy-plan": true,
+          "apply-duration-average": 10000000000,
+          "assessments-enabled": false,
+          "auto-apply": true,
+          "auto-apply-run-trigger": false,
+          "can-queue-destroy-plan": false,
+          "created-at": "2026-11-21T00:23:08Z",
+          "description": "Rerun demo workspace — seeded failures; fixed by tayden-b/rerun",
+          "environment": "default",
+          "execution-mode": "remote",
+          "file-triggers-enabled": true,
+          "global-remote-state": false,
+          "hyok-enabled": null,
+          "inherits-project-auto-destroy": true,
+          "locked": false,
+          "migration-environment": "",
+          "name": "rerun-fixtures",
+          "no-code-upgrade-available": false,
+          "operations": true,
+          "permissions": {
+            "can-destroy": true,
+            "can-force-delete": true,
+            "can-force-unlock": true,
+            "can-lock": true,
+            "can-manage-hyok": false,
+            "can-manage-run-tasks": true,
+            "can-queue-apply": true,
+            "can-queue-destroy": true,
+            "can-queue-run": true,
+            "can-read-settings": true,
+            "can-read-state-versions": true,
+            "can-read-variable": true,
+            "can-unlock": true,
+            "can-update": true,
+            "can-update-variable": true
+          },
+          "plan-duration-average": 12000000000,
+          "policy-check-failures": 0,
+          "project-remote-state": false,
+          "queue-all-runs": false,
+          "resource-count": 10,
+          "run-failures": 11,
+          "setting-overwrites": {
+            "agent-pool": true,
+            "execution-mode": true
+          },
+          "source": "tfe-api",
+          "source-module-id": "",
+          "source-name": "",
+          "source-url": "",
+          "speculative-enabled": true,
+          "structured-run-output-enabled": true,
+          "tag-names": [],
+          "terraform-version": "1.14.9",
+          "trigger-patterns": [],
+          "trigger-prefixes": [],
+          "updated-at": "2026-11-21T00:50:33Z",
+          "vcs-repo": null,
+          "working-directory": "",
+          "workspace-kpis-runs-count": 13
+        },
+        "workspace_id": "ws-pTtvA1dYZKYUfX89"
+      }
+    }
+  }
+}

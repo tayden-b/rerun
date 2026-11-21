@@ -1,0 +1,34 @@
+{
+  "tool": "get_plan_details",
+  "args": {
+    "plan_id": "plan-ndTT8cFKSt5ZEDHX"
+  },
+  "result": {
+    "data": {
+      "type": "plans",
+      "id": "plan-ndTT8cFKSt5ZEDHX",
+      "attributes": {
+        "generated-configuration": false,
+        "has-changes": false,
+        "log-read-url": "https://archivist.terraform.io/v1/object/[REDACTED:signed_url]",
+        "resource-additions": 0,
+        "resource-changes": 0,
+        "resource-destructions": 0,
+        "resource-imports": 0,
+        "status": "errored",
+        "status-timestamps": {
+          "errored-at": "2026-11-21T00:27:35Z",
+          "started-at": "2026-11-21T00:27:29Z"
+        }
+      },
+      "relationships": {
+        "exports": {
+          "data": []
+        },
+        "hyok-encrypted-data-key": {
+          "data": null
+        }
+      }
+    }
+  }
+}

@@ -18,6 +18,7 @@
     "eval": "node scripts/not-implemented.mjs eval W1-F",
     "eval:readme": "node scripts/not-implemented.mjs eval:readme W1-F",
     "record": "tsx scripts/record.ts",
+    "record:jev": "RERUN_RECORD=1 tsx scripts/record-jev.ts",
     "mock-mcp": "tsx scripts/mock-mcp.ts",
     "demo": "tsx scripts/demo.ts",
     "db:migrate": "drizzle-kit generate && tsx scripts/db-migrate.ts"

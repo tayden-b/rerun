@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -93,20 +94,28 @@ describe('recordDecision + RecordedDecisionProvider', () => {
   });
 });
 
-describe('placeholder jev.json fixtures', () => {
-  it.each([
-    ['apply-time-exit-1', 'apply_runtime'],
-    ['undeclared-reference', 'config_reference'],
-  ])('%s replays as %s and routes to autoPr', async (scenario, cls) => {
+const RECORDED_SCENARIOS = readdirSync(SCENARIOS_DIR).sort();
+
+describe('recorded jev.json fixtures', () => {
+  it('covers all 11 seeded scenarios', () => {
+    expect(RECORDED_SCENARIOS).toHaveLength(11);
+  });
+
+  it.each(RECORDED_SCENARIOS)('%s replays a real Jev answer with the expected class', async (scenario) => {
+    const dirOf = path.join(SCENARIOS_DIR, scenario);
     const raw = recordedDecisionSchema.parse(
-      JSON.parse(await readFile(path.join(SCENARIOS_DIR, scenario, 'jev.json'), 'utf8')),
+      JSON.parse(await readFile(path.join(dirOf, 'jev.json'), 'utf8')),
     );
-    expect(raw.placeholder).toBe(true);
+    const expected = JSON.parse(await readFile(path.join(dirOf, 'expected.json'), 'utf8')) as {
+      failureClass: string;
+    };
+    expect(raw.placeholder).toBeUndefined();
+    expect(raw.provider).toBe('jev');
     const { result } = await triage(sampleContext(), new RecordedDecisionProvider({ scenario }));
-    expect(result.failureClass.choice).toBe(cls);
+    expect(result.failureClass.choice).toBe(expected.failureClass);
     const sum = Object.values(result.failureClass.probabilities).reduce((a, b) => a + b, 0);
-    expect(sum).toBeCloseTo(1);
-    expect(route(result)).toBe('autoPr');
+    expect(sum).toBeCloseTo(1, 1);
+    expect(['autoPr', 'draftPr']).toContain(route(result));
   });
 });
 

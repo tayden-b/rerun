@@ -1,0 +1,7 @@
+{
+  "tool": "get_plan_logs",
+  "args": {
+    "plan_id": "plan-fyKFYWortsCkGugp"
+  },
+  "result": "Terraform v1.14.9\non linux_amd64\nInitializing plugins and modules...\n{\"@level\":\"info\",\"@message\":\"Terraform 1.14.9\",\"@module\":\"terraform.ui\",\"@timestamp\":\"2026-11-21T00:36:53.556015Z\",\"terraform\":\"1.14.9\",\"type\":\"version\",\"ui\":\"1.2\"}\n{\"@level\":\"error\",\"@message\":\"Error: Cycle: random_pet.cluster, random_id.release\",\"@module\":\"terraform.ui\",\"@timestamp\":\"2026-11-21T00:36:54.728540Z\",\"diagnostic\":{\"severity\":\"error\",\"summary\":\"Cycle: random_pet.cluster, random_id.release\",\"detail\":\"\"},\"type\":\"diagnostic\"}\nOperation failed: failed running terraform plan (exit 1)"
+}

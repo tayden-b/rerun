@@ -1,0 +1,7 @@
+{
+  "tool": "get_plan_logs",
+  "args": {
+    "plan_id": "plan-X8jqk49T4zkdxHVx"
+  },
+  "result": "Terraform v1.14.9\non linux_amd64\nInitializing plugins and modules...\n\u001b[0m\u001b[1mInitializing HCP Terraform...\u001b[0m\n\u001b[0m\u001b[1mInitializing modules...\u001b[0m\n- api_name in modules/naming\n- worker_name in\n\u001b[31m╷\u001b[0m\u001b[0m\n\u001b[31m│\u001b[0m \u001b[0m\u001b[1m\u001b[31mError: \u001b[0m\u001b[0m\u001b[1mUnreadable module directory\u001b[0m\n\u001b[31m│\u001b[0m \u001b[0m\n\u001b[31m│\u001b[0m \u001b[0m\u001b[0mUnable to evaluate directory symlink: lstat modules/namig: no such file or\n\u001b[31m│\u001b[0m \u001b[0mdirectory\n\u001b[31m╵\u001b[0m\u001b[0m\n\u001b[31m╷\u001b[0m\u001b[0m\n\u001b[31m│\u001b[0m \u001b[0m\u001b[1m\u001b[31mError: \u001b[0m\u001b[0m\u001b[1mUnreadable module directory\u001b[0m\n\u001b[31m│\u001b[0m \u001b[0m\n\u001b[31m│\u001b[0m \u001b[0m\u001b[0mThe directory  could not be read for module \"worker_name\" at main.tf:20.\n\u001b[31m╵\u001b[0m\u001b[0m\nOperation failed: failed running terraform init (exit 1)"
+}

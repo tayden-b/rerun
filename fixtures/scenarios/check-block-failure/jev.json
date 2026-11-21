@@ -1,0 +1,48 @@
+{
+  "provider": "jev",
+  "recordedAt": "2026-11-21T01:12:06.797Z",
+  "answers": {
+    "failure_class": {
+      "choice": "precondition_failed",
+      "confidence": 1,
+      "probabilities": {
+        "config_syntax": 0,
+        "config_reference": 0,
+        "missing_input": 0,
+        "provider_version": 0,
+        "provider_auth": 0,
+        "provider_api_error": 0,
+        "apply_runtime": 0,
+        "precondition_failed": 1,
+        "module_source": 0,
+        "dependency_cycle": 0,
+        "drift": 0,
+        "unknown": 0
+      }
+    },
+    "config_fixable": {
+      "noul": 0.83
+    },
+    "blast_radius": {
+      "score": 0.06,
+      "confidence": 0.95,
+      "probabilities": {
+        "0": 0.97,
+        "1": 0.01,
+        "2": 0.02,
+        "3": 0
+      },
+      "legend": {
+        "0": "Nothing is destroyed or replaced",
+        "1": "Only stateless or trivially recreatable resources",
+        "2": "Stateful or shared resources are replaced",
+        "3": "Data-bearing or network-critical resources are destroyed"
+      }
+    },
+    "needs_human": {
+      "noul": 0.77
+    }
+  },
+  "inputTokens": 1060,
+  "latencyMs": 51
+}

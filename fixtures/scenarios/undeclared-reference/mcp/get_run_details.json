@@ -1,54 +1,122 @@
 {
-  "placeholder": true,
   "tool": "get_run_details",
   "args": {
-    "run_id": "run-PLACEHOLDER0002"
+    "run_id": "run-U1QwgjkB6QN4gFMp"
   },
   "result": {
     "data": {
       "type": "runs",
-      "id": "run-PLACEHOLDER0002",
+      "id": "run-U1QwgjkB6QN4gFMp",
       "attributes": {
-        "status": "errored",
-        "message": "scenario: undeclared-reference",
-        "source": "tfe-api",
-        "trigger-reason": "manual",
-        "is-destroy": false,
+        "actions": {
+          "is-cancelable": false,
+          "is-confirmable": false,
+          "is-discardable": false,
+          "is-force-cancelable": false
+        },
+        "allow-config-generation": false,
+        "allow-empty-apply": false,
         "auto-apply": true,
-        "plan-only": false,
+        "created-at": "2026-11-21T00:30:04Z",
         "has-changes": false,
-        "created-at": "2026-11-20T15:10:05Z",
-        "terraform-version": "1.14.9",
+        "is-destroy": false,
+        "message": "Triggered via CLI",
+        "permissions": {
+          "can-apply": true,
+          "can-cancel": true,
+          "can-discard": true,
+          "can-force-cancel": true,
+          "can-force-execute": true
+        },
+        "plan-only": false,
+        "position-in-queue": 0,
+        "refresh": true,
+        "refresh-only": false,
+        "source": "terraform+cloud",
+        "status": "errored",
         "status-timestamps": {
-          "queuing-at": "2026-11-20T15:10:05Z",
-          "plan-queued-at": "2026-11-20T15:10:05Z",
-          "planning-at": "2026-11-20T15:10:08Z",
-          "errored-at": "2026-11-20T15:10:19Z"
-        }
+          "errored-at": "2026-11-21T00:30:17Z",
+          "plan-queueable-at": "2026-11-21T00:30:04Z",
+          "plan-queued-at": "2026-11-21T00:30:05Z",
+          "planning-at": "2026-11-21T00:30:07Z",
+          "queuing-at": "2026-11-21T00:30:05Z"
+        },
+        "terraform-version": "1.14.9",
+        "trigger-reason": "manual",
+        "variables": []
       },
       "relationships": {
-        "workspace": {
+        "apply": {
           "data": {
-            "type": "workspaces",
-            "id": "ws-PLACEHOLDER01"
+            "type": "applies",
+            "id": "apply-yZHBWnBhfEANuKuj"
+          }
+        },
+        "comments": {
+          "data": []
+        },
+        "configuration-version": {
+          "data": {
+            "type": "configuration-versions",
+            "id": "cv-91fHiQdn7mSQe72U"
+          }
+        },
+        "confirmed-by": {
+          "data": null
+        },
+        "cost-estimate": {
+          "data": {
+            "type": "cost-estimates",
+            "id": "ce-E2jrwuzPacpSzXLr"
+          }
+        },
+        "created-by": {
+          "data": {
+            "type": "users",
+            "id": "user-qJ97oVskfezScLzz"
           }
         },
         "plan": {
           "data": {
             "type": "plans",
-            "id": "plan-PLACEHOLDER02"
+            "id": "plan-bEyBCSxVyj53bfQt"
           }
         },
-        "apply": {
-          "data": {
-            "type": "applies",
-            "id": "apply-PLACEHOLDER02"
-          }
+        "policy-checks": {
+          "data": []
         },
-        "configuration-version": {
+        "run-events": {
+          "data": [
+            {
+              "type": "run-events",
+              "id": "re-j2YxsxTs48nhfs39"
+            },
+            {
+              "type": "run-events",
+              "id": "re-s8mujJD5Ctpp7qJ7"
+            },
+            {
+              "type": "run-events",
+              "id": "re-kRbNbTyukaaUjtYC"
+            },
+            {
+              "type": "run-events",
+              "id": "re-efupLBX7osk1bWpC"
+            }
+          ]
+        },
+        "task-stages": {
+          "data": [
+            {
+              "type": "task-stages",
+              "id": "ts-BkVYQ6Yrt8me3nLR"
+            }
+          ]
+        },
+        "workspace": {
           "data": {
-            "type": "configuration-versions",
-            "id": "cv-PLACEHOLDER02"
+            "type": "workspaces",
+            "id": "ws-pTtvA1dYZKYUfX89"
           }
         }
       }

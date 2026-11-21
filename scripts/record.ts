@@ -50,7 +50,7 @@ async function main(): Promise<void> {
   const { collectRunArtifacts } = await import('../src/mcp/collect');
   const { argHash, fixtureArgs, SCENARIOS_DIR } = await import('../src/mcp/fixtures');
   const { parseToolText } = await import('../src/mcp/parse');
-  const { scrubForFixture, scrubWhoami } = await import('../src/mcp/scrub');
+  const { scrubToolOutput, scrubWhoami } = await import('../src/mcp/scrub');
 
   const cfg = requireLive(['tfe'], loadConfig());
   const workspace = values.workspace ?? cfg.workspace;
@@ -85,13 +85,13 @@ async function main(): Promise<void> {
   for (const c of calls) {
     const multi = (counts.get(c.tool)?.size ?? 0) > 1;
     const file = multi ? `${c.tool}.${argHash(c.args)}.json` : `${c.tool}.json`;
-    const parsed = parseToolText(scrubForFixture(c.text));
+    const parsed = parseToolText(scrubToolOutput(c.text));
     let result: unknown =
       parsed && typeof parsed === 'object' && 'text' in parsed && Object.keys(parsed).length === 1
         ? (parsed as { text: string }).text
         : parsed;
     if (c.tool === 'whoami') result = scrubWhoami(result);
-    const args = JSON.parse(scrubForFixture(JSON.stringify(fixtureArgs(c.args)))) as Record<string, unknown>;
+    const args = JSON.parse(scrubToolOutput(JSON.stringify(fixtureArgs(c.args)))) as Record<string, unknown>;
     const body = { tool: c.tool, args, ...(c.isError ? { isError: true } : {}), result };
     writeFileSync(path.join(dir, file), `${JSON.stringify(body, null, 2)}\n`);
     written.set(file, { tool: c.tool, file: `mcp/${file}`, args });

@@ -9,8 +9,8 @@ const RULES: [RegExp, string][] = [
   [/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, 'recorder@example.com'],
 ];
 
-/** `redact()` plus fixture-only rules (signed URLs, email addresses). Applied to every recorded tool output. */
-export function scrubForFixture(text: string): string {
+/** `redact()` plus signed log URLs and email addresses. Applied to recorded fixtures and to emitted trace payloads. */
+export function scrubToolOutput(text: string): string {
   let out = redact(text);
   for (const [pattern, replacement] of RULES) out = out.replace(pattern, replacement);
   return out;

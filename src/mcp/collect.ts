@@ -1,5 +1,6 @@
 import { extractErrorExcerpt } from '../shared/excerpt';
 import { redact } from '../shared/redact';
+import { scrubToolOutput } from './scrub';
 import type { IncidentEvent, RunArtifacts, Stage } from '../shared/types';
 import { attribute, dig, isRecord, relationshipId, renderTerraformLog } from './parse';
 import type { TerraformMcp, ToolObserverEvent, ToolResult } from './terraform';
@@ -43,7 +44,7 @@ export function determineStage(input: StageInput): Stage {
 
 /** Event payloads stay small: short results inline (redacted), long ones as a truncated preview. */
 function preview(result: ToolResult): unknown {
-  const text = redact(result.text);
+  const text = scrubToolOutput(result.text);
   if (text.length > PAYLOAD_PREVIEW) {
     return { truncated: true, bytes: result.text.length, preview: text.slice(0, PAYLOAD_PREVIEW) };
   }
@@ -90,10 +91,18 @@ export async function collectRunArtifacts(
   emit: EmitFn = () => {},
 ): Promise<RunArtifacts> {
   // Emits are chained so an async sink (e.g. `appendEvent`) stores them in call order.
+  // A failed emit stops further emits and fails the collection once in-flight MCP calls settle.
   let chain: Promise<void> = Promise.resolve();
+  let emitFailed = false;
+  let emitError: unknown;
   const traced = mcp.withObserver((e) => {
     const event = toEvent(e);
-    chain = chain.then(() => emit(event));
+    chain = chain
+      .then(() => (emitFailed ? undefined : emit(event)))
+      .catch((err: unknown) => {
+        if (!emitFailed) emitError = err;
+        emitFailed = true;
+      });
   });
   const optional = async (fn: () => Promise<ToolResult>) => {
     try {
@@ -103,6 +112,7 @@ export async function collectRunArtifacts(
     }
   };
 
+  let artifacts: RunArtifacts;
   try {
     const workspace = await traced.getWorkspaceDetails();
     const run = await traced.getRunDetails(runId);
@@ -145,7 +155,7 @@ export async function collectRunArtifacts(
     const failingLog = (stage === 'apply' ? applyLogs : planLogs) ?? applyLogs ?? planLogs ?? '';
     const errorExcerpt = extractErrorExcerpt(failingLog);
 
-    return {
+    artifacts = {
       run: run.data,
       workspace: workspace.data,
       planLogs,
@@ -158,4 +168,6 @@ export async function collectRunArtifacts(
   } finally {
     await chain;
   }
+  if (emitFailed) throw emitError;
+  return artifacts;
 }

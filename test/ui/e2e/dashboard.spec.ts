@@ -13,6 +13,7 @@ test('incident list shows the seeded incidents and filters them', async ({ page 
     'data-status',
     'awaiting_approval',
   );
+  await expect(rows.first().getByRole('link').first()).toBeVisible();
   await page.mouse.move(0, 0);
   await page.screenshot({ path: `${SCREENSHOTS}/list.png` });
 

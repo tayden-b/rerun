@@ -1,7 +1,12 @@
 import { LangfuseSpanProcessor } from '@langfuse/otel';
 import type { AttributeValue } from '@opentelemetry/api';
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { ConsoleSpanExporter, SimpleSpanProcessor, type SpanProcessor } from '@opentelemetry/sdk-trace-base';
+import {
+  ConsoleSpanExporter,
+  SimpleSpanProcessor,
+  type ReadableSpan,
+  type SpanProcessor,
+} from '@opentelemetry/sdk-trace-base';
 import { loadConfig } from '../config';
 import { redact } from '../shared/redact';
 
@@ -21,10 +26,12 @@ export interface TelemetryHandle {
 type Env = Record<string, string | undefined>;
 
 export function telemetryConfigFromEnv(env: Env = process.env): TelemetryConfig {
+  const config = loadConfig(env);
   return {
     serviceName: 'rerun',
     console: env.RERUN_TRACE_CONSOLE === '1',
-    langfuse: loadConfig(env).langfuse,
+    // Traces leave the machine only in live mode; demo and tests never export to Langfuse.
+    langfuse: config.mode === 'live' ? config.langfuse : {},
   };
 }
 
@@ -38,6 +45,21 @@ export function redactDeep(value: unknown): unknown {
   return value;
 }
 
+/** Console exporter that prints span and event attributes through `redact()`. */
+export class RedactingConsoleSpanExporter extends ConsoleSpanExporter {
+  override export(spans: ReadableSpan[], resultCallback: Parameters<ConsoleSpanExporter['export']>[1]): void {
+    super.export(
+      spans.map((span) =>
+        Object.create(span, {
+          attributes: { value: redactDeep(span.attributes) },
+          events: { value: span.events.map((e) => ({ ...e, attributes: redactDeep(e.attributes) })) },
+        }),
+      ),
+      resultCallback,
+    );
+  }
+}
+
 export function buildSpanProcessors(config: TelemetryConfig): {
   processors: SpanProcessor[];
   exporters: TelemetryHandle['exporters'];
@@ -45,7 +67,7 @@ export function buildSpanProcessors(config: TelemetryConfig): {
   const processors: SpanProcessor[] = [];
   const exporters: TelemetryHandle['exporters'] = [];
   if (config.console) {
-    processors.push(new SimpleSpanProcessor(new ConsoleSpanExporter()));
+    processors.push(new SimpleSpanProcessor(new RedactingConsoleSpanExporter()));
     exporters.push('console');
   }
   const { publicKey, secretKey, baseUrl } = config.langfuse;

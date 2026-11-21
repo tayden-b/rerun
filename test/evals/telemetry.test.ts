@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { BasicTracerProvider, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { describe, expect, it, vi } from 'vitest';
 import {
   aiTelemetry,
   buildSpanProcessors,
+  RedactingConsoleSpanExporter,
   initTelemetry,
   redactDeep,
   telemetryConfigFromEnv,
@@ -11,6 +13,30 @@ describe('telemetry', () => {
   it('reads exporters from the environment', () => {
     expect(telemetryConfigFromEnv({ RERUN_TRACE_CONSOLE: '1' }).console).toBe(true);
     expect(telemetryConfigFromEnv({}).console).toBe(false);
+  });
+
+  it('never exports to Langfuse outside live mode', () => {
+    const keys = { LANGFUSE_PUBLIC_KEY: 'pk-lf-test', LANGFUSE_SECRET_KEY: 'sk-lf-test' };
+    expect(telemetryConfigFromEnv({ ...keys, RERUN_MODE: 'demo' }).langfuse).toEqual({});
+  });
+
+  it('redacts span and event attributes on the console exporter', async () => {
+    const dir = vi.spyOn(console, 'dir').mockImplementation(() => {});
+    const provider = new BasicTracerProvider({
+      spanProcessors: [new SimpleSpanProcessor(new RedactingConsoleSpanExporter())],
+    });
+    const span = provider
+      .getTracer('t')
+      .startSpan('s', { attributes: { prompt: 'Bearer abcdefghijklmnopqrstuvwxyz0123456789' } });
+    span.addEvent('e', { out: 'Bearer zyxwvutsrqponmlkjihgfedcba9876543210' });
+    span.end();
+    await provider.shutdown();
+    const printed = JSON.stringify(dir.mock.calls);
+    dir.mockRestore();
+    expect(printed).toContain('[REDACTED:bearer]');
+    expect(printed).not.toContain('abcdefghijklmnopqrstuvwxyz0123456789');
+    expect(printed).not.toContain('zyxwvutsrqponmlkjihgfedcba9876543210');
+    expect(printed).toContain('"name":"s"');
   });
 
   it('builds a console processor and a Langfuse processor only when keys are set', () => {

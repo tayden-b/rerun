@@ -6,6 +6,7 @@ import path from 'node:path';
 process.env.RERUN_MODE = 'demo';
 
 async function main(): Promise<void> {
+  await import('./load-env');
   const { startMockServer, FIXTURES_DIR, DEFAULT_SCENARIO } = await import('../src/mcp/mock/server');
   const mock = await startMockServer({ port: Number(process.env.MOCK_MCP_PORT ?? 8080) });
   process.env.TERRAFORM_MCP_URL = mock.url;

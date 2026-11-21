@@ -1,3 +1,4 @@
+import './load-env';
 import { config } from '../src/config';
 import { openDb } from '../src/db';
 

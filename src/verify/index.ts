@@ -13,6 +13,8 @@ export interface CreateVerifierOptions {
   kind?: Verifier['name'];
   /** Demo scenario whose `verify.json` the fake replays. */
   scenario?: string;
+  /** Fake only: wait out the simulated stage timings. */
+  pace?: boolean;
   docker?: DockerVerifierOptions;
 }
 
@@ -20,7 +22,7 @@ export function createVerifier(config: Config, opts: CreateVerifierOptions = {})
   const kind = opts.kind ?? (config.mode === 'demo' ? 'fake' : 'docker');
   switch (kind) {
     case 'fake':
-      return new FakeVerifier({ scenario: opts.scenario });
+      return new FakeVerifier({ scenario: opts.scenario, pace: opts.pace });
     case 'vercel-sandbox':
       return new VercelSandboxVerifier();
     case 'docker':

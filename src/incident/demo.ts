@@ -1,7 +1,9 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { MockLanguageModelV3 } from 'ai/test';
+import { config } from '../config';
 import { DEMO_BASELINE_FILES } from '../github/demoBaseline';
+import { REPLAY_MARKER } from '../telemetry/replay';
 import type { RunSummary } from '../watch/runs';
 
 // Demo mode (SPEC §1): every external system is replaced by a recording. The agents replay a scripted
@@ -9,13 +11,14 @@ import type { RunSummary } from '../watch/runs';
 // from the rerun-fixtures baseline with the scenario's break applied (`repo` edits in the same file).
 
 export const SCENARIOS_DIR = path.join(process.cwd(), 'fixtures', 'scenarios');
-export const DEMO_AGENT_MODEL_ID = 'scripted-demo';
+/** The configured agent model, marked as a replay so the transcript is never mistaken for a live call. */
+export const DEMO_AGENT_MODEL_ID = `${config.models.agent}${REPLAY_MARKER}`;
 
 type AgentKey = 'config' | 'reality' | 'fix';
 
 export interface ScriptedStep {
   /** Tool calls the model makes in this step. */
-  toolCalls?: { toolName: string; input: Record<string, unknown> }[];
+  toolCalls?: { toolName: string; input: Record<string, unknown>; durationMs?: number }[];
   /** The structured final answer (diagnosis or fix title/summary). */
   output?: Record<string, unknown>;
   usage?: { inputTokens: number; outputTokens: number };
@@ -69,6 +72,21 @@ export function demoRepoFiles(transcript: AgentTranscript): Record<string, strin
   return files;
 }
 
+const toolCallId = (agent: AgentKey, step: number, call: number) => `${agent}-${step + 1}-${call + 1}`;
+
+/** Simulated tool durations from the transcript, keyed by the tool call ids the scripted model emits. */
+export function transcriptToolDurations(transcript: AgentTranscript): Map<string, number> {
+  const durations = new Map<string, number>();
+  for (const [agent, steps] of Object.entries(transcript.agents) as [AgentKey, ScriptedStep[]][]) {
+    steps.forEach((step, s) =>
+      step.toolCalls?.forEach((call, c) => {
+        if (typeof call.durationMs === 'number') durations.set(toolCallId(agent, s, c), call.durationMs);
+      }),
+    );
+  }
+  return durations;
+}
+
 type CallOptions = Parameters<MockLanguageModelV3['doGenerate']>[0];
 type GenerateResult = Awaited<ReturnType<MockLanguageModelV3['doGenerate']>>;
 
@@ -95,7 +113,7 @@ function toResult(agent: AgentKey, index: number, step: ScriptedStep): GenerateR
     return {
       content: step.toolCalls.map((call, i) => ({
         type: 'tool-call' as const,
-        toolCallId: `${agent}-${index + 1}-${i + 1}`,
+        toolCallId: toolCallId(agent, index, i),
         toolName: call.toolName,
         input: JSON.stringify(call.input),
       })),
@@ -112,12 +130,18 @@ function toResult(agent: AgentKey, index: number, step: ScriptedStep): GenerateR
   };
 }
 
+/** Simulated model latency for one turn: a fixed overhead plus roughly 125 output tokens per second. */
+const turnLatencyMs = (step: ScriptedStep) => 350 + (step.usage?.outputTokens ?? 80) * 8;
+
 /**
  * A mock model (`ai/test`) that replays the transcript. The agent is recognised from its system prompt
  * and the step from the number of assistant turns so far, so one instance serves parallel agents and
  * the fix retry without shared state.
  */
-export function scriptedAgentModel(transcript: AgentTranscript): MockLanguageModelV3 {
+export function scriptedAgentModel(
+  transcript: AgentTranscript,
+  opts: { pace?: boolean } = {},
+): MockLanguageModelV3 {
   return new MockLanguageModelV3({
     provider: 'rerun-demo',
     modelId: DEMO_AGENT_MODEL_ID,
@@ -127,6 +151,7 @@ export function scriptedAgentModel(transcript: AgentTranscript): MockLanguageMod
       if (!agent || !script?.length) throw new Error(`No demo transcript for agent ${agent ?? '(unknown)'}`);
       const index = options.prompt.filter((m) => m.role === 'assistant').length;
       const step = script[Math.min(index, script.length - 1)];
+      if (opts.pace) await new Promise((resolve) => setTimeout(resolve, turnLatencyMs(step)));
       return toResult(agent, index, step);
     },
   });

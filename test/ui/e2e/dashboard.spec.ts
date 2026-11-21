@@ -14,6 +14,9 @@ test('incident list shows the seeded incidents and filters them', async ({ page 
     'awaiting_approval',
   );
   await expect(rows.first().getByRole('link').first()).toBeVisible();
+  // Fake GitHub PR numbers would collide with real PRs, so demo mode never links them.
+  await expect(rows.first().getByTestId('pr-ref')).toHaveText(/^#\d+ · demo$/);
+  await expect(page.locator('a[href*="/pull/"]')).toHaveCount(0);
   await page.mouse.move(0, 0);
   await page.screenshot({ path: `${SCREENSHOTS}/list.png` });
 
@@ -40,7 +43,7 @@ test('war room renders the awaiting-approval investigation', async ({ page }) =>
   await expect(page.getByTestId('diff-block')).toHaveCount(1);
   await expect(page.getByTestId('diff-removed')).toContainText('exit 1');
   await expect(page.getByTestId('terminal-output')).toContainText(
-    'Plan: 1 to add, 0 to change, 0 to destroy.',
+    'Plan: 1 to add, 0 to change, 1 to destroy.',
   );
   await expect(page.getByTestId('approve')).toBeEnabled();
 

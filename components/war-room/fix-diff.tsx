@@ -18,13 +18,13 @@ export function FixDiff({ patch }: { patch: Patch }) {
     <div className="grid gap-4">
       {patch.summary && <p className="text-muted-foreground text-sm">{patch.summary}</p>}
       {patch.files.map((file) => (
-        <FileDiff key={file.path} file={file} />
+        <FileDiff key={file.path} file={file} showRationale={!patch.summary || patch.files.length > 1} />
       ))}
     </div>
   );
 }
 
-function FileDiff({ file }: { file: PatchFile }) {
+function FileDiff({ file, showRationale }: { file: PatchFile; showRationale: boolean }) {
   const rows = diffLines(file.before, file.after);
   const stat = diffStat(rows);
   return (
@@ -61,7 +61,9 @@ function FileDiff({ file }: { file: PatchFile }) {
           )}
         </CodeBlockContent>
       </CodeBlock>
-      <p className="text-muted-foreground text-sm leading-relaxed">{file.rationale}</p>
+      {showRationale && file.rationale && (
+        <p className="text-muted-foreground text-sm leading-relaxed">{file.rationale}</p>
+      )}
     </div>
   );
 }

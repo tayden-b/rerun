@@ -1,7 +1,7 @@
 import { DEFAULT_SCENARIO, startMockServer } from '../src/mcp/mock/server';
 
 async function main(): Promise<void> {
-  const port = Number(process.env.MOCK_MCP_PORT ?? 8080);
+  const port = Number(process.env.MOCK_MCP_PORT ?? 8081);
   const server = await startMockServer({ port });
   console.log(
     `mock terraform MCP server listening on ${server.url} (scenario: ${process.env.MOCK_SCENARIO ?? DEFAULT_SCENARIO})`,

@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { inArray } from 'drizzle-orm';
 import { schema, type Db } from '../src/db';
+import { DEMO_BASELINE_FILES } from '../src/github/demoBaseline';
 import { addArtifact, addDecision, appendEvent, createIncident, setStatus } from '../src/db/incidents';
 import type {
   Diagnosis,
@@ -118,6 +119,19 @@ function ok(stdout: string, durationMs: number, exitCode = 0) {
   return { ok: exitCode === 0, exitCode, stdout, stderr: '', durationMs };
 }
 
+const STATE_RESOURCES = [
+  'data.http.upstream',
+  'random_id.release',
+  'random_pet.cluster',
+  'terraform_data.announce',
+  'terraform_data.release_gate',
+  'time_rotating.signing',
+  'tls_private_key.platform',
+  'tls_self_signed_cert.platform',
+  'module.api_name.random_pet.this',
+  'module.worker_name.random_pet.this',
+];
+
 function applyTimeExit1(): Scenario {
   const scenario = 'apply-time-exit-1';
   const run = fixture<{ result: { data: { id: string } } }>(scenario, 'mcp/get_run_details.json').result.data;
@@ -130,21 +144,12 @@ function applyTimeExit1(): Scenario {
   const jev = fixture<Jev>(scenario, 'jev.json');
   const excerpt = errorExcerpt(log);
 
-  const before = [
-    'resource "random_pet" "service" {',
-    '  length = 2',
-    '}',
-    '',
-    'resource "terraform_data" "bootstrap" {',
-    '  input = var.workspace_name',
-    '',
-    '  provisioner "local-exec" {',
-    '    command = "echo bootstrapping ${var.workspace_name} && exit 1"',
-    '  }',
-    '}',
-    '',
-  ].join('\n');
-  const after = before.replace(' && exit 1"', '"');
+  const [broken] = fixture<{ repo: { path: string; oldText: string; newText: string }[] }>(
+    scenario,
+    'agents.json',
+  ).repo;
+  const after = DEMO_BASELINE_FILES[broken.path];
+  const before = after.replace(broken.oldText, broken.newText);
 
   return {
     id: DEMO_INCIDENT_IDS.awaiting,
@@ -170,12 +175,12 @@ function applyTimeExit1(): Scenario {
     triage: triageFrom(jev, expected.stage, excerpt),
     jevRequest: JEV_REQUEST,
     config: {
-      task: 'Find the configuration that makes terraform_data.bootstrap fail during apply.',
+      task: 'Find the configuration that makes terraform_data.announce fail during apply.',
       tools: [
         {
           tool: 'list_files',
           args: { path: '.' },
-          output: ['main.tf', 'variables.tf', 'versions.tf'],
+          output: Object.keys(DEMO_BASELINE_FILES),
           durationMs: 38,
         },
         { tool: 'read_file', args: { path: 'main.tf' }, output: before, durationMs: 41 },
@@ -188,20 +193,21 @@ function applyTimeExit1(): Scenario {
       ],
       diagnosis: {
         rootCause:
-          'The local-exec provisioner on terraform_data.bootstrap runs a command that ends in `exit 1`, so every apply fails after the resource is created.',
+          'local.announce_command in main.tf ends in `&& exit 1`, so the local-exec provisioner on terraform_data.announce exits 1 on every create and the apply fails.',
         evidence: [
           {
             kind: 'log',
             ref: 'apply log',
-            excerpt: "Error running command 'echo bootstrapping rerun-fixtures && exit 1'",
+            excerpt:
+              "Error running command 'echo 'platform platform-demo released with 556f7658' && exit 1': exit status 1.",
           },
           {
             kind: 'file',
-            ref: 'main.tf:9',
-            excerpt: 'command = "echo bootstrapping ${var.workspace_name} && exit 1"',
+            ref: 'main.tf:10',
+            excerpt: broken.newText.trim(),
           },
         ],
-        suggestedChange: 'Drop `&& exit 1` from the provisioner command.',
+        suggestedChange: 'In main.tf, drop `&& exit 1` from local.announce_command.',
         confidence: 0.91,
       },
       usage: { inputTokens: 18_420, outputTokens: 1_210 },
@@ -218,29 +224,30 @@ function applyTimeExit1(): Scenario {
         {
           tool: 'list_state_versions',
           args: { workspace_name: 'rerun-fixtures', limit: 1 },
-          output: [{ serial: 41, createdAt: '2026-11-20T14:31:07.000Z' }],
+          output: [{ serial: 3, createdAt: '2026-11-21T00:42:04.000Z' }],
           durationMs: 297,
         },
         {
           tool: 'get_state_version',
-          args: { serial: 41 },
-          output: { resources: ['random_pet.service', 'tls_private_key.ca'], tainted: [] },
+          args: { serial: 3 },
+          output: { resources: STATE_RESOURCES, tainted: [] },
           durationMs: 512,
         },
       ],
       diagnosis: {
         rootCause:
-          'State is unchanged since serial 41; terraform_data.bootstrap was never recorded, so a rerun only creates it again.',
+          'Nothing outside the configuration is wrong: terraform_data.announce was replaced because its command changed, and the new instance fails only on the provisioner exit code.',
         evidence: [
-          { kind: 'state', ref: 'state v41', excerpt: 'resources: random_pet.service, tls_private_key.ca' },
+          { kind: 'log', ref: 'apply:planned_change', excerpt: 'terraform_data.announce: Plan to replace' },
+          { kind: 'state', ref: 'state v3', excerpt: `resources: ${STATE_RESOURCES.join(', ')}` },
         ],
-        suggestedChange: 'No state repair needed.',
+        suggestedChange: 'Fix local.announce_command in main.tf; no state or workspace change is needed.',
         confidence: 0.84,
       },
       usage: { inputTokens: 9_870, outputTokens: 640 },
     },
     patch: {
-      title: 'Remove the forced exit from the bootstrap provisioner',
+      title: 'Stop the announce provisioner from exiting 1',
       summary: expected.humanSummary,
       files: [
         {
@@ -248,33 +255,37 @@ function applyTimeExit1(): Scenario {
           before,
           after,
           rationale:
-            'The provisioner command ended in `exit 1`, which fails every apply. Removing it keeps the bootstrap message and lets the apply finish.',
+            'The announce command ends in `&& exit 1`, which fails the provisioner on every apply. Removing it keeps the release message and lets the apply finish.',
         },
       ],
     },
     fixUsage: { inputTokens: 12_310, outputTokens: 930 },
     verify: {
       ok: true,
-      summary: 'fmt, validate and a speculative plan passed. Plan: 1 to add, 0 to change, 0 to destroy.',
+      summary: 'fmt, validate and a speculative plan passed. Plan: 1 to add, 0 to change, 1 to destroy.',
       fmt: ok('', 412),
       validate: ok('Success! The configuration is valid.', 1_920),
       plan: ok(
         [
           'Running plan in HCP Terraform (speculative).',
           '',
-          'random_pet.service: Refreshing state... [id=bold-otter]',
-          'tls_private_key.ca: Refreshing state... [id=4f3c2a1b]',
+          'random_pet.cluster: Refreshing state... [id=platform-demo-equipped-skunk]',
+          'random_id.release: Refreshing state... [id=VW92WA]',
+          'terraform_data.announce: Refreshing state... [id=f41cb0c5-f8fd-b840-4c05-8eda6f16d59a]',
           '',
           'Terraform will perform the following actions:',
           '',
-          '  # terraform_data.bootstrap will be created',
-          '  + resource "terraform_data" "bootstrap" {',
-          '      + id     = (known after apply)',
-          '      + input  = "rerun-fixtures"',
-          '      + output = (known after apply)',
+          '  # terraform_data.announce must be replaced',
+          '-/+ resource "terraform_data" "announce" {',
+          '      ~ id               = "f41cb0c5-f8fd-b840-4c05-8eda6f16d59a" -> (known after apply)',
+          '      ~ triggers_replace = [ # forces replacement',
+          '          - "echo \'platform platform-demo released with 556f7658\' && exit 1",',
+          '          + "echo \'platform platform-demo released with 556f7658\'",',
+          '        ]',
+          '        # (2 unchanged attributes hidden)',
           '    }',
           '',
-          'Plan: 1 to add, 0 to change, 0 to destroy.',
+          'Plan: 1 to add, 0 to change, 1 to destroy.',
         ].join('\n'),
         18_400,
       ),

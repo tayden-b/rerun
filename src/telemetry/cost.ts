@@ -1,4 +1,5 @@
 import { DEFAULT_MODELS } from '../config';
+import { baseModel } from './replay';
 
 export interface ModelPrice {
   /** USD per million input tokens. */
@@ -21,10 +22,13 @@ export const JEV_INPUT_PER_MTOK = 0.042;
 
 const MTOK = 1_000_000;
 
-/** Matches exact ids and dated snapshots such as `claude-haiku-5-5-20261001`. */
-export function priceFor(model: string): ModelPrice | undefined {
+/** Matches exact ids, dated snapshots such as `claude-haiku-5-5-20261001`, and their replays. */
+export function priceFor(replayOrModel: string): ModelPrice | undefined {
+  const model = baseModel(replayOrModel);
   if (ANTHROPIC_PRICES[model]) return ANTHROPIC_PRICES[model];
-  const key = Object.keys(ANTHROPIC_PRICES).find((id) => model.startsWith(`${id}-`));
+  const key = Object.keys(ANTHROPIC_PRICES).find(
+    (id) => model.startsWith(`${id}-`) && /^\d{8}$/.test(model.slice(id.length + 1)),
+  );
   return key ? ANTHROPIC_PRICES[key] : undefined;
 }
 

@@ -14,7 +14,16 @@ describe('cost', () => {
     expect(
       estimateCostUsd({ model: 'claude-sonnet-5-5', inputTokens: 500_000, outputTokens: 100_000 }),
     ).toBeCloseTo(2, 12);
+    expect(
+      estimateCostUsd({ model: 'claude-sonnet-5-5-20261101', inputTokens: 500_000, outputTokens: 100_000 }),
+    ).toBeCloseTo(2, 12);
     expect(estimateCostUsd({ model: 'unknown-model', inputTokens: 10, outputTokens: 10 })).toBe(0);
+    expect(
+      estimateCostUsd({ model: 'claude-sonnet-5-5 · replay', inputTokens: 500_000, outputTokens: 100_000 }),
+    ).toBeCloseTo(2, 12);
+    expect(estimateCostUsd({ model: 'claude-sonnet-5-5-preview', inputTokens: 10, outputTokens: 10 })).toBe(
+      0,
+    );
     expect(PRICES_AS_OF).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 

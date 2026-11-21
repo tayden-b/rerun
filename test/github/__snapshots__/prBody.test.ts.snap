@@ -32,9 +32,9 @@ Point the certificate subject at the declared \`random_pet.cluster\` resource.
 
 | Step | Result | Exit | Time |
 | --- | --- | --- | --- |
-| \`terraform fmt -check\` | pass | 0 | 0.0s |
-| \`terraform init\` + \`validate\` | pass | 0 | 0.0s |
-| \`terraform plan\` (speculative) | pass | 0 | 0.0s |
+| \`terraform fmt -check\` | pass | 0 | 0.4s |
+| \`terraform init\` + \`validate\` | pass | 0 | 1.4s |
+| \`terraform plan\` (speculative) | pass | 0 | 4.2s |
 
 <details>
 <summary>Verifier output</summary>

@@ -22,7 +22,14 @@ async function IncidentWarRoom({ params }: { params: PageProps<'/incidents/[id]'
   const { id } = await params;
   const detail = await getIncident(await getDb(), id);
   if (!detail) notFound();
-  return <WarRoom detail={detail} org={config.tfeOrg ?? DEFAULT_TFE_ORG} now={requestTime()} />;
+  return (
+    <WarRoom
+      detail={detail}
+      org={config.tfeOrg ?? DEFAULT_TFE_ORG}
+      now={requestTime()}
+      demo={config.mode === 'demo'}
+    />
+  );
 }
 
 function WarRoomSkeleton() {

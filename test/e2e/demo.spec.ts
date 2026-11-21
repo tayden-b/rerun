@@ -63,6 +63,8 @@ test('npm run demo: a real workflow run reaches approval, then resolves after Ap
   await expect(page.getByTestId('diff-block')).toHaveCount(1);
   await expect(page.getByTestId('diff-removed')).toContainText('exit 1');
   await expect(page.getByTestId('terminal-output')).not.toBeEmpty();
+  await expect(page.getByTestId('pr-ref')).toHaveText(/^#\d+ · demo$/);
+  await expect(page.locator('a[href*="/pull/"]')).toHaveCount(0);
   const approve = page.getByTestId('approve');
   await expect(approve).toBeEnabled();
 

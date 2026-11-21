@@ -134,7 +134,7 @@ export async function startMockServer(options: MockServerOptions = {}): Promise<
   const host = options.host ?? '127.0.0.1';
   await new Promise<void>((resolve, reject) => {
     http.once('error', reject);
-    http.listen(options.port ?? 8080, host, resolve);
+    http.listen(options.port ?? 8081, host, resolve);
   });
   const { port } = http.address() as AddressInfo;
   return {

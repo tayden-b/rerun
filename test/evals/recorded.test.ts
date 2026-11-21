@@ -109,7 +109,41 @@ describe('eval harness (recorded provider, offline)', () => {
       error: 'NotImplemented: Not implemented: wired in Wave 2 integration',
     });
     expect(renderMarkdown(results)).toContain(
-      '| Scenario | Reached status | Verifier passed | PR | fixTouches respected | Duration |',
+      '| Scenario | Class (expected → actual) | Route (expected → actual) | Reached status | Verifier passed | PR | fixTouches respected | Duration | Cost |',
     );
+  });
+
+  it('renders blocked live rows and a blocked approve → resolved run as blocked, never as passing', async () => {
+    const results = await runEval(
+      { providers: ['recorded'], scenariosDir: TEST_SCENARIOS_DIR, perturbations: 0, seed: 1, live: false },
+      productionDeps,
+    );
+    const blocked = {
+      reason: 'Anthropic credit balance',
+      at: '2026-11-21T02:47:30.584Z',
+      errorClass: 'AI_APICallError',
+      error: 'Your credit balance is too low to access the Anthropic API.',
+    };
+    const md = renderMarkdown({
+      ...results,
+      live: {
+        ran: true,
+        rows: [
+          {
+            scenario: 'eval-apply-exit',
+            reachedStatus: 'failed',
+            verifierOk: false,
+            prUrl: null,
+            fixTouchesRespected: null,
+            durationMs: 14_000,
+            blocked,
+          },
+        ],
+        resolve: { scenario: 'eval-apply-exit', reachedStatus: null, blocked },
+      },
+    });
+    expect(md).toContain('0 of 1 reached a passing verifier and an open PR.');
+    expect(md).toContain('| blocked: Anthropic credit balance |');
+    expect(md).toContain('Approve → resolved (eval-apply-exit): blocked: Anthropic credit balance.');
   });
 });

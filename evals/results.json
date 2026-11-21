@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-21T01:50:53.774Z",
+  "generatedAt": "2026-11-21T02:48:39.863Z",
   "options": {
     "providers": ["jev", "llm"],
     "scenarios": [
@@ -18,7 +18,7 @@
     ],
     "perturbations": 2,
     "seed": 42,
-    "live": false
+    "live": true
   },
   "pricesAsOf": "2026-11-20",
   "providers": [
@@ -46,7 +46,7 @@
           "routeCorrect": true,
           "latencyMs": 93,
           "inputTokens": 1514,
-          "costUsd": 0.000063588
+          "costUsd": 6.3588e-5
         },
         {
           "scenario": "bad-http-url",
@@ -69,7 +69,7 @@
           "routeCorrect": true,
           "latencyMs": 47,
           "inputTokens": 1431,
-          "costUsd": 0.000060102
+          "costUsd": 6.0102e-5
         },
         {
           "scenario": "check-block-failure",
@@ -92,7 +92,7 @@
           "routeCorrect": true,
           "latencyMs": 57,
           "inputTokens": 1475,
-          "costUsd": 0.00006195
+          "costUsd": 6.195e-5
         },
         {
           "scenario": "dependency-cycle",
@@ -115,7 +115,7 @@
           "routeCorrect": true,
           "latencyMs": 50,
           "inputTokens": 1326,
-          "costUsd": 0.000055692
+          "costUsd": 5.5692e-5
         },
         {
           "scenario": "http-404-postcondition",
@@ -138,7 +138,7 @@
           "routeCorrect": true,
           "latencyMs": 52,
           "inputTokens": 1392,
-          "costUsd": 0.00005846400000000001
+          "costUsd": 5.846400000000001e-5
         },
         {
           "scenario": "missing-required-arg",
@@ -161,7 +161,7 @@
           "routeCorrect": true,
           "latencyMs": 43,
           "inputTokens": 1372,
-          "costUsd": 0.000057624
+          "costUsd": 5.7624e-5
         },
         {
           "scenario": "module-source-typo",
@@ -184,7 +184,7 @@
           "routeCorrect": true,
           "latencyMs": 61,
           "inputTokens": 1384,
-          "costUsd": 0.000058128
+          "costUsd": 5.8128e-5
         },
         {
           "scenario": "provider-version-conflict",
@@ -207,7 +207,7 @@
           "routeCorrect": true,
           "latencyMs": 53,
           "inputTokens": 1433,
-          "costUsd": 0.00006018600000000001
+          "costUsd": 6.018600000000001e-5
         },
         {
           "scenario": "removed-argument",
@@ -230,7 +230,7 @@
           "routeCorrect": true,
           "latencyMs": 45,
           "inputTokens": 1422,
-          "costUsd": 0.000059724000000000006
+          "costUsd": 5.9724000000000006e-5
         },
         {
           "scenario": "undeclared-reference",
@@ -253,7 +253,7 @@
           "routeCorrect": true,
           "latencyMs": 39,
           "inputTokens": 1379,
-          "costUsd": 0.000057918000000000003
+          "costUsd": 5.7918000000000003e-5
         },
         {
           "scenario": "unset-variable",
@@ -276,7 +276,7 @@
           "routeCorrect": true,
           "latencyMs": 45,
           "inputTokens": 1381,
-          "costUsd": 0.000058002000000000005
+          "costUsd": 5.8002000000000005e-5
         }
       ],
       "summary": {
@@ -287,7 +287,7 @@
         "latencyMsMean": 53.18181818181818,
         "inputTokensMean": 1409.909090909091,
         "costUsdTotal": 0.0006513780000000001,
-        "costUsdPerIncident": 0.000059216181818181825
+        "costUsdPerIncident": 5.9216181818181825e-5
       },
       "perClass": [
         {
@@ -1124,8 +1124,274 @@
     }
   ],
   "live": {
-    "ran": false,
-    "rows": []
+    "ran": true,
+    "rows": [
+      {
+        "scenario": "apply-time-exit-1",
+        "reachedStatus": null,
+        "verifierOk": null,
+        "prUrl": null,
+        "fixTouchesRespected": null,
+        "durationMs": null,
+        "error": "First attempt: the eval's read of incident_events failed with SQLITE_BUSY while the app was writing, so the runner reset the workspace mid-incident and the Fix agent saw the baseline (no change). Fixed in src/db/index.ts; re-run blocked by the Anthropic credit balance.",
+        "runId": "run-yHsfP5f37obsDvYx",
+        "incidentId": "3b5bc27a-e9bc-45bc-9697-9adfd3abc295",
+        "expectedClass": "apply_runtime",
+        "expectedRoute": "autoPr",
+        "blocked": {
+          "reason": "Anthropic credit balance",
+          "at": "2026-11-21T02:52:50Z",
+          "errorClass": "AI_APICallError (HTTP 400 invalid_request_error)",
+          "error": "Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."
+        }
+      },
+      {
+        "scenario": "bad-http-url",
+        "reachedStatus": "failed",
+        "verifierOk": false,
+        "prUrl": null,
+        "fixTouchesRespected": null,
+        "durationMs": 14331,
+        "runId": "run-ijSCKrMe9oe2cgZg",
+        "incidentId": "5d1c529f-049b-4f36-92f5-ea7f3eda3c84",
+        "expectedClass": "provider_api_error",
+        "failureClass": "provider_api_error",
+        "expectedRoute": "autoPr",
+        "route": "autoPr",
+        "draft": null,
+        "costUsd": 6.0102e-5,
+        "inputTokens": 1431,
+        "outputTokens": 0,
+        "phasesMs": {
+          "break": 37061,
+          "incident": 14331,
+          "reset": 59549
+        },
+        "blocked": {
+          "reason": "Anthropic credit balance",
+          "at": "2026-11-21T02:47:30.584Z",
+          "errorClass": "AI_APICallError (HTTP 400 invalid_request_error)",
+          "error": "Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."
+        }
+      },
+      {
+        "scenario": "check-block-failure",
+        "reachedStatus": "awaiting_approval",
+        "verifierOk": true,
+        "prUrl": "https://github.com/tayden-b/rerun-fixtures/pull/15",
+        "fixTouchesRespected": true,
+        "durationMs": 53786,
+        "runId": "run-vYkWEjD4uUxpfF5G",
+        "incidentId": "83075b28-63f1-4738-8cea-a47dd71fa888",
+        "expectedClass": "precondition_failed",
+        "failureClass": "precondition_failed",
+        "expectedRoute": "autoPr",
+        "route": "autoPr",
+        "draft": false,
+        "costUsd": 0.07298195,
+        "inputTokens": 33310,
+        "outputTokens": 925,
+        "phasesMs": {
+          "break": 43792,
+          "incident": 53786,
+          "reset": 42108
+        }
+      },
+      {
+        "scenario": "dependency-cycle",
+        "reachedStatus": "awaiting_approval",
+        "verifierOk": true,
+        "prUrl": "https://github.com/tayden-b/rerun-fixtures/pull/16",
+        "fixTouchesRespected": true,
+        "durationMs": 52043,
+        "runId": "run-aTXEptoADWjA9XJN",
+        "incidentId": "baa42d00-3313-4397-b346-11cd0211ff75",
+        "expectedClass": "dependency_cycle",
+        "failureClass": "dependency_cycle",
+        "expectedRoute": "autoPr",
+        "route": "autoPr",
+        "draft": false,
+        "costUsd": 0.062365692,
+        "inputTokens": 27236,
+        "outputTokens": 1049,
+        "phasesMs": {
+          "break": 31628,
+          "incident": 52043,
+          "reset": 42659
+        }
+      },
+      {
+        "scenario": "http-404-postcondition",
+        "reachedStatus": "awaiting_approval",
+        "verifierOk": true,
+        "prUrl": "https://github.com/tayden-b/rerun-fixtures/pull/14",
+        "fixTouchesRespected": true,
+        "durationMs": 51869,
+        "runId": "run-TVZenUy78qevPwMQ",
+        "incidentId": "53f44fac-c514-4246-b49f-d1c3f3b33b45",
+        "expectedClass": "precondition_failed",
+        "failureClass": "precondition_failed",
+        "expectedRoute": "autoPr",
+        "route": "autoPr",
+        "draft": false,
+        "costUsd": 0.059778464,
+        "inputTokens": 26182,
+        "outputTokens": 1014,
+        "phasesMs": {
+          "break": 37482,
+          "incident": 51869,
+          "reset": 36803
+        }
+      },
+      {
+        "scenario": "missing-required-arg",
+        "reachedStatus": "awaiting_approval",
+        "verifierOk": true,
+        "prUrl": "https://github.com/tayden-b/rerun-fixtures/pull/9",
+        "fixTouchesRespected": true,
+        "durationMs": 57848,
+        "runId": "run-LNFXVzfENABfQxNg",
+        "incidentId": "a5300e72-415d-4e15-b40b-0ca342ca6f04",
+        "expectedClass": "config_syntax",
+        "failureClass": "config_syntax",
+        "expectedRoute": "autoPr",
+        "route": "autoPr",
+        "draft": false,
+        "costUsd": 0.082275624,
+        "inputTokens": 37491,
+        "outputTokens": 998,
+        "phasesMs": {
+          "break": 33047,
+          "incident": 57848,
+          "reset": 47795
+        }
+      },
+      {
+        "scenario": "module-source-typo",
+        "reachedStatus": "awaiting_approval",
+        "verifierOk": true,
+        "prUrl": "https://github.com/tayden-b/rerun-fixtures/pull/17",
+        "fixTouchesRespected": true,
+        "durationMs": 50078,
+        "runId": "run-ACWfby89iXVuP1g5",
+        "incidentId": "e5b5f30e-2f56-4095-8064-d410e140e59c",
+        "expectedClass": "module_source",
+        "failureClass": "module_source",
+        "expectedRoute": "draftPr",
+        "route": "draftPr",
+        "draft": true,
+        "costUsd": 0.057150127999999994,
+        "inputTokens": 25990,
+        "outputTokens": 788,
+        "phasesMs": {
+          "break": 26389,
+          "incident": 50078,
+          "reset": 47917
+        }
+      },
+      {
+        "scenario": "provider-version-conflict",
+        "reachedStatus": "awaiting_approval",
+        "verifierOk": true,
+        "prUrl": "https://github.com/tayden-b/rerun-fixtures/pull/12",
+        "fixTouchesRespected": true,
+        "durationMs": 59676,
+        "runId": "run-8uYpLnBViYZB2vBb",
+        "incidentId": "0464f0be-ff24-44a1-bf6b-17e745e205b0",
+        "expectedClass": "provider_version",
+        "failureClass": "provider_version",
+        "expectedRoute": "draftPr",
+        "route": "draftPr",
+        "draft": true,
+        "costUsd": 0.118898186,
+        "inputTokens": 53262,
+        "outputTokens": 1518,
+        "phasesMs": {
+          "break": 42562,
+          "incident": 59676,
+          "reset": 38401
+        }
+      },
+      {
+        "scenario": "removed-argument",
+        "reachedStatus": "awaiting_approval",
+        "verifierOk": true,
+        "prUrl": "https://github.com/tayden-b/rerun-fixtures/pull/13",
+        "fixTouchesRespected": true,
+        "durationMs": 47715,
+        "runId": "run-oE6Y2su884jtuaMs",
+        "incidentId": "70f66927-8e1a-4385-9407-46d5735ff2cc",
+        "expectedClass": "config_syntax",
+        "failureClass": "config_syntax",
+        "expectedRoute": "autoPr",
+        "route": "autoPr",
+        "draft": false,
+        "costUsd": 0.060399723999999995,
+        "inputTokens": 26902,
+        "outputTokens": 938,
+        "phasesMs": {
+          "break": 37318,
+          "incident": 47715,
+          "reset": 48041
+        }
+      },
+      {
+        "scenario": "undeclared-reference",
+        "reachedStatus": "awaiting_approval",
+        "verifierOk": true,
+        "prUrl": "https://github.com/tayden-b/rerun-fixtures/pull/10",
+        "fixTouchesRespected": true,
+        "durationMs": 63980,
+        "runId": "run-g7ZBJUky4uNDSw2v",
+        "incidentId": "0b7bda58-c2b9-408c-80f0-d1c937d0db78",
+        "expectedClass": "config_reference",
+        "failureClass": "config_reference",
+        "expectedRoute": "autoPr",
+        "route": "autoPr",
+        "draft": false,
+        "costUsd": 0.057209918,
+        "inputTokens": 26120,
+        "outputTokens": 767,
+        "phasesMs": {
+          "break": 37165,
+          "incident": 63980,
+          "reset": 42799
+        }
+      },
+      {
+        "scenario": "unset-variable",
+        "reachedStatus": "awaiting_approval",
+        "verifierOk": true,
+        "prUrl": "https://github.com/tayden-b/rerun-fixtures/pull/11",
+        "fixTouchesRespected": true,
+        "durationMs": 53906,
+        "runId": "run-FPTrV67oNKuJtdhU",
+        "incidentId": "e91f0752-c7da-4c85-a364-a6e30e84b3f6",
+        "expectedClass": "missing_input",
+        "failureClass": "missing_input",
+        "expectedRoute": "autoPr",
+        "route": "autoPr",
+        "draft": false,
+        "costUsd": 0.057326002,
+        "inputTokens": 25600,
+        "outputTokens": 883,
+        "phasesMs": {
+          "break": 31867,
+          "incident": 53906,
+          "reset": 47325
+        }
+      }
+    ],
+    "resolve": {
+      "scenario": "apply-time-exit-1",
+      "reachedStatus": null,
+      "blocked": {
+        "reason": "Anthropic credit balance",
+        "at": "2026-11-21T02:52:50Z",
+        "errorClass": "AI_APICallError (HTTP 400 invalid_request_error)",
+        "error": "Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."
+      }
+    }
   },
   "notes": ["LLM decision cost counts input tokens only (DecisionProvider does not report output tokens)."]
 }

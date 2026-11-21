@@ -38,13 +38,22 @@ async function startOnce(runId: string, opts: { parentIncidentId?: string }): Pr
   // A row left `failed` by a dispatch error (no step ever ran) is retried instead of returned.
   const retry = existing?.status === 'failed' && !(await completedResult(db, existing.id, 'collect'));
   if (existing && !retry) return { incident: existing, created: false };
-  const incident =
-    existing ??
-    (await createIncident(db, {
-      runId,
-      workspace: services.config.workspace,
-      parentIncidentId: opts.parentIncidentId ?? null,
-    }));
+  let incident = existing;
+  if (!incident) {
+    try {
+      incident = await createIncident(db, {
+        runId,
+        workspace: services.config.workspace,
+        parentIncidentId: opts.parentIncidentId ?? null,
+      });
+    } catch (error) {
+      // Another process (poller, webhook, live eval) inserted this run first: it owns the workflow.
+      if (!isUniqueViolation(error)) throw error;
+      const [winner] = await db.select().from(incidents).where(eq(incidents.runId, runId)).limit(1);
+      if (!winner) throw error;
+      return { incident: winner, created: false };
+    }
+  }
   if (retry) await setStatus(db, incident.id, 'collecting');
   try {
     await services.startWorkflow(incident.id, runId);
@@ -55,4 +64,15 @@ async function startOnce(runId: string, opts: { parentIncidentId?: string }): Pr
     throw error;
   }
   return { incident, created: true };
+}
+
+/** libSQL reports `SQLITE_CONSTRAINT_UNIQUE` on the error or its `cause` (Drizzle wraps driver errors). */
+function isUniqueViolation(error: unknown): boolean {
+  for (let e: unknown = error; e && typeof e === 'object'; e = (e as { cause?: unknown }).cause) {
+    const { code, message } = e as { code?: unknown; message?: unknown };
+    if (code === 'SQLITE_CONSTRAINT_UNIQUE') return true;
+    if (typeof message === 'string' && /UNIQUE constraint failed: incidents\.run_id/.test(message))
+      return true;
+  }
+  return false;
 }

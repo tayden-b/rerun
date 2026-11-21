@@ -25,7 +25,7 @@ export const incidents = sqliteTable(
     costUsd: real('cost_usd').notNull().default(0),
     parentIncidentId: text('parent_incident_id'),
   },
-  (t) => [index('incidents_run_id_idx').on(t.runId), index('incidents_created_at_idx').on(t.createdAt)],
+  (t) => [uniqueIndex('incidents_run_id_idx').on(t.runId), index('incidents_created_at_idx').on(t.createdAt)],
 );
 
 export const incidentEvents = sqliteTable(

@@ -1,14 +1,14 @@
 {
-  "placeholder": true,
   "tool": "get_plan_details",
   "args": {
-    "plan_id": "plan-PLACEHOLDER02"
+    "plan_id": "plan-bEyBCSxVyj53bfQt"
   },
   "result": {
     "data": {
       "type": "plans",
-      "id": "plan-PLACEHOLDER02",
+      "id": "plan-bEyBCSxVyj53bfQt",
       "attributes": {
+        "generated-configuration": false,
         "has-changes": false,
         "log-read-url": "https://archivist.terraform.io/v1/object/[REDACTED:signed_url]",
         "resource-additions": 0,
@@ -17,8 +17,16 @@
         "resource-imports": 0,
         "status": "errored",
         "status-timestamps": {
-          "started-at": "2026-11-20T15:10:08Z",
-          "errored-at": "2026-11-20T15:10:19Z"
+          "errored-at": "2026-11-21T00:30:17Z",
+          "started-at": "2026-11-21T00:30:07Z"
+        }
+      },
+      "relationships": {
+        "exports": {
+          "data": []
+        },
+        "hyok-encrypted-data-key": {
+          "data": null
         }
       }
     }

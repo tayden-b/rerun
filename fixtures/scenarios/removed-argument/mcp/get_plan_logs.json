@@ -1,0 +1,7 @@
+{
+  "tool": "get_plan_logs",
+  "args": {
+    "plan_id": "plan-CLRFwcdQdLBHbM3u"
+  },
+  "result": "Terraform v1.14.9\non linux_amd64\nInitializing plugins and modules...\n{\"@level\":\"info\",\"@message\":\"Terraform 1.14.9\",\"@module\":\"terraform.ui\",\"@timestamp\":\"2026-11-21T00:33:03.522724Z\",\"terraform\":\"1.14.9\",\"type\":\"version\",\"ui\":\"1.2\"}\n{\"@level\":\"error\",\"@message\":\"Error: Invalid Configuration for Read-Only Attribute\",\"@module\":\"terraform.ui\",\"@timestamp\":\"2026-11-21T00:33:04.914095Z\",\"diagnostic\":{\"severity\":\"error\",\"summary\":\"Invalid Configuration for Read-Only Attribute\",\"detail\":\"Cannot set value for this attribute as the provider has marked it as read-only. Remove the configuration line setting the value.\\n\\nRefer to the provider documentation or contact the provider developers for additional information about configurable and read-only attributes that are supported.\",\"address\":\"tls_self_signed_cert.platform\",\"range\":{\"filename\":\"main.tf\",\"start\":{\"line\":50,\"column\":21,\"byte\":912},\"end\":{\"line\":50,\"column\":28,\"byte\":919}},\"snippet\":{\"context\":\"resource \\\"tls_self_signed_cert\\\" \\\"platform\\\"\",\"code\":\"  key_algorithm   = \\\"ECDSA\\\"\",\"start_line\":50,\"highlight_start_offset\":20,\"highlight_end_offset\":27,\"values\":[]}},\"type\":\"diagnostic\"}\nOperation failed: failed running terraform plan (exit 1)"
+}

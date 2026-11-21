@@ -20,7 +20,7 @@ function expected(scenario: string): { stage: string } {
 const cases = [
   {
     scenario: 'apply-time-exit-1',
-    runId: 'run-PLACEHOLDER0001',
+    runId: 'run-3ytwwidAGVQdc3HA',
     excerpt: 'local-exec provisioner error',
     tools: [
       'get_workspace_details',
@@ -35,7 +35,7 @@ const cases = [
   },
   {
     scenario: 'undeclared-reference',
-    runId: 'run-PLACEHOLDER0002',
+    runId: 'run-U1QwgjkB6QN4gFMp',
     excerpt: 'Reference to undeclared resource',
     tools: [
       'get_workspace_details',
@@ -76,7 +76,7 @@ describe('collectRunArtifacts against the mock server', () => {
     let calls = 0;
     const failure = new Error('db down');
     await expect(
-      collectRunArtifacts(mcp, 'run-PLACEHOLDER0002', () => {
+      collectRunArtifacts(mcp, 'run-U1QwgjkB6QN4gFMp', () => {
         calls += 1;
         if (calls === 2) return Promise.reject(failure);
         return undefined;
@@ -89,7 +89,7 @@ describe('collectRunArtifacts against the mock server', () => {
   it('keeps signed log URLs out of event payloads', async () => {
     const mcp = await connect(server, 'apply-time-exit-1');
     const events: CollectEvent[] = [];
-    await collectRunArtifacts(mcp, 'run-PLACEHOLDER0001', (e) => {
+    await collectRunArtifacts(mcp, 'run-3ytwwidAGVQdc3HA', (e) => {
       events.push(e);
     });
     await mcp.close();
@@ -99,10 +99,10 @@ describe('collectRunArtifacts against the mock server', () => {
 
   it('renders structured diagnostics in CLI form', async () => {
     const mcp = await connect(server, 'undeclared-reference');
-    const artifacts = await collectRunArtifacts(mcp, 'run-PLACEHOLDER0002');
+    const artifacts = await collectRunArtifacts(mcp, 'run-U1QwgjkB6QN4gFMp');
     await mcp.close();
     expect(artifacts.planLogs).toContain('│ Error: Reference to undeclared resource');
-    expect(artifacts.planLogs).toContain('on main.tf line 41');
+    expect(artifacts.planLogs).toContain('on main.tf line 36');
     expect(artifacts.planJson).toBeUndefined();
     expect(artifacts.applyLogs).toBeUndefined();
   });

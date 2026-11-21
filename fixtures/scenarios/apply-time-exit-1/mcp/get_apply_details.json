@@ -1,13 +1,12 @@
 {
-  "placeholder": true,
   "tool": "get_apply_details",
   "args": {
-    "apply_id": "apply-PLACEHOLDER01"
+    "apply_id": "apply-wd3CEx3R8wxBESfK"
   },
   "result": {
     "data": {
       "type": "applies",
-      "id": "apply-PLACEHOLDER01",
+      "id": "apply-wd3CEx3R8wxBESfK",
       "attributes": {
         "log-read-url": "https://archivist.terraform.io/v1/object/[REDACTED:signed_url]",
         "resource-additions": 0,
@@ -16,8 +15,8 @@
         "resource-imports": 0,
         "status": "errored",
         "status-timestamps": {
-          "started-at": "2026-11-20T15:02:45Z",
-          "errored-at": "2026-11-20T15:02:58Z"
+          "errored-at": "2026-11-21T00:41:04Z",
+          "started-at": "2026-11-21T00:40:53Z"
         }
       }
     }

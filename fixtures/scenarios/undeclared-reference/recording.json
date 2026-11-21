@@ -1,0 +1,58 @@
+{
+  "runId": "run-U1QwgjkB6QN4gFMp",
+  "recordedAt": "2026-11-21T01:10:39.002Z",
+  "stage": "plan",
+  "server": "hashicorp/terraform-mcp-server:1.4",
+  "tools": [
+    {
+      "tool": "get_workspace_details",
+      "file": "mcp/get_workspace_details.json",
+      "args": {}
+    },
+    {
+      "tool": "get_run_details",
+      "file": "mcp/get_run_details.json",
+      "args": {
+        "run_id": "run-U1QwgjkB6QN4gFMp"
+      }
+    },
+    {
+      "tool": "get_plan_details",
+      "file": "mcp/get_plan_details.json",
+      "args": {
+        "plan_id": "plan-bEyBCSxVyj53bfQt"
+      }
+    },
+    {
+      "tool": "get_plan_logs",
+      "file": "mcp/get_plan_logs.json",
+      "args": {
+        "plan_id": "plan-bEyBCSxVyj53bfQt"
+      }
+    },
+    {
+      "tool": "get_apply_details",
+      "file": "mcp/get_apply_details.json",
+      "args": {
+        "apply_id": "apply-yZHBWnBhfEANuKuj"
+      }
+    },
+    {
+      "tool": "get_state_version",
+      "file": "mcp/get_state_version.json",
+      "args": {}
+    },
+    {
+      "tool": "list_runs",
+      "file": "mcp/list_runs.json",
+      "args": {
+        "pageSize": 20
+      }
+    },
+    {
+      "tool": "whoami",
+      "file": "mcp/whoami.json",
+      "args": {}
+    }
+  ]
+}

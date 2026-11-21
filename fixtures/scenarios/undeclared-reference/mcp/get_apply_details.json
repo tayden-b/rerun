@@ -1,13 +1,12 @@
 {
-  "placeholder": true,
   "tool": "get_apply_details",
   "args": {
-    "apply_id": "apply-PLACEHOLDER02"
+    "apply_id": "apply-yZHBWnBhfEANuKuj"
   },
   "result": {
     "data": {
       "type": "applies",
-      "id": "apply-PLACEHOLDER02",
+      "id": "apply-yZHBWnBhfEANuKuj",
       "attributes": {
         "log-read-url": "https://archivist.terraform.io/v1/object/[REDACTED:signed_url]",
         "resource-additions": 0,

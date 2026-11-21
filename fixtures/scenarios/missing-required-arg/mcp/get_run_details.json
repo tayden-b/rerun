@@ -1,0 +1,125 @@
+{
+  "tool": "get_run_details",
+  "args": {
+    "run_id": "run-jLueoWCXwJt2cegf"
+  },
+  "result": {
+    "data": {
+      "type": "runs",
+      "id": "run-jLueoWCXwJt2cegf",
+      "attributes": {
+        "actions": {
+          "is-cancelable": false,
+          "is-confirmable": false,
+          "is-discardable": false,
+          "is-force-cancelable": false
+        },
+        "allow-config-generation": false,
+        "allow-empty-apply": false,
+        "auto-apply": true,
+        "created-at": "2026-11-21T00:28:50Z",
+        "has-changes": false,
+        "is-destroy": false,
+        "message": "Triggered via CLI",
+        "permissions": {
+          "can-apply": true,
+          "can-cancel": true,
+          "can-discard": true,
+          "can-force-cancel": true,
+          "can-force-execute": true
+        },
+        "plan-only": false,
+        "position-in-queue": 0,
+        "refresh": true,
+        "refresh-only": false,
+        "source": "terraform+cloud",
+        "status": "errored",
+        "status-timestamps": {
+          "errored-at": "2026-11-21T00:29:02Z",
+          "plan-queueable-at": "2026-11-21T00:28:50Z",
+          "plan-queued-at": "2026-11-21T00:28:51Z",
+          "planning-at": "2026-11-21T00:28:52Z",
+          "queuing-at": "2026-11-21T00:28:51Z"
+        },
+        "terraform-version": "1.14.9",
+        "trigger-reason": "manual",
+        "variables": []
+      },
+      "relationships": {
+        "apply": {
+          "data": {
+            "type": "applies",
+            "id": "apply-XXmiRougTXTdBg6n"
+          }
+        },
+        "comments": {
+          "data": []
+        },
+        "configuration-version": {
+          "data": {
+            "type": "configuration-versions",
+            "id": "cv-qNa4en5isLhZLfMT"
+          }
+        },
+        "confirmed-by": {
+          "data": null
+        },
+        "cost-estimate": {
+          "data": {
+            "type": "cost-estimates",
+            "id": "ce-GJS9oREcXYhBngmp"
+          }
+        },
+        "created-by": {
+          "data": {
+            "type": "users",
+            "id": "user-qJ97oVskfezScLzz"
+          }
+        },
+        "plan": {
+          "data": {
+            "type": "plans",
+            "id": "plan-z5UiWKxG5UEUXbJj"
+          }
+        },
+        "policy-checks": {
+          "data": []
+        },
+        "run-events": {
+          "data": [
+            {
+              "type": "run-events",
+              "id": "re-KGR5AEpcnrcAxDHh"
+            },
+            {
+              "type": "run-events",
+              "id": "re-eWEcV3njWum5yQBg"
+            },
+            {
+              "type": "run-events",
+              "id": "re-oJcLeNxAVKkbYAzo"
+            },
+            {
+              "type": "run-events",
+              "id": "re-QXvLWdvEWo6Ew6ZF"
+            }
+          ]
+        },
+        "task-stages": {
+          "data": [
+            {
+              "type": "task-stages",
+              "id": "ts-zHogjx6a3KJZrF9b"
+            }
+          ]
+        },
+        "workspace": {
+          "data": {
+            "type": "workspaces",
+            "id": "ws-pTtvA1dYZKYUfX89"
+          }
+        }
+      }
+    }
+  }
+}

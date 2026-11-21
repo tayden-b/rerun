@@ -1,0 +1,7 @@
+{
+  "tool": "get_plan_logs",
+  "args": {
+    "plan_id": "plan-z5UiWKxG5UEUXbJj"
+  },
+  "result": "Terraform v1.14.9\non linux_amd64\nInitializing plugins and modules...\n{\"@level\":\"info\",\"@message\":\"Terraform 1.14.9\",\"@module\":\"terraform.ui\",\"@timestamp\":\"2026-11-21T00:29:01.174212Z\",\"terraform\":\"1.14.9\",\"type\":\"version\",\"ui\":\"1.2\"}\n{\"@level\":\"error\",\"@message\":\"Error: Missing required argument\",\"@module\":\"terraform.ui\",\"@timestamp\":\"2026-11-21T00:29:02.581281Z\",\"diagnostic\":{\"severity\":\"error\",\"summary\":\"Missing required argument\",\"detail\":\"The argument \\\"byte_length\\\" is required, but no definition was found.\",\"range\":{\"filename\":\"main.tf\",\"start\":{\"line\":32,\"column\":32,\"byte\":596},\"end\":{\"line\":32,\"column\":33,\"byte\":597}},\"snippet\":{\"context\":\"resource \\\"random_id\\\" \\\"release\\\"\",\"code\":\"resource \\\"random_id\\\" \\\"release\\\" {\",\"start_line\":32,\"highlight_start_offset\":31,\"highlight_end_offset\":32,\"values\":[]}},\"type\":\"diagnostic\"}\nOperation failed: failed running terraform plan (exit 1)"
+}

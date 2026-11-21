@@ -18,6 +18,7 @@
     "eval": "tsx evals/run.ts",
     "eval:readme": "tsx evals/readme.ts",
     "record": "tsx scripts/record.ts",
+    "record:jev": "RERUN_RECORD=1 tsx scripts/record-jev.ts",
     "mock-mcp": "tsx scripts/mock-mcp.ts",
     "demo": "tsx scripts/demo.ts",
     "db:migrate": "drizzle-kit generate && tsx scripts/db-migrate.ts",

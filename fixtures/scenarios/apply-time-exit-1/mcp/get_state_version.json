@@ -1,38 +1,143 @@
 {
-  "placeholder": true,
   "tool": "get_state_version",
   "args": {},
   "result": {
     "data": {
       "type": "state-versions",
-      "id": "sv-PLACEHOLDER01",
+      "id": "sv-JnEdT22fVNRumEY7",
       "attributes": {
-        "created-at": "2026-11-20T14:40:00Z",
-        "serial": 12,
-        "status": "finalized",
-        "terraform-version": "1.14.9",
+        "billable-rum-count": 7,
+        "created-at": "2026-11-21T00:42:04Z",
+        "hosted-json-state-download-url": "https://app.terraform.io/api/state-versions/sv-JnEdT22fVNRumEY7/hosted_json_state",
+        "hosted-json-state-upload-url": "",
+        "hosted-state-download-url": "https://app.terraform.io/api/state-versions/sv-JnEdT22fVNRumEY7/hosted_state",
+        "hosted-state-upload-url": "",
+        "modules": {
+          "root": {
+            "data.terraform-remote-state": 0,
+            "null-resource": 0
+          }
+        },
+        "providers": {
+          "provider[map]string": {
+            "null-resource": 0,
+            "data.terraform-remote-state": 0
+          }
+        },
         "resources": [
           {
             "count": 1,
             "module": "root",
-            "name": "service",
+            "name": "upstream",
+            "provider": "provider[\"registry.terraform.io/hashicorp/http\"]",
+            "type": "data.http"
+          },
+          {
+            "count": 1,
+            "module": "root",
+            "name": "release",
+            "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+            "type": "random_id"
+          },
+          {
+            "count": 1,
+            "module": "root",
+            "name": "cluster",
             "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
             "type": "random_pet"
           },
           {
             "count": 1,
             "module": "root",
-            "name": "ca",
+            "name": "announce",
+            "provider": "provider[\"terraform.io/builtin/terraform\"]",
+            "type": "terraform_data"
+          },
+          {
+            "count": 1,
+            "module": "root",
+            "name": "release_gate",
+            "provider": "provider[\"terraform.io/builtin/terraform\"]",
+            "type": "terraform_data"
+          },
+          {
+            "count": 1,
+            "module": "root",
+            "name": "signing",
+            "provider": "provider[\"registry.terraform.io/hashicorp/time\"]",
+            "type": "time_rotating"
+          },
+          {
+            "count": 1,
+            "module": "root",
+            "name": "platform",
             "provider": "provider[\"registry.terraform.io/hashicorp/tls\"]",
             "type": "tls_private_key"
+          },
+          {
+            "count": 1,
+            "module": "root",
+            "name": "platform",
+            "provider": "provider[\"registry.terraform.io/hashicorp/tls\"]",
+            "type": "tls_self_signed_cert"
+          },
+          {
+            "count": 1,
+            "module": "root.api_name",
+            "name": "this",
+            "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+            "type": "random_pet"
+          },
+          {
+            "count": 1,
+            "module": "root.worker_name",
+            "name": "this",
+            "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+            "type": "random_pet"
           }
-        ]
+        ],
+        "resources-processed": true,
+        "serial": 3,
+        "size": 4025,
+        "state-version": 4,
+        "status": "finalized",
+        "terraform-version": "1.14.9",
+        "vcs-commit-sha": "",
+        "vcs-commit-url": ""
       },
       "relationships": {
+        "outputs": {
+          "data": [
+            {
+              "type": "state-version-outputs",
+              "id": "wsout-DcHQQ6jVThvNeVh7"
+            },
+            {
+              "type": "state-version-outputs",
+              "id": "wsout-ZJirJzRzYhPqTEvL"
+            },
+            {
+              "type": "state-version-outputs",
+              "id": "wsout-dM7uh559z2QQdxrZ"
+            },
+            {
+              "type": "state-version-outputs",
+              "id": "wsout-cqx6GVedTBN4LKEi"
+            },
+            {
+              "type": "state-version-outputs",
+              "id": "wsout-9eSLAPxfJrcvA3u6"
+            },
+            {
+              "type": "state-version-outputs",
+              "id": "wsout-984bXJmvrVeDGNa4"
+            }
+          ]
+        },
         "run": {
           "data": {
             "type": "runs",
-            "id": "run-PLACEHOLDER0000"
+            "id": "run-qqnWfwMHsknQ3zhZ"
           }
         }
       }

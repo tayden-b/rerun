@@ -56,7 +56,7 @@ describe('scoped Terraform MCP client', () => {
   it('injects the org and workspace into workspace-bearing calls', async () => {
     events.length = 0;
     const res = await traced.listRuns({ pageSize: 20 });
-    expect(res.runs.map((r) => r.id)).toContain('run-PLACEHOLDER0001');
+    expect(res.runs.map((r) => r.id)).toContain('run-3ytwwidAGVQdc3HA');
     expect(events[0]).toMatchObject({
       phase: 'call',
       tool: 'list_runs',
@@ -65,12 +65,12 @@ describe('scoped Terraform MCP client', () => {
   });
 
   it('unlocks plan and apply calls once the run is verified in the workspace', async () => {
-    await mcp.getRunDetails('run-PLACEHOLDER0001');
-    const logs = await mcp.getApplyLogs('apply-PLACEHOLDER01');
+    await mcp.getRunDetails('run-3ytwwidAGVQdc3HA');
+    const logs = await mcp.getApplyLogs('apply-wd3CEx3R8wxBESfK');
     expect(logs.data).toMatchObject({
       text: expect.stringContaining('local-exec provisioner error') as unknown,
     });
-    const plan = await mcp.getPlanDetails('plan-PLACEHOLDER01');
+    const plan = await mcp.getPlanDetails('plan-mMQLxk4PUjP9d7dc');
     expect(plan.data).toMatchObject({ data: { attributes: { status: 'finished' } } });
   });
 

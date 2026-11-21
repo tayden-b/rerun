@@ -1,0 +1,7 @@
+{
+  "tool": "get_plan_logs",
+  "args": {
+    "plan_id": "plan-X6pyWrLMz9MT7qKg"
+  },
+  "result": "Terraform v1.14.9\non linux_amd64\nInitializing plugins and modules...\n{\"@level\":\"info\",\"@message\":\"Terraform 1.14.9\",\"@module\":\"terraform.ui\",\"@timestamp\":\"2026-11-21T00:31:43.274214Z\",\"terraform\":\"1.14.9\",\"type\":\"version\",\"ui\":\"1.2\"}\n{\"@level\":\"error\",\"@message\":\"Error: No value for required variable\",\"@module\":\"terraform.ui\",\"@timestamp\":\"2026-11-21T00:31:44.245889Z\",\"diagnostic\":{\"severity\":\"error\",\"summary\":\"No value for required variable\",\"detail\":\"The root module input variable \\\"environment\\\" is not set, and has no default value. Use a -var or -var-file command line argument to provide a value for this variable.\",\"range\":{\"filename\":\"variables.tf\",\"start\":{\"line\":1,\"column\":1,\"byte\":0},\"end\":{\"line\":1,\"column\":23,\"byte\":22}},\"snippet\":{\"context\":null,\"code\":\"variable \\\"environment\\\" {\",\"start_line\":1,\"highlight_start_offset\":0,\"highlight_end_offset\":22,\"values\":[]}},\"type\":\"diagnostic\"}\nOperation failed: failed running terraform plan (exit 1)"
+}

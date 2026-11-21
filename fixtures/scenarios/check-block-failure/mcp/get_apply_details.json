@@ -1,0 +1,21 @@
+{
+  "tool": "get_apply_details",
+  "args": {
+    "apply_id": "apply-V67YbMa3mNjEcvKd"
+  },
+  "result": {
+    "data": {
+      "type": "applies",
+      "id": "apply-V67YbMa3mNjEcvKd",
+      "attributes": {
+        "log-read-url": "https://archivist.terraform.io/v1/object/[REDACTED:signed_url]",
+        "resource-additions": 0,
+        "resource-changes": 0,
+        "resource-destructions": 0,
+        "resource-imports": 0,
+        "status": "unreachable",
+        "status-timestamps": {}
+      }
+    }
+  }
+}

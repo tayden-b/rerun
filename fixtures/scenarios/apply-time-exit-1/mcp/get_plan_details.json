@@ -1,24 +1,32 @@
 {
-  "placeholder": true,
   "tool": "get_plan_details",
   "args": {
-    "plan_id": "plan-PLACEHOLDER01"
+    "plan_id": "plan-mMQLxk4PUjP9d7dc"
   },
   "result": {
     "data": {
       "type": "plans",
-      "id": "plan-PLACEHOLDER01",
+      "id": "plan-mMQLxk4PUjP9d7dc",
       "attributes": {
+        "generated-configuration": false,
         "has-changes": true,
         "log-read-url": "https://archivist.terraform.io/v1/object/[REDACTED:signed_url]",
         "resource-additions": 1,
         "resource-changes": 0,
-        "resource-destructions": 0,
+        "resource-destructions": 1,
         "resource-imports": 0,
         "status": "finished",
         "status-timestamps": {
-          "started-at": "2026-11-20T15:02:14Z",
-          "finished-at": "2026-11-20T15:02:41Z"
+          "finished-at": "2026-11-21T00:40:46Z",
+          "started-at": "2026-11-21T00:40:32Z"
+        }
+      },
+      "relationships": {
+        "exports": {
+          "data": []
+        },
+        "hyok-encrypted-data-key": {
+          "data": null
         }
       }
     }

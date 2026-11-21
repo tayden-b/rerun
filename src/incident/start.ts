@@ -3,6 +3,7 @@ import { appendEvent, createIncident, setStatus, type Incident } from '../db/inc
 import { incidents } from '../db/schema';
 import { redact } from '../shared/redact';
 import { incidentServices } from './services';
+import { completedResult } from './store';
 
 export interface StartIncidentResult {
   incident: Incident;
@@ -34,12 +35,16 @@ async function startOnce(runId: string, opts: { parentIncidentId?: string }): Pr
   const services = incidentServices();
   const db = await services.db();
   const [existing] = await db.select().from(incidents).where(eq(incidents.runId, runId)).limit(1);
-  if (existing) return { incident: existing, created: false };
-  const incident = await createIncident(db, {
-    runId,
-    workspace: services.config.workspace,
-    parentIncidentId: opts.parentIncidentId ?? null,
-  });
+  // A row left `failed` by a dispatch error (no step ever ran) is retried instead of returned.
+  const retry = existing?.status === 'failed' && !(await completedResult(db, existing.id, 'collect'));
+  if (existing && !retry) return { incident: existing, created: false };
+  const incident =
+    existing ??
+    (await createIncident(db, {
+      runId,
+      workspace: services.config.workspace,
+      parentIncidentId: opts.parentIncidentId ?? null,
+    }));
   try {
     await services.startWorkflow(incident.id, runId);
   } catch (error) {

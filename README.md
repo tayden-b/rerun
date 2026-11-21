@@ -95,47 +95,48 @@ Accuracy is against `expected.json` in each scenario. Calibration compares state
 
 <!-- evals:start -->
 
-Generated 2026-11-21 from `evals/results.json`: 11 scenario(s), 5 perturbation(s) per scenario, prices as of 2026-11-20.
+Generated 2026-11-21 from `evals/results.json`: 11 scenario(s), 2 perturbation(s) per scenario, prices as of 2026-11-20.
 
 ### Triage accuracy
 
 | Provider | Scenarios | Errors | Class accuracy | Route accuracy | Mean latency | Mean input tokens | Triage cost / incident |
 | -------- | --------- | ------ | -------------- | -------------- | ------------ | ----------------- | ---------------------- |
-| recorded | 11        | 0      | 100%           | 100%           | 57 ms        | 1410              | $0.000059              |
+| jev      | 11        | 0      | 100%           | 100%           | 53 ms        | 1410              | $0.000059              |
+| llm      | 11        | 0      | 100%           | 91%            | 2931 ms      | 3733              | $0.000373              |
 
 ### Accuracy per failure class
 
 Correct `failure_class` answers out of the scenarios of that class. Each cell is one provider on the same recorded MCP data.
 
-| Class                 | Scenarios | recorded |
-| --------------------- | --------- | -------- |
-| `apply_runtime`       | 1         | 1/1      |
-| `provider_api_error`  | 1         | 1/1      |
-| `precondition_failed` | 2         | 2/2      |
-| `dependency_cycle`    | 1         | 1/1      |
-| `config_syntax`       | 2         | 2/2      |
-| `module_source`       | 1         | 1/1      |
-| `provider_version`    | 1         | 1/1      |
-| `config_reference`    | 1         | 1/1      |
-| `missing_input`       | 1         | 1/1      |
+| Class                 | Scenarios | jev | llm |
+| --------------------- | --------- | --- | --- |
+| `apply_runtime`       | 1         | 1/1 | 1/1 |
+| `provider_api_error`  | 1         | 1/1 | 1/1 |
+| `precondition_failed` | 2         | 2/2 | 2/2 |
+| `dependency_cycle`    | 1         | 1/1 | 1/1 |
+| `config_syntax`       | 2         | 2/2 | 2/2 |
+| `module_source`       | 1         | 1/1 | 1/1 |
+| `provider_version`    | 1         | 1/1 | 1/1 |
+| `config_reference`    | 1         | 1/1 | 1/1 |
+| `missing_input`       | 1         | 1/1 | 1/1 |
 
 ### Question rewording: before and after
 
-Same scenarios and SPEC §4 thresholds (`autoPr` iff `config_fixable` ≥ 0.70, `blast_radius` ≤ 1.0, `needs_human` ≤ 0.40); only the question wording changed. Before: recorded Jev answers of 2026-11-21. After: recorded Jev answers of 2026-11-21.
+Same scenarios and SPEC §4 thresholds (`autoPr` iff `config_fixable` ≥ 0.70, `blast_radius` ≤ 1.0, `needs_human` ≤ 0.40); only the question wording changed. Before: recorded Jev answers of 2026-11-21. After: live jev answers of 2026-11-21.
 
 | Scenario                    | Expected  | `config_fixable` before | after | `needs_human` before | after | Route before | after     |
 | --------------------------- | --------- | ----------------------- | ----- | -------------------- | ----- | ------------ | --------- |
-| `apply-time-exit-1`         | `autoPr`  | 0.88                    | 0.92  | 0.69                 | 0.29  | `draftPr`    | `autoPr`  |
-| `bad-http-url`              | `autoPr`  | 0.77                    | 0.90  | 0.56                 | 0.31  | `draftPr`    | `autoPr`  |
-| `check-block-failure`       | `autoPr`  | 0.83                    | 0.95  | 0.77                 | 0.29  | `draftPr`    | `autoPr`  |
+| `apply-time-exit-1`         | `autoPr`  | 0.88                    | 0.92  | 0.69                 | 0.27  | `draftPr`    | `autoPr`  |
+| `bad-http-url`              | `autoPr`  | 0.77                    | 0.90  | 0.56                 | 0.29  | `draftPr`    | `autoPr`  |
+| `check-block-failure`       | `autoPr`  | 0.83                    | 0.95  | 0.77                 | 0.30  | `draftPr`    | `autoPr`  |
 | `dependency-cycle`          | `autoPr`  | 0.88                    | 0.92  | 0.69                 | 0.16  | `draftPr`    | `autoPr`  |
-| `http-404-postcondition`    | `autoPr`  | 0.73                    | 0.92  | 0.69                 | 0.26  | `draftPr`    | `autoPr`  |
-| `missing-required-arg`      | `autoPr`  | 0.97                    | 0.98  | 0.49                 | 0.19  | `draftPr`    | `autoPr`  |
-| `module-source-typo`        | `draftPr` | 0.78                    | 0.79  | 0.55                 | 0.52  | `draftPr`    | `draftPr` |
-| `provider-version-conflict` | `draftPr` | 0.68                    | 0.85  | 0.63                 | 0.79  | `draftPr`    | `draftPr` |
+| `http-404-postcondition`    | `autoPr`  | 0.73                    | 0.91  | 0.69                 | 0.27  | `draftPr`    | `autoPr`  |
+| `missing-required-arg`      | `autoPr`  | 0.97                    | 0.98  | 0.49                 | 0.20  | `draftPr`    | `autoPr`  |
+| `module-source-typo`        | `draftPr` | 0.78                    | 0.81  | 0.55                 | 0.41  | `draftPr`    | `draftPr` |
+| `provider-version-conflict` | `draftPr` | 0.68                    | 0.84  | 0.63                 | 0.81  | `draftPr`    | `draftPr` |
 | `removed-argument`          | `autoPr`  | 0.94                    | 0.96  | 0.25                 | 0.12  | `autoPr`     | `autoPr`  |
-| `undeclared-reference`      | `autoPr`  | 0.96                    | 0.97  | 0.43                 | 0.18  | `draftPr`    | `autoPr`  |
-| `unset-variable`            | `autoPr`  | 0.59                    | 0.95  | 0.56                 | 0.30  | `draftPr`    | `autoPr`  |
+| `undeclared-reference`      | `autoPr`  | 0.96                    | 0.97  | 0.43                 | 0.16  | `draftPr`    | `autoPr`  |
+| `unset-variable`            | `autoPr`  | 0.59                    | 0.95  | 0.56                 | 0.31  | `draftPr`    | `autoPr`  |
 | Route matches expected      |           |                         |       |                      |       | 3/11         | 11/11     |
 
 ### Calibration
@@ -144,19 +145,27 @@ Outcome: `autoPr` in `expected.json` means config-fixable = 1 and needs-human = 
 
 | Provider | Signal           | n   | ECE  |
 | -------- | ---------------- | --- | ---- |
-| recorded | `config_fixable` | 11  | 0.20 |
-| recorded | `needs_human`    | 11  | 0.25 |
+| jev      | `config_fixable` | 11  | 0.20 |
+| jev      | `needs_human`    | 11  | 0.26 |
+| llm      | `config_fixable` | 11  | 0.13 |
+| llm      | `needs_human`    | 11  | 0.14 |
 
 | Provider | Signal           | Bin     | n   | Mean predicted | Observed |
 | -------- | ---------------- | ------- | --- | -------------- | -------- |
-| recorded | `config_fixable` | 0.7–0.8 | 1   | 0.79           | 0.00     |
-| recorded | `config_fixable` | 0.8–0.9 | 1   | 0.85           | 0.00     |
-| recorded | `config_fixable` | 0.9–1.0 | 9   | 0.94           | 1.00     |
-| recorded | `needs_human`    | 0.1–0.2 | 4   | 0.16           | 0.00     |
-| recorded | `needs_human`    | 0.2–0.3 | 3   | 0.28           | 0.00     |
-| recorded | `needs_human`    | 0.3–0.4 | 2   | 0.30           | 0.00     |
-| recorded | `needs_human`    | 0.5–0.6 | 1   | 0.52           | 1.00     |
-| recorded | `needs_human`    | 0.7–0.8 | 1   | 0.79           | 1.00     |
+| jev      | `config_fixable` | 0.8–0.9 | 2   | 0.82           | 0.00     |
+| jev      | `config_fixable` | 0.9–1.0 | 9   | 0.94           | 1.00     |
+| jev      | `needs_human`    | 0.1–0.2 | 3   | 0.15           | 0.00     |
+| jev      | `needs_human`    | 0.2–0.3 | 4   | 0.26           | 0.00     |
+| jev      | `needs_human`    | 0.3–0.4 | 2   | 0.30           | 0.00     |
+| jev      | `needs_human`    | 0.4–0.5 | 1   | 0.41           | 1.00     |
+| jev      | `needs_human`    | 0.8–0.9 | 1   | 0.81           | 1.00     |
+| llm      | `config_fixable` | 0.7–0.8 | 2   | 0.75           | 0.50     |
+| llm      | `config_fixable` | 0.8–0.9 | 3   | 0.84           | 0.67     |
+| llm      | `config_fixable` | 0.9–1.0 | 6   | 0.93           | 1.00     |
+| llm      | `needs_human`    | 0.0–0.1 | 5   | 0.05           | 0.00     |
+| llm      | `needs_human`    | 0.2–0.3 | 3   | 0.22           | 0.00     |
+| llm      | `needs_human`    | 0.3–0.4 | 1   | 0.30           | 0.00     |
+| llm      | `needs_human`    | 0.8–0.9 | 2   | 0.82           | 1.00     |
 
 ### Robustness
 
@@ -164,7 +173,8 @@ Each scenario state is perturbed without changing its meaning (consistent resour
 
 | Provider | Perturbed runs | Flips | Flip rate |
 | -------- | -------------- | ----- | --------- |
-| recorded | 55             | 0     | 0%        |
+| jev      | 22             | 0     | 0%        |
+| llm      | 22             | 0     | 0%        |
 
 ### End-to-end (live)
 
@@ -172,7 +182,7 @@ Each scenario state is perturbed without changing its meaning (consistent resour
 | -------- | -------------- | --------------- | --- | -------------------- | -------- |
 | not run  | —              | —               | —   | —                    | —        |
 
-- The recorded provider replays a fixed answer, so its flip rate is 0 by construction.
+- LLM decision cost counts input tokens only (DecisionProvider does not report output tokens).
 
 <!-- evals:end -->
 

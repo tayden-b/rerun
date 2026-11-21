@@ -44,7 +44,7 @@ Touch only the paths your brief assigns. Everything else is read-only; if you ne
 | `npm run demo`                                      | `RERUN_MODE=demo`, mock MCP on :8080 in-process, seeds a placeholder incident, Next dev on :3000 |
 | `npm run mock-mcp`                                  | Mock Terraform MCP server only, `http://127.0.0.1:8080/mcp` (`?scenario=` or `MOCK_SCENARIO`)    |
 | `npm run lint`                                      | ESLint + Prettier check (`npm run format` writes)                                                |
-| `npm run typecheck`                                 | `tsc --noEmit`                                                                                   |
+| `npm run typecheck`                                 | `next typegen` (route/layout types such as `LayoutProps`), then `tsc --noEmit`                   |
 | `npm test`                                          | Vitest: `src/**/*.test.ts`, `test/**/*.test.ts`                                                  |
 | `npm run build`                                     | Production `next build`                                                                          |
 | `npm run db:migrate`                                | `drizzle-kit generate`, then apply migrations to `DATABASE_URL`                                  |

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { buildTriageState, changedFilesOf, runStatusOf, summarizePlan } from '../../src/agents/triage';
 import { sampleContext } from './fixtures';
@@ -69,5 +71,14 @@ describe('run fields', () => {
     };
     expect(changedFilesOf(run)).toEqual(['main.tf', 'variables.tf']);
     expect(changedFilesOf(sampleContext().artifacts.run)).toEqual([]);
+  });
+});
+
+describe('sampleContext', () => {
+  it('mirrors the apply-time-exit-1 scenario', () => {
+    const file = path.join('fixtures', 'scenarios', 'apply-time-exit-1', 'mcp', 'get_apply_logs.json');
+    const logs = JSON.parse(readFileSync(file, 'utf8')).result as string;
+    expect(logs).toContain('local-exec provisioner error');
+    expect(sampleContext().artifacts.errorExcerpt).toContain('local-exec provisioner error');
   });
 });

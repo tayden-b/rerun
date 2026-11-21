@@ -1,0 +1,81 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Jev request mapping > matches the SPEC §4 request 1`] = `
+{
+  "model": "jev-latest",
+  "questions": {
+    "blast_radius": {
+      "criteria": [
+        "Nothing is destroyed or replaced",
+        "Only stateless or trivially recreatable resources",
+        "Stateful or shared resources are replaced",
+        "Data-bearing or network-critical resources are destroyed",
+      ],
+      "instructions": "How much existing infrastructure would the failing change destroy or replace if it were applied as planned?",
+      "type": "score",
+    },
+    "config_fixable": {
+      "instructions": "Can this failure be fixed by changing only the Terraform configuration files, without new credentials, quota, or changes to external systems?",
+      "type": "noul",
+    },
+    "failure_class": {
+      "criteria": {
+        "apply_runtime": "The plan succeeded but applying it failed at runtime, for example a provisioner or local command exiting non-zero.",
+        "config_reference": "The configuration refers to something that is not declared: an undeclared resource, data source, variable, local, module or output.",
+        "config_syntax": "The configuration is malformed or uses an argument or block incorrectly: invalid HCL, a missing required argument, or an argument the provider does not support.",
+        "dependency_cycle": "The resource graph contains a cycle, so Terraform cannot order the operations.",
+        "drift": "Real infrastructure changed outside Terraform and no longer matches state, and that difference causes the failure.",
+        "missing_input": "A required input variable has no value in the workspace, a tfvars file, or a default.",
+        "module_source": "A module source or version cannot be found, downloaded, or resolved during init.",
+        "precondition_failed": "A precondition, postcondition, check block, or variable validation rule evaluated to false.",
+        "provider_api_error": "A provider call to an external API or endpoint failed: network error, unresolvable host, timeout, rate limit, or an unexpected API response.",
+        "provider_auth": "The provider rejected or lacked credentials, or the identity lacks permission for the operation.",
+        "provider_version": "Provider or Terraform version constraints cannot be satisfied, or the lock file conflicts with them, during init.",
+        "unknown": "None of the other classes clearly applies.",
+      },
+      "instructions": "Which class best describes why this Terraform run failed?",
+      "type": "choice",
+    },
+    "needs_human": {
+      "instructions": "Does fixing this safely require a human decision (ambiguous intent, security-sensitive change, or more than one reasonable fix)?",
+      "type": "noul",
+    },
+  },
+  "state": {
+    "changedFiles": [],
+    "errorExcerpt": "│ Error: local-exec provisioner error
+│
+│   with terraform_data.bootstrap,
+│   on main.tf line 58, in resource "terraform_data" "bootstrap":
+│   58:   provisioner "local-exec" {
+│
+│ Error running command 'echo bootstrapping && exit 1': exit status 1. Output: bootstrapping",
+    "planSummary": {
+      "changes": [
+        {
+          "action": "create",
+          "address": "terraform_data.bootstrap",
+        },
+        {
+          "action": "replace",
+          "address": "tls_private_key.ca",
+        },
+        {
+          "action": "delete",
+          "address": "null_resource.old",
+        },
+      ],
+      "counts": {
+        "create": 1,
+        "delete": 1,
+        "no-op": 1,
+        "replace": 1,
+      },
+      "omitted": 0,
+      "total": 4,
+    },
+    "runStatus": "errored",
+    "stage": "apply",
+  },
+}
+`;

@@ -1,0 +1,10 @@
+{
+  "placeholder": true,
+  "name": "apply-time-exit-1",
+  "failureClass": "apply_runtime",
+  "stage": "apply",
+  "route": "autoPr",
+  "fixTouches": ["main.tf"],
+  "mustNotTouch": ["versions.tf"],
+  "humanSummary": "The apply fails because the bootstrap local-exec provisioner runs a command that exits 1."
+}

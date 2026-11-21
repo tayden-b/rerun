@@ -1,0 +1,29 @@
+{
+  "placeholder": true,
+  "result": {
+    "format_version": "1.2",
+    "terraform_version": "1.14.3",
+    "resource_changes": [
+      {
+        "address": "terraform_data.bootstrap",
+        "mode": "managed",
+        "type": "terraform_data",
+        "name": "bootstrap",
+        "provider_name": "terraform.io/builtin/terraform",
+        "change": {
+          "actions": ["create"],
+          "before": null,
+          "after": { "input": "rerun-fixtures", "triggers_replace": null }
+        }
+      },
+      {
+        "address": "random_pet.service",
+        "mode": "managed",
+        "type": "random_pet",
+        "name": "service",
+        "provider_name": "registry.terraform.io/hashicorp/random",
+        "change": { "actions": ["no-op"] }
+      }
+    ]
+  }
+}

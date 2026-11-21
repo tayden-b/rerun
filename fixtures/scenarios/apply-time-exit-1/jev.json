@@ -1,0 +1,31 @@
+{
+  "placeholder": true,
+  "answers": {
+    "failure_class": {
+      "choice": "apply_runtime",
+      "confidence": 0.86,
+      "probabilities": {
+        "apply_runtime": 0.86,
+        "provider_api_error": 0.05,
+        "precondition_failed": 0.03,
+        "config_syntax": 0.02,
+        "unknown": 0.04
+      }
+    },
+    "config_fixable": { "noul": 0.82 },
+    "blast_radius": {
+      "score": 0.4,
+      "confidence": 0.78,
+      "probabilities": { "0": 0.66, "1": 0.28, "2": 0.05, "3": 0.01 },
+      "legend": {
+        "0": "Nothing is destroyed or replaced",
+        "1": "Only stateless or trivially recreatable resources",
+        "2": "Stateful or shared resources are replaced",
+        "3": "Data-bearing or network-critical resources are destroyed"
+      }
+    },
+    "needs_human": { "noul": 0.21 }
+  },
+  "inputTokens": 1840,
+  "latencyMs": 912
+}

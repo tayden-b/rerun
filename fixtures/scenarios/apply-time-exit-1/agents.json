@@ -2,8 +2,8 @@
   "repo": [
     {
       "path": "main.tf",
-      "oldText": "resource \"terraform_data\" \"announce\" {",
-      "newText": "resource \"terraform_data\" \"bootstrap\" {\n  provisioner \"local-exec\" {\n    command = \"echo bootstrapping rerun-fixtures && exit 1\"\n  }\n}\n\nresource \"terraform_data\" \"announce\" {"
+      "oldText": "  announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}'\"",
+      "newText": "  announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}' && exit 1\""
     }
   ],
   "agents": {
@@ -29,7 +29,7 @@
           {
             "toolName": "search_files",
             "input": {
-              "pattern": "local-exec|exit 1"
+              "pattern": "announce_command"
             }
           }
         ],
@@ -54,20 +54,20 @@
       },
       {
         "output": {
-          "rootCause": "main.tf declares terraform_data.bootstrap with a local-exec provisioner whose command ends in `exit 1`, so the apply fails every time the resource is created.",
+          "rootCause": "local.announce_command in main.tf ends in `&& exit 1`, so the local-exec provisioner on terraform_data.announce (main.tf:90) exits 1 on every create and the apply fails.",
           "evidence": [
             {
               "kind": "log",
-              "ref": "apply:12",
-              "excerpt": "Error running command 'echo bootstrapping rerun-fixtures && exit 1': exit status 1."
+              "ref": "apply:diagnostic",
+              "excerpt": "Error running command 'echo 'platform platform-demo released with 556f7658' && exit 1': exit status 1."
             },
             {
               "kind": "file",
-              "ref": "main.tf:83",
-              "excerpt": "command = \"echo bootstrapping rerun-fixtures && exit 1\""
+              "ref": "main.tf:10",
+              "excerpt": "announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}' && exit 1\""
             }
           ],
-          "suggestedChange": "In main.tf, drop `&& exit 1` from the terraform_data.bootstrap local-exec command.",
+          "suggestedChange": "In main.tf, drop `&& exit 1` from local.announce_command.",
           "confidence": 0.93
         },
         "usage": {
@@ -82,7 +82,7 @@
           {
             "toolName": "get_state_resource",
             "input": {
-              "address": "terraform_data.bootstrap"
+              "address": "terraform_data.announce"
             }
           }
         ],
@@ -96,7 +96,7 @@
           {
             "toolName": "grep_log",
             "input": {
-              "pattern": "bootstrap",
+              "pattern": "terraform_data.announce",
               "log": "apply"
             }
           }
@@ -108,20 +108,20 @@
       },
       {
         "output": {
-          "rootCause": "Nothing outside the configuration is wrong: terraform_data.bootstrap is not in state yet and the provisioner fails deterministically on its own exit code, not on a remote API or drift.",
+          "rootCause": "Nothing outside the configuration is wrong: terraform_data.announce was replaced because its command changed, the old instance was destroyed cleanly, and the new one fails only on the provisioner's own exit code.",
           "evidence": [
             {
-              "kind": "state",
-              "ref": "terraform_data.bootstrap",
-              "excerpt": "not found in the latest state version"
+              "kind": "log",
+              "ref": "apply:planned_change",
+              "excerpt": "terraform_data.announce: Plan to replace"
             },
             {
               "kind": "log",
-              "ref": "apply:6",
-              "excerpt": "terraform_data.bootstrap: Provisioning with 'local-exec'..."
+              "ref": "apply:provision_errored",
+              "excerpt": "terraform_data.announce: (local-exec) Provisioning errored"
             }
           ],
-          "suggestedChange": "Fix the command in main.tf; no state or workspace change is needed.",
+          "suggestedChange": "Fix local.announce_command in main.tf; no state or workspace change is needed.",
           "confidence": 0.82
         },
         "usage": {
@@ -151,9 +151,9 @@
             "toolName": "edit_file",
             "input": {
               "path": "main.tf",
-              "oldText": "echo bootstrapping rerun-fixtures && exit 1",
-              "newText": "echo bootstrapping rerun-fixtures",
-              "rationale": "The bootstrap provisioner exits 1 unconditionally, which fails every apply."
+              "oldText": "  announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}' && exit 1\"",
+              "newText": "  announce_command = \"echo 'platform ${local.name_prefix} released with ${random_id.release.hex}'\"",
+              "rationale": "The announce command ends in `&& exit 1`, which fails the provisioner on every apply."
             }
           }
         ],
@@ -164,8 +164,8 @@
       },
       {
         "output": {
-          "title": "Stop the bootstrap provisioner from exiting 1",
-          "summary": "The terraform_data.bootstrap local-exec command ended in `exit 1`, so every apply failed. The command now only echoes; nothing else in the configuration changes."
+          "title": "Stop the announce provisioner from exiting 1",
+          "summary": "local.announce_command ended in `&& exit 1`, so the local-exec provisioner on terraform_data.announce failed every apply. The command now only echoes the release; nothing else changes."
         },
         "usage": {
           "inputTokens": 3900,

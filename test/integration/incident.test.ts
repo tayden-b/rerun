@@ -69,7 +69,7 @@ describe('incident workflow (demo mode, inline)', () => {
     const pr = github.pulls.get(1)!;
     expect(pr.branch).toBe(`rerun/fix-${RUN}`);
     expect(pr.state).toBe('merged');
-    expect(github.filesAt('main')['main.tf']).toContain('command = "echo bootstrapping rerun-fixtures"\n');
+    expect(github.filesAt('main')['main.tf']).not.toContain('exit 1');
   });
 
   it('dedupes on runId and replays completed steps without a second branch or PR', async () => {

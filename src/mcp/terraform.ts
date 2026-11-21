@@ -164,22 +164,26 @@ function buildView(
     for (const o of observers) o(event);
   }
 
-  function checkScope(tool: string, args: Record<string, unknown>): Record<string, unknown> {
-    const out = { ...args };
+  function assertScopeArgs(tool: string, args: Record<string, unknown>): void {
     if (
-      'terraform_org_name' in out &&
-      out.terraform_org_name !== undefined &&
-      out.terraform_org_name !== org
+      'terraform_org_name' in args &&
+      args.terraform_org_name !== undefined &&
+      args.terraform_org_name !== org
     ) {
       throw new WorkspaceScopeError(
-        `${tool}: organization "${String(out.terraform_org_name)}" is outside the client scope`,
+        `${tool}: organization "${String(args.terraform_org_name)}" is outside the client scope`,
       );
     }
-    if ('workspace_name' in out && out.workspace_name !== undefined && out.workspace_name !== workspace) {
+    if ('workspace_name' in args && args.workspace_name !== undefined && args.workspace_name !== workspace) {
       throw new WorkspaceScopeError(
-        `${tool}: workspace "${String(out.workspace_name)}" is outside the client scope ("${workspace}")`,
+        `${tool}: workspace "${String(args.workspace_name)}" is outside the client scope ("${workspace}")`,
       );
     }
+  }
+
+  function checkScope(tool: string, args: Record<string, unknown>): Record<string, unknown> {
+    assertScopeArgs(tool, args);
+    const out = { ...args };
     if (ORG_ARG_TOOLS.includes(tool)) out.terraform_org_name = org;
     if (WORKSPACE_ARG_TOOLS.includes(tool)) out.workspace_name = workspace;
     if (tool === 'list_workspaces') {
@@ -199,15 +203,21 @@ function buildView(
     return out;
   }
 
-  async function rawCall(tool: AllowedTool, args: Record<string, unknown>): Promise<ToolResult> {
+  /** `validate` runs before observers see the result, so a rejected result is never published. */
+  async function rawCall(
+    tool: AllowedTool,
+    args: Record<string, unknown>,
+    validate?: (result: ToolResult) => void,
+  ): Promise<ToolResult> {
     notify({ phase: 'call', tool, args });
     const started = Date.now();
     try {
       const raw = (await client.callTool({ name: tool, arguments: args })) as CallToolResult;
       const text = textOf(raw);
-      opts.debug?.(`terraform-mcp ${tool} -> ${redact(text.slice(0, DEBUG_PREVIEW))}`);
+      opts.debug?.(`terraform-mcp ${tool} -> ${redact(text).slice(0, DEBUG_PREVIEW)}`);
       if (raw.isError) throw new McpToolError(tool, redact(text));
       const result: ToolResult = { tool, args, raw, text, data: parseToolText(text) };
+      validate?.(result);
       notify({ phase: 'result', tool, args, result, durationMs: Date.now() - started });
       return result;
     } catch (err) {
@@ -219,6 +229,12 @@ function buildView(
 
   async function call(tool: string, args: Record<string, unknown> = {}): Promise<ToolResult> {
     if (!isAllowedTool(tool)) throw new ToolNotAllowedError(tool);
+    assertScopeArgs(tool, args);
+    if (args.workspace_id !== undefined && args.workspace_id !== (await workspaceId())) {
+      throw new WorkspaceScopeError(
+        `${tool}: workspace id "${String(args.workspace_id)}" is outside the client scope`,
+      );
+    }
     if (tool === 'get_run_details') return getRunDetails(String(args.run_id));
     if (tool === 'get_run_comments') return getRunComments(String(args.run_id));
     if (tool === 'get_state_version') {
@@ -250,13 +266,14 @@ function buildView(
 
   async function getRunDetails(runId: string): Promise<ToolResult> {
     const expected = await workspaceId();
-    const result = await rawCall('get_run_details', { run_id: runId });
-    const actual = relationshipId(result.data, 'workspace');
-    if (actual !== expected) {
-      throw new WorkspaceScopeError(
-        `get_run_details: run "${runId}" belongs to workspace "${actual ?? 'unknown'}", not "${workspace}" (${expected})`,
-      );
-    }
+    const result = await rawCall('get_run_details', { run_id: runId }, (r) => {
+      const actual = relationshipId(r.data, 'workspace');
+      if (actual !== expected) {
+        throw new WorkspaceScopeError(
+          `get_run_details: run "${runId}" belongs to workspace "${actual ?? 'unknown'}", not "${workspace}" (${expected})`,
+        );
+      }
+    });
     scope.verifiedRuns.add(runId);
     const plan = relationshipId(result.data, 'plan');
     const apply = relationshipId(result.data, 'apply');
@@ -314,7 +331,13 @@ function buildView(
   }
 
   async function tools(): Promise<ToolSet> {
-    scope.listedTools ??= client.listTools().then((r) => r.tools);
+    scope.listedTools ??= client.listTools().then(
+      (r) => r.tools,
+      (err: unknown) => {
+        scope.listedTools = undefined;
+        throw err;
+      },
+    );
     const listed = await scope.listedTools;
     const set: ToolSet = {};
     for (const t of listed) {

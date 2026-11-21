@@ -13,3 +13,6 @@ public/
 src/shared/types.ts
 src/shared/__fixtures__/
 app/.well-known/workflow/
+test-results/
+playwright-report/
+test/ui/__screenshots__/

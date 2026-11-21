@@ -197,8 +197,8 @@ export function buildIncidentView(detail: IncidentDetail): IncidentView {
   const steps: StepView[] = PIPELINE_STEPS.map((step, index) => {
     const stepEvents = byStep.get(step) ?? [];
     let state: StepState;
-    if (stepEvents.some((e) => e.kind === 'error')) state = 'error';
-    else if (status === 'resolved') state = 'done';
+    if (status === 'resolved') state = 'done';
+    else if (stepEvents.at(-1)?.kind === 'error') state = 'error';
     else if (runningIndex >= 0)
       state = index < runningIndex ? 'done' : index === runningIndex ? 'running' : 'pending';
     else if (status === 'failed' && index === lastWithEvents) state = 'error';

@@ -46,3 +46,22 @@ describe('buildIncidentView on seeded demo data', () => {
     expect(view.steps.every((s) => s.state === 'done')).toBe(true);
   });
 });
+
+describe('buildIncidentView step recovery', () => {
+  it('shows a step as done once a retry succeeds after an error', async () => {
+    const db = await getDb('file::memory:');
+    await seedDemo(db);
+    const detail = (await getIncident(db, 'demo-awaiting-approval'))!;
+    const verify = detail.events.findIndex((e) => e.step === 'verify');
+    const retried = {
+      ...detail.events[verify],
+      kind: 'error' as const,
+      payload: { message: 'plan timed out' },
+    };
+    const events = [...detail.events.slice(0, verify), retried, ...detail.events.slice(verify)];
+    const stepState = (evts: typeof events) =>
+      buildIncidentView({ ...detail, events: evts }).steps.find((s) => s.step === 'verify')?.state;
+    expect(stepState(events)).toBe('done');
+    expect(stepState([...detail.events.slice(0, verify), retried])).toBe('error');
+  });
+});

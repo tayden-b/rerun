@@ -47,3 +47,5 @@ next-env.d.ts
 /.workflow-data/
 /.swc/
 /app/.well-known/workflow/
+/test-results/
+/playwright-report/

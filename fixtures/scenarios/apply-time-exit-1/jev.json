@@ -1,6 +1,6 @@
 {
   "provider": "jev",
-  "recordedAt": "2026-11-21T01:12:06.666Z",
+  "recordedAt": "2026-11-21T01:26:59.638Z",
   "answers": {
     "failure_class": {
       "choice": "apply_runtime",
@@ -21,15 +21,15 @@
       }
     },
     "config_fixable": {
-      "noul": 0.88
+      "noul": 0.92
     },
     "blast_radius": {
-      "score": 0.95,
-      "confidence": 0.93,
+      "score": 1,
+      "confidence": 0.99,
       "probabilities": {
-        "0": 0.06,
-        "1": 0.93,
-        "2": 0.01,
+        "0": 0.01,
+        "1": 0.99,
+        "2": 0,
         "3": 0
       },
       "legend": {
@@ -40,9 +40,9 @@
       }
     },
     "needs_human": {
-      "noul": 0.69
+      "noul": 0.29
     }
   },
-  "inputTokens": 1099,
-  "latencyMs": 93
+  "inputTokens": 1514,
+  "latencyMs": 75
 }

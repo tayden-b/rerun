@@ -1,0 +1,25 @@
+{
+  "placeholder": true,
+  "tool": "get_workspace_details",
+  "args": {},
+  "result": {
+    "data": {
+      "type": "tool",
+      "id": "get_workspace_details",
+      "attributes": {
+        "success": true,
+        "workspace_id": "ws-PLACEHOLDER01",
+        "workspace": {
+          "name": "rerun-fixtures",
+          "auto-apply": true,
+          "execution-mode": "remote",
+          "terraform-version": "1.14.9",
+          "structured-run-output-enabled": true,
+          "locked": false,
+          "resource-count": 7,
+          "source": "tfe-api"
+        }
+      }
+    }
+  }
+}

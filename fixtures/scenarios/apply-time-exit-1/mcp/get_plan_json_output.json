@@ -1,5 +1,9 @@
 {
   "placeholder": true,
+  "tool": "get_plan_json_output",
+  "args": {
+    "plan_id": "plan-PLACEHOLDER01"
+  },
   "result": {
     "format_version": "1.2",
     "terraform_version": "1.14.3",
@@ -13,7 +17,10 @@
         "change": {
           "actions": ["create"],
           "before": null,
-          "after": { "input": "rerun-fixtures", "triggers_replace": null }
+          "after": {
+            "input": "rerun-fixtures",
+            "triggers_replace": null
+          }
         }
       },
       {
@@ -22,7 +29,9 @@
         "type": "random_pet",
         "name": "service",
         "provider_name": "registry.terraform.io/hashicorp/random",
-        "change": { "actions": ["no-op"] }
+        "change": {
+          "actions": ["no-op"]
+        }
       }
     ]
   }

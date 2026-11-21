@@ -1,0 +1,25 @@
+{
+  "placeholder": true,
+  "tool": "get_apply_details",
+  "args": {
+    "apply_id": "apply-PLACEHOLDER01"
+  },
+  "result": {
+    "data": {
+      "type": "applies",
+      "id": "apply-PLACEHOLDER01",
+      "attributes": {
+        "log-read-url": "https://archivist.terraform.io/v1/object/[REDACTED:signed_url]",
+        "resource-additions": 0,
+        "resource-changes": 0,
+        "resource-destructions": 0,
+        "resource-imports": 0,
+        "status": "errored",
+        "status-timestamps": {
+          "started-at": "2026-11-20T15:02:45Z",
+          "errored-at": "2026-11-20T15:02:58Z"
+        }
+      }
+    }
+  }
+}

@@ -17,7 +17,7 @@
     "test:e2e": "node scripts/not-implemented.mjs test:e2e W1-E",
     "eval": "node scripts/not-implemented.mjs eval W1-F",
     "eval:readme": "node scripts/not-implemented.mjs eval:readme W1-F",
-    "record": "node scripts/not-implemented.mjs record W1-A",
+    "record": "tsx scripts/record.ts",
     "mock-mcp": "tsx scripts/mock-mcp.ts",
     "demo": "tsx scripts/demo.ts",
     "db:migrate": "drizzle-kit generate && tsx scripts/db-migrate.ts"

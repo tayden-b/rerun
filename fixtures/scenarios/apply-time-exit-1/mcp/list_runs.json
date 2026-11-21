@@ -1,0 +1,47 @@
+{
+  "placeholder": true,
+  "tool": "list_runs",
+  "args": {
+    "pageSize": 20
+  },
+  "result": {
+    "items": [
+      {
+        "id": "run-PLACEHOLDER0002",
+        "status": "errored",
+        "message": "scenario: undeclared-reference",
+        "source": "tfe-api",
+        "created_at": "2026-11-20T15:10:05Z",
+        "has_changes": true,
+        "is_destroy": false,
+        "plan_only": false,
+        "refresh_only": false,
+        "workspace_name": "rerun-fixtures"
+      },
+      {
+        "id": "run-PLACEHOLDER0001",
+        "status": "errored",
+        "message": "scenario: apply-time-exit-1",
+        "source": "tfe-api",
+        "created_at": "2026-11-20T15:02:11Z",
+        "has_changes": true,
+        "is_destroy": false,
+        "plan_only": false,
+        "refresh_only": false,
+        "workspace_name": "rerun-fixtures"
+      },
+      {
+        "id": "run-PLACEHOLDER0000",
+        "status": "applied",
+        "message": "baseline",
+        "source": "tfe-api",
+        "created_at": "2026-11-20T14:39:30Z",
+        "has_changes": true,
+        "is_destroy": false,
+        "plan_only": false,
+        "refresh_only": false,
+        "workspace_name": "rerun-fixtures"
+      }
+    ]
+  }
+}

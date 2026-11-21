@@ -28,10 +28,10 @@ function FileDiff({ file }: { file: PatchFile }) {
   const rows = diffLines(file.before, file.after);
   const stat = diffStat(rows);
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-3">
       <CodeBlock data-testid="diff-block" className="bg-card">
-        <CodeBlockHeader className="pb-1">
-          <CodeBlockTitle className="font-mono text-xs">
+        <CodeBlockHeader className="pb-2">
+          <CodeBlockTitle className="font-mono text-xs font-normal">
             <FileCodeIcon />
             {file.path}
           </CodeBlockTitle>
@@ -46,7 +46,7 @@ function FileDiff({ file }: { file: PatchFile }) {
         <CodeBlockContent className="text-xs">
           {rows.map((row, i) =>
             row.type === 'hunk' ? (
-              <CodeBlockLine key={i} className="text-muted-foreground/70">
+              <CodeBlockLine key={i} className="text-muted-foreground">
                 {row.text}
               </CodeBlockLine>
             ) : (

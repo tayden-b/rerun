@@ -63,7 +63,7 @@ function stepSummary(step: StepView, view: IncidentView): string | null {
 
 export function Investigation({ view }: { view: IncidentView }) {
   return (
-    <Trace data-testid="investigation" className="bg-card gap-2.5 rounded-lg border p-4">
+    <Trace data-testid="investigation" className="bg-card gap-3 rounded-lg border p-4">
       {view.steps.map((step) => {
         const summary = stepSummary(step, view);
         const description = [summary, step.durationMs !== null ? formatDuration(step.durationMs) : null]
@@ -104,7 +104,7 @@ export function Investigation({ view }: { view: IncidentView }) {
           <TraceCollapsible key={step.step}>
             <TraceCollapsibleTrigger>{line}</TraceCollapsibleTrigger>
             <TraceCollapsibleContent>
-              <Trace className="gap-1.5">
+              <Trace className="gap-2">
                 {calls.map((call) => (
                   <ToolCall key={call.id} call={call} />
                 ))}

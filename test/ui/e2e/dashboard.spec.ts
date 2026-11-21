@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { ALLOWED_TOOLS } from '../../../src/mcp/allowlist';
 
 const SCREENSHOTS = 'test/ui/__screenshots__';
 const AWAITING = '/incidents/demo-awaiting-approval';
@@ -12,6 +13,7 @@ test('incident list shows the seeded incidents and filters them', async ({ page 
     'data-status',
     'awaiting_approval',
   );
+  await expect(rows.first().getByRole('link').first()).toBeVisible();
   await page.mouse.move(0, 0);
   await page.screenshot({ path: `${SCREENSHOTS}/list.png` });
 
@@ -90,4 +92,15 @@ test('SSE stream sends ready on connect', async ({ page }) => {
       }),
   );
   expect(ready).toEqual({ incidents: 3 });
+});
+
+test('about page lists every allowlisted MCP tool', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'About' }).click();
+  await expect(page).toHaveURL(/\/about$/);
+  await expect(page.getByTestId('architecture')).toContainText('Terraform MCP server');
+  await expect(page.getByTestId('mcp-tool')).toHaveCount(ALLOWED_TOOLS.length);
+  for (const tool of ALLOWED_TOOLS) await expect(page.getByTestId('mcp-tools')).toContainText(tool);
+  await page.mouse.move(0, 0);
+  await page.screenshot({ path: `${SCREENSHOTS}/about.png` });
 });

@@ -12,9 +12,9 @@ export function JsonBlock({ label, value }: { label: string; value: unknown }) {
   const shown = lines.slice(0, MAX_LINES);
   return (
     <div className="grid gap-1">
-      <span className="text-muted-foreground text-[11px] tracking-wide uppercase">{label}</span>
+      <span className="text-muted-foreground text-xs">{label}</span>
       <CodeBlock size="sm" className="bg-background">
-        <CodeBlockContent className="max-h-56 text-[11px]">
+        <CodeBlockContent className="max-h-56 text-xs">
           {shown.map((line, i) => (
             <CodeBlockLine key={i}>{line}</CodeBlockLine>
           ))}

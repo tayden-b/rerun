@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
 import type { DecisionProvider, DecisionQuestion } from '../shared/types';
+import { redact } from '../shared/redact';
 import { DecisionError } from './errors';
 import { isChoiceAnswer, isNoulAnswer, isScoreAnswer, type Answer } from './questions';
 
@@ -106,7 +107,7 @@ export function recordDecision(provider: DecisionProvider, opts: RecordDecisionO
         latencyMs: result.latencyMs,
       };
       await mkdir(path.dirname(file), { recursive: true });
-      await writeFile(file, `${JSON.stringify(record, null, 2)}\n`);
+      await writeFile(file, `${redact(JSON.stringify(record, null, 2))}\n`);
       return result;
     },
   };

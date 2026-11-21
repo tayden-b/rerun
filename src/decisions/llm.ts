@@ -1,5 +1,7 @@
 import { generateText, Output, type LanguageModel } from 'ai';
+import { createAnthropic } from '@ai-sdk/anthropic';
 import { z } from 'zod';
+import { requireLive, type Config } from '../config';
 import { fastModel } from '../models';
 import type { DecisionProvider, DecisionQuestion } from '../shared/types';
 import { DecisionError } from './errors';
@@ -100,6 +102,13 @@ export function toAnswers(
 export interface LlmDecisionProviderOptions {
   /** Defaults to `fastModel()` (live only). */
   model?: LanguageModel;
+  /** Builds the fast model from this config instead of the global one. */
+  config?: Config;
+}
+
+function fastModelFor(c?: Config): LanguageModel {
+  if (!c) return fastModel();
+  return createAnthropic({ apiKey: requireLive(['anthropic'], c).anthropicApiKey })(c.models.fast);
 }
 
 /** Answers DecisionQuestions with a Claude structured-output call in the Jev answer shapes. */
@@ -112,7 +121,7 @@ export class LlmDecisionProvider implements DecisionProvider {
     const schema = decisionSchema(questions);
     const fitted = truncateState(state, stateTokenBudget(questions));
     const prompt = JSON.stringify({ state: fitted, questions }, null, 2);
-    const model = this.opts.model ?? fastModel();
+    const model = this.opts.model ?? fastModelFor(this.opts.config);
     const started = performance.now();
     let result;
     try {

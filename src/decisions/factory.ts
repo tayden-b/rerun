@@ -25,7 +25,7 @@ export function createDecisionProvider(
       warnedLlmFallback = true;
       console.warn('JEV_API_KEY is not set; triage decisions fall back to LlmDecisionProvider (Claude).');
     }
-    provider = new LlmDecisionProvider();
+    provider = new LlmDecisionProvider({ config });
   }
   return opts.scenario ? recordDecision(provider, { scenario: opts.scenario }) : provider;
 }

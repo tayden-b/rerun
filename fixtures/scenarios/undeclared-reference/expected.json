@@ -1,0 +1,10 @@
+{
+  "placeholder": true,
+  "name": "undeclared-reference",
+  "failureClass": "config_reference",
+  "stage": "plan",
+  "route": "autoPr",
+  "fixTouches": ["main.tf"],
+  "mustNotTouch": ["versions.tf"],
+  "humanSummary": "The plan fails because main.tf references random_pet.svc, which is not declared; the resource is named random_pet.service."
+}

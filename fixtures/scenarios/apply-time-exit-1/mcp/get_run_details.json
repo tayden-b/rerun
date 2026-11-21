@@ -1,5 +1,9 @@
 {
   "placeholder": true,
+  "tool": "get_run_details",
+  "args": {
+    "run_id": "run-PLACEHOLDER0001"
+  },
   "result": {
     "id": "run-PLACEHOLDER0001",
     "type": "runs",
@@ -22,10 +26,30 @@
       }
     },
     "relationships": {
-      "workspace": { "data": { "id": "ws-PLACEHOLDER01", "type": "workspaces" } },
-      "plan": { "data": { "id": "plan-PLACEHOLDER01", "type": "plans" } },
-      "apply": { "data": { "id": "apply-PLACEHOLDER01", "type": "applies" } },
-      "configuration-version": { "data": { "id": "cv-PLACEHOLDER01", "type": "configuration-versions" } }
+      "workspace": {
+        "data": {
+          "id": "ws-PLACEHOLDER01",
+          "type": "workspaces"
+        }
+      },
+      "plan": {
+        "data": {
+          "id": "plan-PLACEHOLDER01",
+          "type": "plans"
+        }
+      },
+      "apply": {
+        "data": {
+          "id": "apply-PLACEHOLDER01",
+          "type": "applies"
+        }
+      },
+      "configuration-version": {
+        "data": {
+          "id": "cv-PLACEHOLDER01",
+          "type": "configuration-versions"
+        }
+      }
     }
   }
 }

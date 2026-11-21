@@ -1,0 +1,506 @@
+{
+  "server": {
+    "name": "terraform-mcp-server",
+    "version": "1.4.1"
+  },
+  "tools": [
+    {
+      "name": "get_apply_details",
+      "description": "Fetches detailed information about a specific Terraform apply.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "apply_id": {
+            "description": "The ID of the apply to get details for",
+            "type": "string"
+          }
+        },
+        "required": ["apply_id"]
+      },
+      "annotations": {
+        "title": "Get detailed information about a Terraform apply",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_apply_logs",
+      "description": "Retrieves the logs of a specific Terraform apply.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "apply_id": {
+            "description": "The ID of the apply to get logs for",
+            "type": "string"
+          }
+        },
+        "required": ["apply_id"]
+      },
+      "annotations": {
+        "title": "Get logs for a Terraform apply",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_latest_provider_version",
+      "description": "Fetches the latest version of a Terraform provider from the public registry",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The name of the Terraform provider, e.g., 'aws', 'azurerm', 'google', etc.",
+            "type": "string"
+          },
+          "namespace": {
+            "description": "The namespace of the Terraform provider, typically the name of the company, or their GitHub organization name that created the provider e.g., 'hashicorp'. If you are not certain of the namespace, do not guess, ask the user. Most HashiCorp-maintained providers are in the 'hashicorp' namespace",
+            "type": "string"
+          }
+        },
+        "required": ["namespace", "name"]
+      },
+      "annotations": {
+        "title": "Get Latest Provider Version",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_plan_details",
+      "description": "Fetches detailed information about a specific Terraform plan.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan_id": {
+            "description": "The ID of the plan to get details for",
+            "type": "string"
+          }
+        },
+        "required": ["plan_id"]
+      },
+      "annotations": {
+        "title": "Get detailed information about a Terraform plan",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_plan_json_output",
+      "description": "Retrieves the structured JSON output of a specific Terraform plan. This includes detailed information about resource changes (create, update, delete), attribute values before and after, and plan metadata. This is more structured and easier to parse than plain logs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan_id": {
+            "description": "The ID of the plan to get JSON output for",
+            "type": "string"
+          }
+        },
+        "required": ["plan_id"]
+      },
+      "annotations": {
+        "title": "Get JSON output for a Terraform plan",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_plan_logs",
+      "description": "Retrieves the logs of a specific Terraform plan.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan_id": {
+            "description": "The ID of the plan to get logs for",
+            "type": "string"
+          }
+        },
+        "required": ["plan_id"]
+      },
+      "annotations": {
+        "title": "Get logs for a Terraform plan",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_provider_capabilities",
+      "description": "Get the capabilities of a Terraform provider including the types of resources, data sources, functions, guides, and other features it supports.\nThis tool analyzes the provider documentation to determine what types of capabilities are available:\n- resources: Infrastructure resources that can be created/managed\n- data-sources: Read-only data sources for querying existing infrastructure  \n- functions: Provider-specific functions for data transformation\n- guides: Documentation guides and tutorials for using the provider\n- actions: Available provider actions (if any)\n- ephemeral resources: Temporary resources for credentials and tokens\n- list-resources: List resources for querying existing cloud resources (Terraform Search)\n\nReturns a summary with counts and examples for each capability type.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The name of the Terraform provider, e.g., 'aws', 'azurerm', 'google', etc.",
+            "type": "string"
+          },
+          "namespace": {
+            "description": "The namespace of the Terraform provider, typically the name of the company, or their GitHub organization name that created the provider e.g., 'hashicorp'. If you are not certain of the namespace, do not guess, ask the user. Most HashiCorp-maintained providers are in the 'hashicorp' namespace",
+            "type": "string"
+          },
+          "version": {
+            "description": "The version of the provider to analyze (defaults to 'latest')",
+            "type": "string"
+          }
+        },
+        "required": ["namespace", "name"]
+      },
+      "annotations": {
+        "title": "Get Terraform provider capabilities and supported features",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_provider_details",
+      "description": "Fetches up-to-date documentation for a specific service from a Terraform provider. \nYou must call 'search_provider_docs' tool first to obtain the exact tfprovider-compatible provider_doc_id required to use this tool.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider_doc_id": {
+            "description": "Exact tfprovider-compatible provider_doc_id, (e.g., '8894603', '8906901') retrieved from 'search_provider_docs'",
+            "type": "string"
+          }
+        },
+        "required": ["provider_doc_id"]
+      },
+      "annotations": {
+        "title": "Fetch detailed Terraform provider documentation using a document ID",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_run_comments",
+      "description": "Lists all user-submitted comments on a specific Terraform run. Use this tool when you need to review feedback, approvals, or notes that collaborators have left on a run. Returns each comment's ID and body text. To get the run's status, plan, and apply details instead, use get_run_details.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "description": "The ID of the Terraform run to retrieve comments for (format: run-<alphanumeric>, e.g. run-Nj2MTonBKmtmceGE.",
+            "type": "string"
+          }
+        },
+        "required": ["run_id"]
+      },
+      "annotations": {
+        "title": "Get all comments for a given Terraform run.",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_run_details",
+      "description": "Fetches detailed information about a specific Terraform run.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "description": "The ID of the run to get details for",
+            "type": "string"
+          }
+        },
+        "required": ["run_id"]
+      },
+      "annotations": {
+        "title": "Get detailed information about a Terraform run",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_state_version",
+      "description": "Retrieves a Terraform state version. If state_version_id is provided, retrieves that specific state version. Otherwise, retrieves the latest state version for the specified workspace. One of state_version_id or workspace_id must be provided",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "state_version_id": {
+            "description": "Optional StateVersion id to fetch exact version",
+            "type": "string"
+          },
+          "workspace_id": {
+            "description": "Optional Workspace id to fetch latest version",
+            "type": "string"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "title": "Gets StateVersion with state_version_id",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_workspace_details",
+      "description": "Fetches detailed information about a specific Terraform workspace, including configuration, variables, and current state information.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "terraform_org_name": {
+            "description": "The name of the Terraform Cloud/Enterprise organization",
+            "type": "string"
+          },
+          "workspace_name": {
+            "description": "The name of the workspace to get details for",
+            "type": "string"
+          }
+        },
+        "required": ["terraform_org_name", "workspace_name"]
+      },
+      "annotations": {
+        "title": "Get detailed information about a Terraform workspace",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "list_runs",
+      "description": "List or search Terraform runs in a specific workspace with optional filtering.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "description": "Page number for pagination (min 1)",
+            "minimum": 1,
+            "type": "number"
+          },
+          "pageSize": {
+            "description": "Results per page for pagination (min 1, max 100)",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "number"
+          },
+          "status": {
+            "description": "Optional run status filter",
+            "items": {
+              "enum": [
+                "pending",
+                "fetching",
+                "fetching_completed",
+                "pre_plan_running",
+                "pre_plan_completed",
+                "queuing",
+                "plan_queued",
+                "planning",
+                "planned",
+                "cost_estimating",
+                "cost_estimated",
+                "policy_checking",
+                "policy_override",
+                "policy_soft_failed",
+                "policy_checked",
+                "confirmed",
+                "post_plan_running",
+                "post_plan_completed",
+                "planned_and_finished",
+                "planned_and_saved",
+                "apply_queued",
+                "applying",
+                "applied",
+                "discarded",
+                "errored",
+                "canceled",
+                "force_canceled"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "terraform_org_name": {
+            "description": "The name of the Terraform Cloud/Enterprise organization in which to list runs based on the provided filters when no workspace is specified",
+            "type": "string"
+          },
+          "vcs_username": {
+            "description": "Searches for runs that match the VCS username you supply",
+            "type": "string"
+          },
+          "workspace_name": {
+            "description": "If specified, lists the runs in the given workspace instead of the organization based on filters",
+            "type": "string"
+          }
+        },
+        "required": ["terraform_org_name"]
+      },
+      "annotations": {
+        "title": "List Terraform runs",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "list_state_versions",
+      "description": "List all the State Versions for a given workspace and org name.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "description": "Page number for pagination (min 1)",
+            "minimum": 1,
+            "type": "number"
+          },
+          "pageSize": {
+            "description": "Results per page for pagination (min 1, max 100)",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "number"
+          },
+          "terraform_org_name": {
+            "description": "The name of the Terraform Cloud/Enterprise organization",
+            "type": "string"
+          },
+          "workspace_name": {
+            "description": "The workspace name to list state versions for",
+            "type": "string"
+          }
+        },
+        "required": ["terraform_org_name", "workspace_name"]
+      },
+      "annotations": {
+        "title": "List all States Versions",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "list_workspaces",
+      "description": "Search and list Terraform workspaces within a specified organization. Returns all workspaces when no filters are applied, or filters results based on name patterns, tags, or search queries. Supports pagination for large result sets. Returns a truncated summary of the workspace, use get_workspace_details to get the full details for a specific workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exclude_tags": {
+            "description": "Optional comma-separated list of tags to exclude from results",
+            "type": "string"
+          },
+          "page": {
+            "description": "Page number for pagination (min 1)",
+            "minimum": 1,
+            "type": "number"
+          },
+          "pageSize": {
+            "description": "Results per page for pagination (min 1, max 100)",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "number"
+          },
+          "project_id": {
+            "description": "Optional project ID to filter workspaces",
+            "type": "string"
+          },
+          "search_query": {
+            "description": "Optional search query to filter workspaces by name",
+            "type": "string"
+          },
+          "tags": {
+            "description": "Optional comma-separated list of tags to filter workspaces",
+            "type": "string"
+          },
+          "terraform_org_name": {
+            "description": "The name of the Terraform Cloud/Enterprise organization",
+            "type": "string"
+          },
+          "wildcard_name": {
+            "description": "Optional wildcard pattern to match workspace names",
+            "type": "string"
+          }
+        },
+        "required": ["terraform_org_name"]
+      },
+      "annotations": {
+        "title": "List Terraform workspaces with queries",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "search_provider_docs",
+      "description": "This tool retrieves a list of potential documents based on the 'service_slug' and 'provider_document_type' provided.\nYou MUST call this function before 'get_provider_details' to obtain a valid tfprovider-compatible 'provider_doc_id'.\nUse the most relevant single word as the search query for 'service_slug', if unsure about the 'service_slug', use the 'provider_name' for its value.\nWhen selecting the best match, consider the following:\n\t- Title similarity to the query\n\t- Category relevance\nReturn the selected 'provider_doc_id' and explain your choice.\nIf there are multiple good matches, mention this but proceed with the most relevant one.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider_document_type": {
+            "description": "The type of the document to retrieve,\nfor general overview of the provider use 'overview',\nfor guidance on upgrading a provider or custom configuration information use 'guides',\nfor deploying resources use 'resources', for reading pre-deployed resources use 'data-sources',\nfor functions use 'functions',\nfor Terraform actions use 'actions',\nfor listing resources using Terraform Search use 'list-resources'",
+            "enum": [
+              "resources",
+              "data-sources",
+              "functions",
+              "guides",
+              "overview",
+              "actions",
+              "list-resources"
+            ],
+            "type": "string"
+          },
+          "provider_name": {
+            "description": "The name of the Terraform provider to perform the read or deployment operation",
+            "type": "string"
+          },
+          "provider_namespace": {
+            "description": "The publisher of the Terraform provider, typically the name of the company, or their GitHub organization name that created the provider. If you are not certain of the namespace, do not guess, ask the user. Most HashiCorp-maintained providers are in the 'hashicorp' namespace",
+            "type": "string"
+          },
+          "provider_version": {
+            "description": "The version of the Terraform provider to retrieve in the format 'x.y.z', or 'latest' to get the latest version",
+            "type": "string"
+          },
+          "service_slug": {
+            "description": "The slug of the service you want to deploy or read using the Terraform provider, prefer using a single word, use underscores for multiple words and if unsure about the service_slug, use the provider_name for its value",
+            "type": "string"
+          }
+        },
+        "required": ["provider_name", "provider_namespace", "service_slug", "provider_document_type"]
+      },
+      "annotations": {
+        "title": "Identify the most relevant provider document ID for a Terraform service",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "whoami",
+      "description": "Returns the identity of the currently authenticated Terraform token. Use this to determine which user or service account the active token belongs to.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "annotations": {
+        "title": "Get current Terraform identity",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    }
+  ]
+}

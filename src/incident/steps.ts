@@ -417,22 +417,7 @@ export async function proposeStep(incidentId: string): Promise<{ draft: boolean 
       });
       await addArtifact(db, incidentId, { type: 'pr_body', name: `pr-${pr.number}.md`, content: body });
     }
-    if (draft) {
-      await enterStatus(
-        db,
-        incidentId,
-        'propose',
-        'needs_human',
-        {
-          prUrl: pr.url,
-          prNumber: pr.number,
-          needsHuman: true,
-        },
-        { draft: true },
-      );
-    } else {
-      await setStatus(db, incidentId, 'proposing', { prUrl: pr.url, prNumber: pr.number });
-    }
+    await setStatus(db, incidentId, 'proposing', { prUrl: pr.url, prNumber: pr.number, needsHuman: draft });
     return { pr };
   });
   return { draft: result.pr.draft };
@@ -444,7 +429,7 @@ export async function isApprovedStep(incidentId: string): Promise<boolean> {
   return (await completedResult<ApprovalRecord>(db, incidentId, 'await')) !== undefined;
 }
 
-/** Step 7 begins: the hook exists, so the dashboard may now approve. Draft PRs stay `needs_human`. */
+/** Step 7 begins: the hook exists, so the dashboard may now approve. Draft PRs carry `needsHuman`. */
 export async function markAwaitingStep(incidentId: string): Promise<void> {
   const db = await incidentServices().db();
   if ((await getStatus(db, incidentId)) === 'proposing')

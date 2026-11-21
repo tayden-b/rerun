@@ -25,7 +25,7 @@ describe('incident workflow (demo mode, inline)', () => {
     const detail = (await getIncident(h.db, incident.id))!;
     expect(detail.status).toBe('resolved');
     expect(detail.failureClass).toBe('apply_runtime');
-    const draft = detail.route === 'draftPr';
+    expect(detail.needsHuman).toBe(detail.route === 'draftPr');
     expect(detail.prNumber).toBe(1);
     expect(detail.decisions).toHaveLength(1);
     expect(detail.artifacts.map((a) => a.type).sort()).toEqual(
@@ -41,7 +41,7 @@ describe('incident workflow (demo mode, inline)', () => {
       'fixing',
       'verifying',
       'proposing',
-      draft ? 'needs_human' : 'awaiting_approval',
+      'awaiting_approval',
       'merged',
       'confirming',
       'resolved',

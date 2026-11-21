@@ -96,6 +96,18 @@ describe('write guard', () => {
     expect(
       writeRefusal('versions.tf', before, versions(random.replace('3.6.0', '3.7.0')), 'provider_version'),
     ).toBeNull();
+    const commented = versions(`    # pinned }\n${random}`);
+    expect(
+      writeRefusal(
+        'versions.tf',
+        commented,
+        versions(`    # pinned }\n${random}    aws = "5.0.0"\n`),
+        'provider_version',
+      ),
+    ).toMatch(/required_providers.aws/);
+    expect(
+      writeRefusal('main.tf', '', '/* provider "aws" {} */\n# provider "aws" {}\n', 'config_syntax'),
+    ).toBeNull();
     const aws = 'provider "aws" {\n  region = "us-east-1"\n}\n';
     const alias = 'provider "aws" {\n  alias  = "west"\n  region = "us-west-2"\n}\n';
     expect(writeRefusal('main.tf', aws, `${aws}${alias}`, 'config_reference')).toMatch(/provider "aws"/);

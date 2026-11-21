@@ -60,6 +60,32 @@ const PROVIDER_BLOCK = /^\s*provider\s+"([^"]+)"/gm;
 const REQUIRED_PROVIDERS = /\brequired_providers\s*\{/g;
 const PROVIDER_ENTRY = /^\s*"?([A-Za-z0-9_-]+)"?\s*=/;
 
+/** HCL with `#`, `//` and `/* *\/` comments blanked out (string literals kept), so braces in comments do not count. */
+export function stripHclComments(text: string): string {
+  let out = '';
+  let i = 0;
+  while (i < text.length) {
+    const ch = text[i];
+    if (ch === '"') {
+      let j = i + 1;
+      while (j < text.length && text[j] !== '"' && text[j] !== '\n') j += text[j] === '\\' ? 2 : 1;
+      out += text.slice(i, j + 1);
+      i = j + 1;
+    } else if (ch === '#' || (ch === '/' && text[i + 1] === '/')) {
+      while (i < text.length && text[i] !== '\n') i++;
+    } else if (ch === '/' && text[i + 1] === '*') {
+      const end = text.indexOf('*/', i + 2);
+      const stop = end === -1 ? text.length : end + 2;
+      out += text.slice(i, stop).replace(/[^\n]/g, ' ');
+      i = stop;
+    } else {
+      out += ch;
+      i++;
+    }
+  }
+  return out;
+}
+
 /** Bodies of every `required_providers { ... }` block (brace-matched). */
 function requiredProvidersBodies(text: string): string[] {
   const bodies: string[] = [];
@@ -101,7 +127,8 @@ function providerBlockCounts(text: string): Map<string, number> {
   return out;
 }
 
-function addedProviders(before: string, after: string): string[] {
+function addedProviders(rawBefore: string, rawAfter: string): string[] {
+  const [before, after] = [stripHclComments(rawBefore), stripHclComments(rawAfter)];
   const added: string[] = [];
   const had = providerBlockCounts(before);
   for (const [name, count] of providerBlockCounts(after)) {

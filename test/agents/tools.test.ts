@@ -108,6 +108,14 @@ describe('write guard', () => {
     expect(
       writeRefusal('main.tf', '', '/* provider "aws" {} */\n# provider "aws" {}\n', 'config_syntax'),
     ).toBeNull();
+    const heredoc = 'locals {\n  doc = <<-EOT\n    /* not a comment\n  EOT\n}\n';
+    expect(writeRefusal('main.tf', heredoc, `${heredoc}provider "aws" {}\n`, 'config_syntax')).toMatch(
+      /provider "aws"/,
+    );
+    expect(writeRefusal('main.tf', '', '/* open\nprovider "aws" {}\n', 'config_syntax')).toMatch(
+      /provider "aws"/,
+    );
+    expect(writeRefusal('main.tf', '', 'x = <<EOT\nprovider "aws" {}\nEOT\n', 'config_syntax')).toBeNull();
     const aws = 'provider "aws" {\n  region = "us-east-1"\n}\n';
     const alias = 'provider "aws" {\n  alias  = "west"\n  region = "us-west-2"\n}\n';
     expect(writeRefusal('main.tf', aws, `${aws}${alias}`, 'config_reference')).toMatch(/provider "aws"/);

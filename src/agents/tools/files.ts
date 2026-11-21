@@ -60,7 +60,13 @@ const PROVIDER_BLOCK = /^\s*provider\s+"([^"]+)"/gm;
 const REQUIRED_PROVIDERS = /\brequired_providers\s*\{/g;
 const PROVIDER_ENTRY = /^\s*"?([A-Za-z0-9_-]+)"?\s*=/;
 
-/** HCL with `#`, `//` and `/* *\/` comments blanked out (string literals kept), so braces in comments do not count. */
+const HEREDOC_START = /<<-?([A-Za-z_][A-Za-z0-9_-]*)[^\n]*\n/y;
+const blank = (s: string) => s.replace(/[^\n]/g, ' ');
+
+/**
+ * HCL with comments and heredoc bodies blanked out (quoted strings kept), so neither their braces nor
+ * their text count as configuration. Unterminated comments/heredocs are left as-is (fail closed).
+ */
 export function stripHclComments(text: string): string {
   let out = '';
   let i = 0;
@@ -71,13 +77,29 @@ export function stripHclComments(text: string): string {
       while (j < text.length && text[j] !== '"' && text[j] !== '\n') j += text[j] === '\\' ? 2 : 1;
       out += text.slice(i, j + 1);
       i = j + 1;
+    } else if (ch === '<' && text[i + 1] === '<') {
+      HEREDOC_START.lastIndex = i;
+      const start = HEREDOC_START.exec(text);
+      const bodyStart = start ? i + start[0].length : -1;
+      const end = start ? new RegExp(`^[ \\t]*${start[1]}[ \\t]*$`, 'm').exec(text.slice(bodyStart)) : null;
+      if (!start || !end) {
+        out += ch;
+        i++;
+        continue;
+      }
+      const stop = bodyStart + end.index + end[0].length;
+      out += text.slice(i, bodyStart) + blank(text.slice(bodyStart, stop));
+      i = stop;
     } else if (ch === '#' || (ch === '/' && text[i + 1] === '/')) {
       while (i < text.length && text[i] !== '\n') i++;
     } else if (ch === '/' && text[i + 1] === '*') {
       const end = text.indexOf('*/', i + 2);
-      const stop = end === -1 ? text.length : end + 2;
-      out += text.slice(i, stop).replace(/[^\n]/g, ' ');
-      i = stop;
+      if (end === -1) {
+        out += text.slice(i);
+        break;
+      }
+      out += blank(text.slice(i, end + 2));
+      i = end + 2;
     } else {
       out += ch;
       i++;

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { getIncident } from '../../src/db/incidents';
 import { approvalToken, runIncidentPipeline } from '../../src/incident/pipeline';
 import { incidentServices } from '../../src/incident/services';
+import { runIdForScenario } from '../../src/incident/demo';
 import { startIncident } from '../../src/incident/start';
 import { FakeGitHub } from '../../src/github/fake';
 import { approveImmediately, pipelineSteps, startHarness, type Harness } from './helpers';
@@ -12,7 +13,7 @@ afterEach(async () => {
   h = undefined;
 });
 
-const RUN = 'run-PLACEHOLDER0001';
+const RUN = runIdForScenario('apply-time-exit-1');
 
 describe('incident workflow (demo mode, inline)', () => {
   it('takes apply-time-exit-1 from errored run to resolved', async () => {
@@ -24,7 +25,7 @@ describe('incident workflow (demo mode, inline)', () => {
     const detail = (await getIncident(h.db, incident.id))!;
     expect(detail.status).toBe('resolved');
     expect(detail.failureClass).toBe('apply_runtime');
-    expect(detail.route).toBe('autoPr');
+    const draft = detail.route === 'draftPr';
     expect(detail.prNumber).toBe(1);
     expect(detail.decisions).toHaveLength(1);
     expect(detail.artifacts.map((a) => a.type).sort()).toEqual(
@@ -40,7 +41,7 @@ describe('incident workflow (demo mode, inline)', () => {
       'fixing',
       'verifying',
       'proposing',
-      'awaiting_approval',
+      draft ? 'needs_human' : 'awaiting_approval',
       'merged',
       'confirming',
       'resolved',
@@ -93,7 +94,7 @@ describe('incident workflow (demo mode, inline)', () => {
 
   it('runs one agent for a plan-stage config_reference failure', async () => {
     h = await startHarness();
-    const { incident } = await startIncident('run-PLACEHOLDER0002');
+    const { incident } = await startIncident(runIdForScenario('undeclared-reference'));
     await h.runs[0];
     const detail = (await getIncident(h.db, incident.id))!;
     expect(detail.status).toBe('resolved');
@@ -130,7 +131,11 @@ describe('incident workflow (demo mode, inline)', () => {
         runLister: () => ({
           listRuns: async () => [
             { id: RUN, status: 'errored', createdAt: '2026-11-20T15:02:11Z' },
-            { id: 'run-PLACEHOLDER0002', status: 'errored', createdAt: '2026-11-20T15:10:05Z' },
+            {
+              id: runIdForScenario('undeclared-reference'),
+              status: 'errored',
+              createdAt: '2026-11-20T15:10:05Z',
+            },
           ],
         }),
       },

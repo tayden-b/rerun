@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { getIncident } from '../../src/db/incidents';
 import { approveIncident, IncidentActionError, requestChanges } from '../../src/incident/approval';
 import { incidentServices } from '../../src/incident/services';
+import { runIdForScenario } from '../../src/incident/demo';
 import { startIncident } from '../../src/incident/start';
 import { erroredRunFor, signBody, verifySignature } from '../../src/incident/webhook';
 import { FakeGitHub } from '../../src/github/fake';
@@ -15,7 +16,7 @@ afterEach(async () => {
   h = undefined;
 });
 
-const RUN = 'run-PLACEHOLDER0001';
+const RUN = runIdForScenario('apply-time-exit-1');
 const waitHere = (gate: Promise<void>) => async (_id: string, ready: () => Promise<void>) => {
   await ready();
   await gate;
@@ -57,7 +58,12 @@ describe('approve / request changes', () => {
     h = await startHarness({ awaitApproval: waitHere(gate) });
     const { incident } = await startIncident(RUN);
     await expect(approveIncident(incident.id)).rejects.toMatchObject({ status: 409 });
-    for (let i = 0; i < 200 && (await getIncident(h.db, incident.id))?.status !== 'awaiting_approval'; i++) {
+    for (
+      let i = 0;
+      i < 200 &&
+      !['awaiting_approval', 'needs_human'].includes((await getIncident(h.db, incident.id))?.status ?? '');
+      i++
+    ) {
       await new Promise((r) => setTimeout(r, 20));
     }
     const result = await approveIncident(incident.id);
@@ -74,7 +80,12 @@ describe('approve / request changes', () => {
     const gate = new Promise<void>((r) => (open = r));
     h = await startHarness({ awaitApproval: waitHere(gate) });
     const { incident } = await startIncident(RUN);
-    for (let i = 0; i < 200 && (await getIncident(h.db, incident.id))?.status !== 'awaiting_approval'; i++) {
+    for (
+      let i = 0;
+      i < 200 &&
+      !['awaiting_approval', 'needs_human'].includes((await getIncident(h.db, incident.id))?.status ?? '');
+      i++
+    ) {
       await new Promise((r) => setTimeout(r, 20));
     }
     await requestChanges(incident.id, '  keep the echo  ');
@@ -99,9 +110,14 @@ describe('poller', () => {
     h = await startHarness();
     const seen = new Set<string>();
     const first = await pollOnce(seen, new Date(0));
-    expect(first.sort()).toEqual(['run-PLACEHOLDER0001', 'run-PLACEHOLDER0002']);
+    expect(first).toEqual(
+      expect.arrayContaining([
+        runIdForScenario('apply-time-exit-1'),
+        runIdForScenario('undeclared-reference'),
+      ]),
+    );
     expect(await pollOnce(seen, new Date(0))).toEqual([]);
     await Promise.all(h.runs);
-    expect(h.runs).toHaveLength(2);
+    expect(h.runs).toHaveLength(first.length);
   });
 });

@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { asc, desc, eq, sql } from 'drizzle-orm';
+import { redact } from '../shared/redact';
 import type { FailureClass, IncidentEvent, IncidentStatus, Stage } from '../shared/types';
 import type { Db } from './index';
 import {
@@ -92,14 +93,14 @@ export interface AppendEventInput {
   at?: string;
 }
 
-/** Appends an event with the next `seq` for the incident (1-based, assigned atomically). */
+/** Appends an event with the next `seq` for the incident (1-based, assigned atomically). Title and payload are redacted. */
 export async function appendEvent(
   db: Db,
   incidentId: string,
   event: AppendEventInput,
 ): Promise<IncidentEvent> {
   const at = event.at ?? new Date().toISOString();
-  const payloadJson = JSON.stringify(event.payload ?? null);
+  const payloadJson = redact(JSON.stringify(event.payload ?? null));
   const [row] = await db
     .insert(incidentEvents)
     .values({
@@ -108,7 +109,7 @@ export async function appendEvent(
       at,
       step: event.step,
       kind: event.kind,
-      title: event.title,
+      title: redact(event.title),
       payloadJson,
     })
     .returning();
@@ -138,6 +139,7 @@ export async function getIncident(db: Db, id: string): Promise<IncidentDetail | 
   return { ...incident, events: eventRows.map(toEvent), decisions: decisionRows, artifacts: artifactRows };
 }
 
+/** Stores an artifact; `content` is redacted. */
 export async function addArtifact(
   db: Db,
   incidentId: string,
@@ -145,11 +147,12 @@ export async function addArtifact(
 ): Promise<ArtifactRow> {
   const [row] = await db
     .insert(artifacts)
-    .values({ incidentId, ...artifact })
+    .values({ incidentId, ...artifact, content: redact(artifact.content) })
     .returning();
   return row;
 }
 
+/** Stores a decision call; request and response are redacted. */
 export async function addDecision(
   db: Db,
   incidentId: string,
@@ -167,8 +170,8 @@ export async function addDecision(
     .values({
       incidentId,
       provider: decision.provider,
-      requestJson: JSON.stringify(decision.request),
-      responseJson: JSON.stringify(decision.response),
+      requestJson: redact(JSON.stringify(decision.request)),
+      responseJson: redact(JSON.stringify(decision.response)),
       inputTokens: decision.inputTokens,
       latencyMs: decision.latencyMs,
       ...(decision.at ? { at: decision.at } : {}),

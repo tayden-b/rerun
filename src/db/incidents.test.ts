@@ -97,6 +97,39 @@ describe('incidents repository', () => {
     expect(detail?.artifacts.map((a) => [a.type, a.name])).toEqual([['log', 'apply.log']]);
   });
 
+  it('redacts secrets before storing events, decisions, and artifacts', async () => {
+    const ghToken = `ghp_${'a'.repeat(36)}`;
+    const antKey = `sk-ant-${'b'.repeat(24)}`;
+    const inc = await createIncident(db, { runId: 'run-g', workspace: 'rerun-fixtures' });
+    await appendEvent(db, inc.id, {
+      step: 'collect',
+      kind: 'tool_result',
+      title: `token ${ghToken}`,
+      payload: { header: 'Authorization: Bearer abcdefghijkl', key: antKey },
+    });
+    await addDecision(db, inc.id, {
+      provider: 'llm',
+      request: { prompt: `use ${antKey}` },
+      response: { echo: ghToken },
+      inputTokens: 1,
+      latencyMs: 1,
+    });
+    await addArtifact(db, inc.id, { type: 'log', name: 'apply.log', content: `Error: ${ghToken}` });
+
+    const detail = await getIncident(db, inc.id);
+    const stored = JSON.stringify(detail);
+    expect(stored).not.toContain(ghToken);
+    expect(stored).not.toContain(antKey);
+    expect(stored).not.toContain('abcdefghijkl');
+    expect(detail?.events[0].title).toBe('token [REDACTED:github_token]');
+    expect(detail?.events[0].payload).toEqual({
+      header: 'Authorization: Bearer [REDACTED:bearer]',
+      key: '[REDACTED:anthropic_key]',
+    });
+    expect(JSON.parse(detail!.decisions[0].requestJson)).toEqual({ prompt: 'use [REDACTED:anthropic_key]' });
+    expect(detail?.artifacts[0].content).toBe('Error: [REDACTED:github_token]');
+  });
+
   it('lists incidents newest first and returns null for unknown ids', async () => {
     await createIncident(db, { runId: 'old', workspace: 'w', createdAt: '2026-01-01T00:00:00.000Z' });
     await createIncident(db, { runId: 'new', workspace: 'w', createdAt: '2026-02-01T00:00:00.000Z' });

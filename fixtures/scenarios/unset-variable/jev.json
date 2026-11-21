@@ -1,6 +1,6 @@
 {
   "provider": "jev",
-  "recordedAt": "2026-11-21T01:12:07.365Z",
+  "recordedAt": "2026-11-21T01:27:00.411Z",
   "answers": {
     "failure_class": {
       "choice": "missing_input",
@@ -21,7 +21,7 @@
       }
     },
     "config_fixable": {
-      "noul": 0.59
+      "noul": 0.95
     },
     "blast_radius": {
       "score": 0,
@@ -40,9 +40,9 @@
       }
     },
     "needs_human": {
-      "noul": 0.56
+      "noul": 0.3
     }
   },
-  "inputTokens": 966,
-  "latencyMs": 48
+  "inputTokens": 1381,
+  "latencyMs": 45
 }

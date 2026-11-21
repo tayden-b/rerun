@@ -67,13 +67,14 @@ All decisions go through one Jev request per incident (questions can be mixed in
   "questions": {
     "failure_class": { "type": "choice", "instructions": "Which class best describes why this Terraform run failed?",
                         "criteria": { "<each FailureClass>": "<one-line definition>" } },
-    "config_fixable": { "type": "noul", "instructions": "Can this failure be fixed by changing only the Terraform configuration files, without new credentials, quota, or changes to external systems?" },
-    "blast_radius":   { "type": "score", "instructions": "How much existing infrastructure would the failing change destroy or replace if it were applied as planned?",
+    "config_fixable": { "type": "noul", "instructions": "<CONFIG_FIXABLE_INSTRUCTIONS>" },
+    "blast_radius":   { "type": "score", "instructions": "<BLAST_RADIUS_INSTRUCTIONS>",
                         "criteria": ["Nothing is destroyed or replaced", "Only stateless or trivially recreatable resources", "Stateful or shared resources are replaced", "Data-bearing or network-critical resources are destroyed"] },
-    "needs_human":    { "type": "noul", "instructions": "Does fixing this safely require a human decision (ambiguous intent, security-sensitive change, or more than one reasonable fix)?" }
+    "needs_human":    { "type": "noul", "instructions": "<NEEDS_HUMAN_INSTRUCTIONS>" }
   }
 }
 ```
+The `<…_INSTRUCTIONS>` texts live in `src/decisions/questions.ts` (calibrated in W2-J against live Jev; see `docs/RECORDING.md`). That file is the source of truth for the wording.
 `TriageResult` = the four answers with probabilities, plus `stage` and the `errorExcerpt` used.
 
 Routing (pure function `route(triage): Route`, unit-tested):

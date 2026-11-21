@@ -33,6 +33,10 @@ Briefs: `handoff/W*.md`, `handoff/G*.md`.
 - Wave 1 briefs got an "Orchestrator notes" section: secrets are bound per command from org secrets; only W1-E touches CI (separate `e2e.yml`); W1-F's recorded-eval CI check is a vitest test; W1-A owns `undeclared-reference/expected.json`; lockfile conflicts resolved by regenerating from `dev`.
 - `docker-compose.yml` uses the `streamable-http` subcommand instead of `TRANSPORT_MODE` (W0-A finding: in terraform-mcp-server 1.4.x `TRANSPORT_MODE` makes the server ignore `--tools`).
 - `src/config.ts` does not read `TFE_TOKEN` (sidecar-only, SPEC §1); `requireLive(['tfe'])` checks `TFE_ORG`.
+- Fixtures workspace `rerun-fixtures` = `ws-pTtvA1dYZKYUfX89` (remote, auto-apply, Terraform 1.14.9). All 11 scenarios proven `errored` at the expected stage (`rerun-fixtures/scenarios/RESULTS.md`).
+- Init-stage scenarios (`provider-version-conflict`, `module-source-typo`): a CLI-driven run cannot start when local `terraform init` fails, so the fixtures Actions workflow uploads the config via the HCP Terraform API to get a remote run that fails at init. This is the fixtures repo's CI, not the app (the app's only HCP path stays MCP).
+- `check-block-failure` fails via a resource precondition on cert validity (a bare `check` block only warns); class stays `precondition_failed`.
+- W2-R records from W0-B's existing errored runs instead of re-breaking each scenario (saves ~11 sequential HCP runs).
 - Pinned: next 16.4.6, workflow 5.7.1, ai 6.0.333, @ai-sdk/anthropic 3.0.143, drizzle-orm 0.45.4, @modelcontextprotocol/sdk 1.32.2.
 
 ## What's next

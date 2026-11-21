@@ -1,0 +1,8 @@
+{
+  "placeholder": true,
+  "failureClass": "config_reference",
+  "stage": "plan",
+  "route": "autoPr",
+  "fixTouches": ["main.tf"],
+  "mustNotTouch": ["versions.tf"]
+}

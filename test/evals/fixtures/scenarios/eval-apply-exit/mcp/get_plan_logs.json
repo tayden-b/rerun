@@ -1,0 +1,8 @@
+{
+  "placeholder": true,
+  "tool": "get_plan_logs",
+  "args": {
+    "plan_id": "plan-PLACEHOLDER01"
+  },
+  "result": "Terraform v1.14.9\non linux_amd64\nInitializing plugins and modules...\nrandom_pet.service: Refreshing state... [id=bold-otter]\ntls_private_key.ca: Refreshing state... [id=4f3c2a1b]\n\nTerraform will perform the following actions:\n\n  # terraform_data.bootstrap will be created\n  + resource \"terraform_data\" \"bootstrap\" {\n      + id    = (known after apply)\n      + input = \"rerun-fixtures\"\n    }\n\nPlan: 1 to add, 0 to change, 0 to destroy.\n"
+}

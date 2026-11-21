@@ -42,10 +42,12 @@ export async function approveIncident(incidentId: string, approvedBy = 'dashboar
   // `merged` is accepted only to retry resuming the workflow after a failed delivery; it never re-merges.
   let record = await completedResult<ApprovalRecord>(db, incidentId, 'await');
   if (!record) {
+    // Taken before the merge call: the merge-triggered run can be created before it returns.
+    const approvedAt = new Date().toISOString();
     if (pr.draft) await github.markReadyForReview(pr.number);
     const merge = await github.mergePullRequest(pr.number, { method: 'squash' });
     if (!merge.merged) throw new IncidentActionError(409, `Pull request #${pr.number} was not merged`);
-    record = { approvedBy, mergeSha: merge.sha, approvedAt: new Date().toISOString() };
+    record = { approvedBy, mergeSha: merge.sha, approvedAt };
     await enterStatus(db, incidentId, 'await', 'merged', undefined, { ...record, prNumber: pr.number });
     await markCompleted(db, incidentId, 'await', 'await', record);
   } else if (

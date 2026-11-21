@@ -19,7 +19,7 @@ Touch only the paths your brief assigns. Everything else is read-only; if you ne
 | `src/mcp/**`, `fixtures/scenarios/*/mcp/**`                                               | W1-A   |
 | `src/decisions/**`, `src/agents/triage.ts`, `fixtures/scenarios/*/jev.json`               | W1-B   |
 | `src/agents/**` except `triage.ts`                                                        | W1-C   |
-| `src/verify/**`, `src/github/**`                                                          | W1-D   |
+| `src/verify/**`, `src/github/**`, `src/watch/**`                                          | W1-D   |
 | `app/**` pages and layouts, `components/**`                                               | W1-E   |
 | `src/telemetry/**`, `evals/**`                                                            | W1-F   |
 | `app/api/**`, `workflows/**`                                                              | Wave 2 |
@@ -28,9 +28,11 @@ Touch only the paths your brief assigns. Everything else is read-only; if you ne
 
 ## Hard rules
 
-- **Demo mode in tests.** `vitest.config.mts` forces `RERUN_MODE=demo`. Tests and CI never touch HCP Terraform, GitHub, Jev, or Anthropic.
+- **Demo mode in tests.** `vitest.config.mts` forces `RERUN_MODE=demo`. `npm test` and CI never touch HCP Terraform, GitHub, Jev, or Anthropic.
 - **No secret values** anywhere: code, fixtures, logs, PR text. Pass anything that may hold a token through `redact()` from `src/shared/redact.ts` before storing or displaying it.
-- **The app never reads `TFE_TOKEN`.** Only the `terraform-mcp` sidecar uses it. All Terraform access goes through MCP.
+- **`TFE_TOKEN` is used in exactly two places:** the `terraform-mcp` sidecar (all reads of HCP Terraform go through MCP) and the Docker verifier, which forwards it by variable name into the container as `TF_TOKEN_app_terraform_io` for the speculative plan. Nothing else reads it.
+- **Live tests** are named `*.live.test.ts`, excluded from `npm test`, and run with `npm run test:live`. They fail (not skip) when a required key is missing. No `runIf`/`skipIf` gating.
+- The app's Anthropic key is `RERUN_ANTHROPIC_API_KEY` (falls back to `ANTHROPIC_API_KEY` only when unset).
 - **No suppressions.** No `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, `it.skip`, `.only`, or scanner ignores. Fix the cause.
 - **Pinned dependencies.** `.npmrc` sets `save-exact=true`. Add packages with `npm i <pkg>@<version>` and commit `package-lock.json`.
 - Guard every live-only code path with `requireLive([...])` from `src/config.ts`.

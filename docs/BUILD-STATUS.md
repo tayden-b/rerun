@@ -37,6 +37,9 @@ Briefs: `handoff/W*.md`, `handoff/G*.md`.
 - Init-stage scenarios (`provider-version-conflict`, `module-source-typo`): a CLI-driven run cannot start when local `terraform init` fails, so the fixtures Actions workflow uploads the config via the HCP Terraform API to get a remote run that fails at init. This is the fixtures repo's CI, not the app (the app's only HCP path stays MCP).
 - `check-block-failure` fails via a resource precondition on cert validity (a bare `check` block only warns); class stays `precondition_failed`.
 - W2-R records from W0-B's existing errored runs instead of re-breaking each scenario (saves ~11 sequential HCP runs).
+- Anthropic key precedence flipped: `RERUN_ANTHROPIC_API_KEY` wins over `ANTHROPIC_API_KEY` (the Devin env has an unrelated org `ANTHROPIC_API_KEY`; Tayden's `.env` uses the RERUN_ name).
+- `TFE_TOKEN` is read in two places only: the MCP sidecar and the Docker verifier (forwarded by name as `TF_TOKEN_app_terraform_io`) because SPEC §1 needs a real speculative plan. AGENTS.md updated.
+- Live tests are `*.live.test.ts`, excluded from `npm test`/CI, run with `npm run test:live`, and fail when keys are missing (no skipped tests in CI).
 - Pinned: next 16.4.6, workflow 5.7.1, ai 6.0.333, @ai-sdk/anthropic 3.0.143, drizzle-orm 0.45.4, @modelcontextprotocol/sdk 1.32.2.
 
 ## What's next

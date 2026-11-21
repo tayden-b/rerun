@@ -45,7 +45,7 @@ export function loadConfig(env: Env = process.env): Config {
   }
   return {
     mode: rawMode,
-    anthropicApiKey: str(env, 'ANTHROPIC_API_KEY') ?? str(env, 'RERUN_ANTHROPIC_API_KEY'),
+    anthropicApiKey: str(env, 'RERUN_ANTHROPIC_API_KEY') ?? str(env, 'ANTHROPIC_API_KEY'),
     jevApiKey: str(env, 'JEV_API_KEY'),
     tfeOrg: str(env, 'TFE_ORG'),
     workspace: str(env, 'RERUN_WORKSPACE') ?? 'rerun-fixtures',
@@ -70,7 +70,7 @@ export function loadConfig(env: Env = process.env): Config {
 export type LiveRequirement = 'anthropic' | 'jev' | 'tfe' | 'github';
 
 const LIVE_CHECKS: Record<LiveRequirement, (c: Config) => string[]> = {
-  anthropic: (c) => (c.anthropicApiKey ? [] : ['ANTHROPIC_API_KEY (or RERUN_ANTHROPIC_API_KEY)']),
+  anthropic: (c) => (c.anthropicApiKey ? [] : ['RERUN_ANTHROPIC_API_KEY (or ANTHROPIC_API_KEY)']),
   jev: (c) => (c.jevApiKey ? [] : ['JEV_API_KEY']),
   // TFE_TOKEN belongs to the terraform-mcp sidecar (SPEC §9); the app never reads it.
   tfe: (c) => (c.tfeOrg ? [] : ['TFE_ORG']),

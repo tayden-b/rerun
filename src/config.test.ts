@@ -13,11 +13,12 @@ describe('loadConfig', () => {
     expect(c.databaseUrl).toBe('file:data/rerun.db');
   });
 
-  it('accepts RERUN_ANTHROPIC_API_KEY as an alias, preferring ANTHROPIC_API_KEY', () => {
+  it('prefers RERUN_ANTHROPIC_API_KEY over ANTHROPIC_API_KEY', () => {
     expect(loadConfig({ RERUN_ANTHROPIC_API_KEY: 'alias' }).anthropicApiKey).toBe('alias');
     expect(
       loadConfig({ RERUN_ANTHROPIC_API_KEY: 'alias', ANTHROPIC_API_KEY: 'direct' }).anthropicApiKey,
-    ).toBe('direct');
+    ).toBe('alias');
+    expect(loadConfig({ ANTHROPIC_API_KEY: 'direct' }).anthropicApiKey).toBe('direct');
   });
 
   it('parses demo mode and rejects unknown modes', () => {
@@ -39,7 +40,7 @@ describe('requireLive', () => {
     } catch (err) {
       expect(err).toBeInstanceOf(LiveConfigError);
       expect((err as LiveConfigError).missing).toEqual([
-        'ANTHROPIC_API_KEY (or RERUN_ANTHROPIC_API_KEY)',
+        'RERUN_ANTHROPIC_API_KEY (or ANTHROPIC_API_KEY)',
         'JEV_API_KEY',
         'TFE_ORG',
         'GITHUB_TOKEN',

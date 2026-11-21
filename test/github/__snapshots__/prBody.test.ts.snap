@@ -1,0 +1,76 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderPrBody > renders the evidence template 1`] = `
+"> Opened by Rerun. Review the evidence below, then approve in the [Rerun incident](http://localhost:3000/incidents/inc-1).
+
+## What failed
+
+The [HCP Terraform run](https://app.terraform.io/app/org/workspaces/rerun-fixtures/runs/run-abc123) errored during **plan**. Classified as \`config_reference\` (91% confidence).
+
+\`\`\`text
+Error: Reference to undeclared resource
+
+  on main.tf line 40: random_pet.clustr.id
+\`\`\`
+
+## Why
+
+- **Config agent** (95% confidence): main.tf references random_pet.clustr, which is not declared; the resource is random_pet.cluster.
+  - \`log\` plan log line 12: A managed resource "random_pet" "clustr" has not been declared
+
+## What changed
+
+Point the certificate subject at the declared \`random_pet.cluster\` resource.
+
+| File | Change | Why |
+| --- | --- | --- |
+| \`main.tf\` | modified | Typo \\| clustr → cluster |
+
+## Verification
+
+**Passed**: Plan: 0 to add, 1 to change, 0 to destroy.
+
+| Step | Result | Exit | Time |
+| --- | --- | --- | --- |
+| \`terraform fmt -check\` | pass | 0 | 0.0s |
+| \`terraform init\` + \`validate\` | pass | 0 | 0.0s |
+| \`terraform plan\` (speculative) | pass | 0 | 0.0s |
+
+<details>
+<summary>Verifier output</summary>
+
+\`\`\`\`text
+terraform fmt -check
+(no output)
+
+terraform init + validate
+Success! The configuration is valid.
+
+terraform plan (speculative)
+Plan: 0 to add, 1 to change, 0 to destroy.
+\`\`\`
+\`\`\`\`
+
+</details>
+
+## Decision
+
+Triage by Jev (TypeSafe System One).
+
+| Failure class | Probability |
+| --- | --- |
+| \`config_reference\` | 91% |
+| \`config_syntax\` | 6% |
+| \`missing_input\` | 2% |
+| \`unknown\` | 1% |
+
+| Signal | Value |
+| --- | --- |
+| Fixable in config | 94% |
+| Needs a human | 8% |
+| Blast radius | 1 (one resource) |
+
+---
+[View the full investigation in Rerun](http://localhost:3000/incidents/inc-1)
+"
+`;

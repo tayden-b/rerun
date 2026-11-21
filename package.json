@@ -27,6 +27,7 @@
     "@libsql/client": "0.18.0",
     "@modelcontextprotocol/sdk": "1.32.2",
     "@next/env": "16.4.6",
+    "@octokit/rest": "22.0.1",
     "ai": "6.0.333",
     "class-variance-authority": "0.7.1",
     "cn": "0.5.2",

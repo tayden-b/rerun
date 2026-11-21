@@ -220,7 +220,7 @@ Dated 2026-11-21; versions as pinned in this repository.
 
 ## Quickstart
 
-Demo mode needs no credentials. It runs the real incident workflow on the recorded `apply-time-exit-1` run, started through the signed webhook: a mock MCP server serves the recorded fixtures, Jev answers are replayed, the agents are scripted, and GitHub and the verifier are fakes. The incident reaches Awaiting approval in a few seconds.
+Demo mode needs no credentials. It runs the real incident workflow on the recorded `apply-time-exit-1` run, started through the signed webhook: a mock MCP server serves the recorded fixtures, Jev answers are replayed, the agents are scripted, and GitHub and the verifier are fakes. The incident reaches Awaiting approval in about 20 seconds.
 
 ```bash
 git clone https://github.com/tayden-b/rerun && cd rerun

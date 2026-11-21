@@ -363,7 +363,7 @@ After the call, run checklist step 9.
 
 ### Fallback if live is slow
 
-If no incident appeared by 2:30, switch to demo mode. It runs the same workflow on the recorded `apply-time-exit-1` run and reaches Awaiting approval about 12 s after start. In the **app** terminal:
+If no incident appeared by 2:30, switch to demo mode. It runs the same workflow on the recorded `apply-time-exit-1` run and reaches Awaiting approval about 20 s after start. In the **app** terminal:
 
 ```bash
 # Ctrl-C to stop npm run dev, then:

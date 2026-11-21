@@ -29,7 +29,14 @@ async function IncidentList() {
   await connection();
   const incidents = await listIncidents(await getDb());
   if (incidents.length === 0) return <EmptyState workspace={config.workspace} />;
-  return <IncidentTable incidents={incidents} org={config.tfeOrg ?? DEFAULT_TFE_ORG} now={requestTime()} />;
+  return (
+    <IncidentTable
+      incidents={incidents}
+      org={config.tfeOrg ?? DEFAULT_TFE_ORG}
+      now={requestTime()}
+      demo={config.mode === 'demo'}
+    />
+  );
 }
 
 function ListSkeleton() {

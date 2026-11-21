@@ -15,7 +15,8 @@
             "input": {
               "pattern": "undeclared|random_pet",
               "log": "plan"
-            }
+            },
+            "durationMs": 21
           }
         ],
         "usage": {
@@ -29,7 +30,8 @@
             "toolName": "search_files",
             "input": {
               "pattern": "random_pet\\."
-            }
+            },
+            "durationMs": 13
           }
         ],
         "usage": {
@@ -71,7 +73,8 @@
               "oldText": "    cluster = random_pet.clustr.id\n  }\n}\n\nresource \"time_rotating\"",
               "newText": "    cluster = random_pet.cluster.id\n  }\n}\n\nresource \"time_rotating\"",
               "rationale": "random_pet.clustr is not declared; the resource is random_pet.cluster."
-            }
+            },
+            "durationMs": 6
           }
         ],
         "usage": {

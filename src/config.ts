@@ -19,6 +19,8 @@ export interface Config {
   models: { agent: string; fast: string };
   langfuse: { publicKey?: string; secretKey?: string; baseUrl?: string };
   databaseUrl: string;
+  /** Demo only: replay at simulated model and verifier speed instead of instantly. */
+  demoPace: boolean;
 }
 
 type Env = Record<string, string | undefined>;
@@ -52,7 +54,9 @@ export function loadConfig(env: Env = process.env): Config {
     githubToken: str(env, 'GITHUB_TOKEN'),
     fixturesRepo: str(env, 'RERUN_FIXTURES_REPO') ?? 'tayden-b/rerun-fixtures',
     tfcWebhookSecret: str(env, 'TFC_WEBHOOK_SECRET'),
-    terraformMcpUrl: str(env, 'TERRAFORM_MCP_URL') ?? 'http://127.0.0.1:8080/mcp',
+    // Demo mode's mock MCP listens on :8081 so it never collides with the `terraform-mcp` sidecar on :8080.
+    terraformMcpUrl:
+      str(env, 'TERRAFORM_MCP_URL') ?? `http://127.0.0.1:${rawMode === 'demo' ? 8081 : 8080}/mcp`,
     pollSeconds: int(env, 'RERUN_POLL_SECONDS', 30),
     models: {
       agent: str(env, 'RERUN_MODEL_AGENT') ?? DEFAULT_MODELS.agent,
@@ -64,6 +68,7 @@ export function loadConfig(env: Env = process.env): Config {
       baseUrl: str(env, 'LANGFUSE_BASE_URL'),
     },
     databaseUrl: str(env, 'DATABASE_URL') ?? 'file:data/rerun.db',
+    demoPace: str(env, 'RERUN_DEMO_PACE') === '1',
   };
 }
 

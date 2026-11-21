@@ -63,6 +63,8 @@ function github(config: Config, scenario?: string): GitHubClient {
 
 function defaults(config: Config): IncidentServices {
   const demo = config.mode === 'demo';
+  // Set by `npm run demo` so the replay streams at a believable pace; tests replay instantly.
+  const pace = demo && config.demoPace;
   return {
     config,
     db: () => getDb(config.databaseUrl),
@@ -75,8 +77,8 @@ function defaults(config: Config): IncidentServices {
       }),
     decisions: (scenario) => createDecisionProvider(config, { scenario: demo ? scenario : undefined }),
     github: (scenario) => github(config, scenario),
-    verifier: (scenario) => createVerifier(config, { scenario }),
-    model: (scenario) => (demo ? scriptedAgentModel(loadTranscript(scenario ?? '')) : agentModel()),
+    verifier: (scenario) => createVerifier(config, { scenario, pace }),
+    model: (scenario) => (demo ? scriptedAgentModel(loadTranscript(scenario ?? ''), { pace }) : agentModel()),
     runLister: (mcp, afterRunId) => {
       const lister = toRunLister({ listRuns: async (opts) => (await mcp.listRuns(opts)).runs }, (r) => ({
         id: r.id,

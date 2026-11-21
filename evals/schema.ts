@@ -108,6 +108,14 @@ export const providerResultSchema = z.object({
 });
 export type ProviderResult = z.infer<typeof providerResultSchema>;
 
+/** Why a live run could not complete: an outside dependency failed, not Rerun. */
+export const liveBlockedSchema = z.object({
+  reason: z.string(),
+  at: z.iso.datetime(),
+  errorClass: z.string(),
+  error: z.string(),
+});
+
 /** One row of the live end-to-end table (SPEC §8.4). */
 export const liveRowSchema = z.object({
   scenario: z.string(),
@@ -116,7 +124,19 @@ export const liveRowSchema = z.object({
   prUrl: z.string().nullable(),
   fixTouchesRespected: z.boolean().nullable(),
   durationMs: z.number().nonnegative().nullable(),
+  runId: z.string().optional(),
+  incidentId: z.string().optional(),
+  expectedClass: z.string().optional(),
+  failureClass: z.string().nullable().optional(),
+  expectedRoute: z.string().optional(),
+  route: z.string().nullable().optional(),
+  draft: z.boolean().nullable().optional(),
+  costUsd: z.number().nonnegative().optional(),
+  inputTokens: z.number().nonnegative().optional(),
+  outputTokens: z.number().nonnegative().optional(),
+  phasesMs: z.record(z.string(), z.number().nonnegative()).optional(),
   error: z.string().optional(),
+  blocked: liveBlockedSchema.optional(),
 });
 export type LiveRow = z.infer<typeof liveRowSchema>;
 
@@ -132,7 +152,20 @@ export const evalResultsSchema = z.object({
   }),
   pricesAsOf: z.string(),
   providers: z.array(providerResultSchema),
-  live: z.object({ ran: z.boolean(), rows: z.array(liveRowSchema) }),
+  live: z.object({
+    ran: z.boolean(),
+    rows: z.array(liveRowSchema),
+    /** One scenario taken from approve to `resolved` (`evals/resolve.ts`). */
+    resolve: z
+      .object({
+        scenario: z.string(),
+        incidentId: z.string().optional(),
+        reachedStatus: z.string().nullable(),
+        phasesMs: z.record(z.string(), z.number().nonnegative()).optional(),
+        blocked: liveBlockedSchema.optional(),
+      })
+      .optional(),
+  }),
   notes: z.array(z.string()),
 });
 export type EvalResults = z.infer<typeof evalResultsSchema>;

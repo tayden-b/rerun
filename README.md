@@ -6,7 +6,7 @@ When an HCP Terraform run fails, Rerun reads the failure through the Terraform M
 [![Triage eval](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Ftayden-b%2Frerun%2Fdev%2Fdocs%2Fbadges%2Feval.json)](#evals)
 [![Terraform MCP tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Ftayden-b%2Frerun%2Fdev%2Fdocs%2Fbadges%2Fmcp-tools.json)](#why-the-terraform-mcp-server)
 
-![The incident war room in demo mode: triage, investigation, fix, verification and approval for one failed run](docs/media/war-room.png)
+![Demo mode: a failed apply goes from collection through triage, diagnosis, fix and verification to Awaiting approval](docs/media/rerun.gif)
 
 ## Why the Terraform MCP server
 
@@ -83,7 +83,7 @@ One workflow run per incident (`workflows/`); every step writes events that the 
 6. **Propose.** Rerun opens the pull request with the evidence in its body. The router (`autoPr` iff `config_fixable` ≥ 0.70, `blast_radius` ≤ 1.0 and `needs_human` ≤ 0.40) decides between a ready-for-review PR and a draft flagged for a human.
 7. **Approve.** A human reads the war room and presses Approve, which merges the PR, or Request changes, which posts a PR comment.
 
-   ![The approval bar: Approve and merge or Request changes, with the incident cost, duration and tokens](docs/media/approve.png)
+   ![The approval bar: Approve and merge or Request changes on the fix branch](docs/media/approve.png)
 
 8. **Confirm.** The fixtures repository's GitHub Actions applies the merge. Rerun watches the next run: `applied` resolves the incident, `errored` opens a new incident linked to this one.
 
@@ -178,9 +178,23 @@ Each scenario state is perturbed without changing its meaning (consistent resour
 
 ### End-to-end (live)
 
-| Scenario | Reached status | Verifier passed | PR  | fixTouches respected | Duration |
-| -------- | -------------- | --------------- | --- | -------------------- | -------- |
-| not run  | —              | —               | —   | —                    | —        |
+Each scenario broken on the real workspace, then run through Rerun. 9 of 11 reached a passing verifier and an open PR.
+
+| Scenario                  | Class (expected → actual) | Route (expected → actual) | Reached status                    | Verifier passed | PR                                                               | fixTouches respected | Duration | Cost   |
+| ------------------------- | ------------------------- | ------------------------- | --------------------------------- | --------------- | ---------------------------------------------------------------- | -------------------- | -------- | ------ |
+| apply-time-exit-1         | apply_runtime → —         | autoPr → —                | blocked: Anthropic credit balance | —               | —                                                                | —                    | —        | —      |
+| bad-http-url              | provider_api_error        | autoPr                    | blocked: Anthropic credit balance | no              | —                                                                | —                    | 14 s     | $0.000 |
+| check-block-failure       | precondition_failed       | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/15)         | yes                  | 54 s     | $0.073 |
+| dependency-cycle          | dependency_cycle          | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/16)         | yes                  | 52 s     | $0.062 |
+| http-404-postcondition    | precondition_failed       | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/14)         | yes                  | 52 s     | $0.060 |
+| missing-required-arg      | config_syntax             | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/9)          | yes                  | 58 s     | $0.082 |
+| module-source-typo        | module_source             | draftPr                   | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/17) (draft) | yes                  | 50 s     | $0.057 |
+| provider-version-conflict | provider_version          | draftPr                   | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/12) (draft) | yes                  | 60 s     | $0.119 |
+| removed-argument          | config_syntax             | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/13)         | yes                  | 48 s     | $0.060 |
+| undeclared-reference      | config_reference          | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/10)         | yes                  | 64 s     | $0.057 |
+| unset-variable            | missing_input             | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/11)         | yes                  | 54 s     | $0.057 |
+
+Approve → resolved (apply-time-exit-1): blocked: Anthropic credit balance.
 
 - LLM decision cost counts input tokens only (DecisionProvider does not report output tokens).
 

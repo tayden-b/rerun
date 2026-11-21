@@ -19,7 +19,9 @@ function ensureParentDir(url: string): void {
 /** Opens a libSQL database and applies pending migrations from `drizzle/`. */
 export async function openDb(url: string = config.databaseUrl): Promise<Db> {
   ensureParentDir(url);
-  const client = createClient({ url });
+  // The app and out-of-process readers (`npm run eval -- --live`) share the file: wait out another
+  // connection's write lock instead of failing with SQLITE_BUSY. Applies to every pooled connection.
+  const client = createClient({ url, timeout: 5_000 });
   await client.execute('PRAGMA foreign_keys = ON');
   const db = drizzle(client, { schema });
   await migrate(db, { migrationsFolder: MIGRATIONS_FOLDER });

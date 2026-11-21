@@ -248,17 +248,41 @@ npm run dev
 
 - **One workspace, one repository.** The scope guard allows only `RERUN_WORKSPACE`; fix PRs go to `RERUN_FIXTURES_REPO`.
 - **Polling interval.** New errored runs are found up to `RERUN_POLL_SECONDS` (30 s) late, and confirmation polls every 15 s. The webhook removes the first delay but needs a URL HCP Terraform can reach, which a laptop does not have.
-- **Demo GitHub is in memory.** In demo mode the PR is created by a fake GitHub client and lives only in the running process. Its number starts at 1, so the PR link in the war room points at an unrelated real PR (`rerun-fixtures#1`); do not click it in a demo. Restarting the demo forgets the PR.
-- **No unique index on `incidents.run_id` yet** (not on `dev` as of this writing; assigned to W2-L). Within one process `startIncident` dedupes, but two processes on the same database (for example `npm run dev` plus a live eval) can each create an incident for the same run. Run one process per database.
+- **Demo GitHub is in memory.** In demo mode the PR is created by a fake GitHub client and lives only in the running process; the war room shows it as plain text (`#1 · demo`), not a link. Restarting the demo forgets the PR.
+- **Live eval is incomplete: 9/11.** The `RERUN_ANTHROPIC_API_KEY` account is out of credits (`credit balance is too low`), so `bad-http-url`, `apply-time-exit-1` and approve → resolved have not run live yet ([`docs/LIVE-EVAL.md`](LIVE-EVAL.md)). They need a funded key; the org `ANTHROPIC_API_KEY` is deliberately not used. Until then the live checklist (steps 5–9) is unproven end to end.
 - **`blast_radius` is at the edge for `apply-time-exit-1`.** Jev answers 1.00 against the `≤ 1.0` autoPr limit (the LLM provider answers 1.02). Any extra probability on a higher level routes it to a draft PR with Needs a human. Approve works either way.
 - **A speculative plan cannot prove an apply-time fix.** For `apply_runtime` the verifier proves the plan succeeds; only the post-merge apply confirms the fix.
-- **No dashboard authentication.** Anyone who can reach `localhost:3000` can approve a merge. Keep it on localhost.
+- **No authentication on the dashboard or the local API.** `POST /api/incidents/<id>/approve`, `POST /api/incidents/<id>/request-changes` and `POST /api/incidents` (`{ runId }`, used by the live eval) accept any caller, so anyone who can reach port 3000 can start an incident or merge a fix. Fine on localhost; add authentication before any deploy.
 - **Vercel block.** Vercel deploy and Vercel Sandbox are out of scope until the December 2026 fair-use window (SPEC §1 scope cuts). Until then the app runs locally with the Docker verifier, polling, the Local World in `.workflow-data/` and a SQLite file, and `src/verify/vercel-sandbox.ts` throws `NotImplementedError`.
 
 ## Live eval
 
 <!-- live-eval:start -->
+
+**9 of 11 scenarios pass live; 2 are blocked** on the `RERUN_ANTHROPIC_API_KEY` credit balance (`apply-time-exit-1`, `bad-http-url`), and so is the approve → resolved run. All 9 passing scenarios got the expected failure class and route, passed the verifier, opened a PR that respected `fixTouches` and reached Awaiting approval in 48–64 s. The per-scenario table, blocked details and the bugs fixed along the way are in [`docs/LIVE-EVAL.md`](LIVE-EVAL.md).
+
 <!-- live-eval:end -->
+
+### Running the live eval
+
+Needs the live `.env`, `docker compose up -d`, and `npm run db:migrate && npm run dev` running in the **app** tab (checklist steps 2–4), and a clean `main` in the fixtures clone. The eval breaks and resets the real workspace itself, one scenario at a time, so do not run `break.sh` by hand while it runs. In a second **app** tab:
+
+```bash
+npm run eval -- --live --live-only --scenarios apply-time-exit-1
+```
+
+Use `--scenarios a,b` for several, or `npm run eval -- --live` for all 11 (it also reruns the provider tables). Results go to `evals/results.json`; `npm run eval:readme` regenerates the README table from them.
+
+Approve → resolved for one scenario (leaves the fix merged; run `scripts/reset.sh` in the fixtures clone afterwards):
+
+```bash
+npx tsx evals/resolve.ts apply-time-exit-1
+```
+
+| Variable             | Default                              | What it is for                                                                                                                      |
+| -------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `RERUN_APP_URL`      | `http://localhost:$PORT` (port 3000) | The running app; the eval starts incidents through its `POST /api/incidents`.                                                       |
+| `RERUN_FIXTURES_DIR` | `../rerun-fixtures`                  | The fixtures clone whose `scripts/break.sh` and `scripts/reset.sh` the eval runs. With the clones from step 1 the default is right. |
 
 ## When the Vercel block lifts
 
@@ -279,7 +303,7 @@ Three changes: the Sandbox verifier, a deploy, and the webhook instead of pollin
 3. Workflow: on Vercel the Workflow SDK uses the Vercel World automatically; `.workflow-data/` is local only.
 4. Project env vars (Production): `RERUN_MODE=live`, `TFE_ORG`, `TFE_TOKEN` (for the verifier), `GITHUB_TOKEN`, `JEV_API_KEY`, `RERUN_ANTHROPIC_API_KEY`, `DATABASE_URL`, `TERRAFORM_MCP_URL`, `TFC_WEBHOOK_SECRET`, `RERUN_POLL_SECONDS=0`, `RERUN_VERIFIER=vercel-sandbox`.
 5. Deploy: `vercel link`, then `vercel --prod`.
-6. Code changes needed first: the PR body links to `http://localhost:<PORT>/incidents/<id>` (`incidentUrl` in `src/incident/services.ts`), so add a public base URL setting; and add dashboard authentication before the URL is shared, since Approve merges.
+6. Code changes needed first: the PR body links to `http://localhost:<PORT>/incidents/<id>` (`incidentUrl` in `src/incident/services.ts`), so add a public base URL setting; and add authentication to the dashboard and the API routes before the URL is shared, since Approve merges and `POST /api/incidents` starts incidents.
 
 ### 3. Webhook instead of polling
 
@@ -339,12 +363,11 @@ After the call, run checklist step 9.
 
 ### Fallback if live is slow
 
-If no incident appeared by 2:30, switch to demo mode. It runs the same workflow on the recorded `apply-time-exit-1` run and reaches Awaiting approval about 20 s after start. In the **app** terminal:
+If no incident appeared by 2:30, switch to demo mode. It runs the same workflow on the recorded `apply-time-exit-1` run and reaches Awaiting approval about 12 s after start. In the **app** terminal:
 
 ```bash
 # Ctrl-C to stop npm run dev, then:
-docker compose stop
 npm run demo -- --fresh
 ```
 
-The mock MCP server listens on 8081, so it does not clash with the sidecar on 8080. Reload `http://localhost:3000` (the top bar now shows `demo`), open the incident, and continue at 2:30. Approve resolves in about 4 s. Do not click the PR link in demo mode: the PR exists only in memory and the link points at an unrelated PR. After the demo, `scripts/reset.sh` in the **fixtures** tab undoes the live break.
+`terraform-mcp` can keep running: the demo's mock MCP server listens on port 8081. Reload `http://localhost:3000` (the top bar now shows `demo`), open the incident, and continue at 2:30. Approve resolves in about 4 s. In demo mode the PR is plain text (`#1 · demo`), so skip the GitHub tab at 4:00. After the demo, `scripts/reset.sh` in the **fixtures** tab undoes the live break.

@@ -178,9 +178,23 @@ Each scenario state is perturbed without changing its meaning (consistent resour
 
 ### End-to-end (live)
 
-| Scenario | Reached status | Verifier passed | PR  | fixTouches respected | Duration |
-| -------- | -------------- | --------------- | --- | -------------------- | -------- |
-| not run  | —              | —               | —   | —                    | —        |
+Each scenario broken on the real workspace, then run through Rerun. 9 of 11 reached a passing verifier and an open PR.
+
+| Scenario                  | Class (expected → actual) | Route (expected → actual) | Reached status                    | Verifier passed | PR                                                               | fixTouches respected | Duration | Cost   |
+| ------------------------- | ------------------------- | ------------------------- | --------------------------------- | --------------- | ---------------------------------------------------------------- | -------------------- | -------- | ------ |
+| apply-time-exit-1         | apply_runtime → —         | autoPr → —                | blocked: Anthropic credit balance | —               | —                                                                | —                    | —        | —      |
+| bad-http-url              | provider_api_error        | autoPr                    | blocked: Anthropic credit balance | no              | —                                                                | —                    | 14 s     | $0.000 |
+| check-block-failure       | precondition_failed       | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/15)         | yes                  | 54 s     | $0.073 |
+| dependency-cycle          | dependency_cycle          | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/16)         | yes                  | 52 s     | $0.062 |
+| http-404-postcondition    | precondition_failed       | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/14)         | yes                  | 52 s     | $0.060 |
+| missing-required-arg      | config_syntax             | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/9)          | yes                  | 58 s     | $0.082 |
+| module-source-typo        | module_source             | draftPr                   | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/17) (draft) | yes                  | 50 s     | $0.057 |
+| provider-version-conflict | provider_version          | draftPr                   | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/12) (draft) | yes                  | 60 s     | $0.119 |
+| removed-argument          | config_syntax             | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/13)         | yes                  | 48 s     | $0.060 |
+| undeclared-reference      | config_reference          | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/10)         | yes                  | 64 s     | $0.057 |
+| unset-variable            | missing_input             | autoPr                    | awaiting_approval                 | yes             | [PR](https://github.com/tayden-b/rerun-fixtures/pull/11)         | yes                  | 54 s     | $0.057 |
+
+Approve → resolved (apply-time-exit-1): blocked: Anthropic credit balance.
 
 - LLM decision cost counts input tokens only (DecisionProvider does not report output tokens).
 

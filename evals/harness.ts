@@ -171,6 +171,17 @@ async function evalLive(
         prUrl: r.prUrl,
         fixTouchesRespected: r.fixTouchesRespected ?? null,
         durationMs: r.durationMs,
+        runId: r.runId,
+        incidentId: r.incidentId,
+        expectedClass: s.expected.failureClass,
+        failureClass: r.failureClass,
+        expectedRoute: s.expected.route,
+        route: r.route,
+        draft: r.draft,
+        costUsd: r.costUsd,
+        inputTokens: r.inputTokens,
+        outputTokens: r.outputTokens,
+        phasesMs: r.phasesMs,
       });
     } catch (err) {
       log?.(`  live ${s.name}: ${errorMessage(err)}`);
@@ -186,6 +197,15 @@ async function evalLive(
     }
   }
   return rows;
+}
+
+/** Only the live end-to-end table (`--live-only`). */
+export async function runLiveTable(
+  opts: Pick<EvalOptions, 'scenarios' | 'scenariosDir' | 'config' | 'runLive' | 'log'>,
+) {
+  const config = opts.config ?? loadConfig();
+  const scenarios = await loadScenarios(opts.scenariosDir ?? DEFAULT_SCENARIOS_DIR, opts.scenarios, config);
+  return evalLive(scenarios, opts.runLive ?? defaultRunLive, opts.log);
 }
 
 /** Runs triage accuracy, calibration, robustness (and optionally live e2e); returns schema-validated results. */

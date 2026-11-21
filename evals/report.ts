@@ -129,20 +129,49 @@ export function renderMarkdown(r: EvalResults, opts: { baseline?: EvalResults } 
       `Each scenario broken on the real workspace, then run through Rerun. ${reached} of ${r.live.rows.length} reached a passing verifier and an open PR.`,
     );
   }
+  const vs = (expected?: string, actual?: string | null) =>
+    expected === undefined ? dash : actual === expected ? actual : `${expected} → ${actual ?? dash}`;
   const liveRows = r.live.rows.map((row) => [
     row.scenario,
-    row.reachedStatus ?? (row.error ? `error: ${row.error.replace(/\|/g, '\\|')}` : dash),
+    vs(row.expectedClass, row.failureClass),
+    vs(row.expectedRoute, row.route),
+    row.blocked
+      ? `blocked: ${row.blocked.reason}`
+      : (row.reachedStatus ?? (row.error ? `error: ${row.error.replace(/\|/g, '\\|')}` : dash)),
     yesNo(row.verifierOk),
-    row.prUrl ? `[PR](${row.prUrl})` : dash,
+    row.prUrl ? `[PR](${row.prUrl})${row.draft ? ' (draft)' : ''}` : dash,
     yesNo(row.fixTouchesRespected),
     row.durationMs === null ? dash : `${(row.durationMs / 1000).toFixed(0)} s`,
+    row.costUsd === undefined ? dash : `$${row.costUsd.toFixed(3)}`,
   ]);
   out.push(
     table(
-      ['Scenario', 'Reached status', 'Verifier passed', 'PR', 'fixTouches respected', 'Duration'],
-      liveRows.length ? liveRows : [['not run', dash, dash, dash, dash, dash]],
+      [
+        'Scenario',
+        'Class (expected → actual)',
+        'Route (expected → actual)',
+        'Reached status',
+        'Verifier passed',
+        'PR',
+        'fixTouches respected',
+        'Duration',
+        'Cost',
+      ],
+      liveRows.length ? liveRows : [['not run', dash, dash, dash, dash, dash, dash, dash, dash]],
     ),
   );
+
+  const resolve = r.live.resolve;
+  if (resolve) {
+    const phases = Object.entries(resolve.phasesMs ?? {})
+      .map(([phase, ms]) => `${phase} ${(ms / 1000).toFixed(0)} s`)
+      .join(', ');
+    out.push(
+      resolve.blocked
+        ? `Approve → resolved (${resolve.scenario}): blocked: ${resolve.blocked.reason}.`
+        : `Approve → resolved (${resolve.scenario}): ${resolve.reachedStatus ?? dash}${phases ? ` (${phases})` : ''}.`,
+    );
+  }
 
   if (r.notes.length) out.push(r.notes.map((n) => `- ${n}`).join('\n'));
   return `${out.join('\n\n')}\n`;

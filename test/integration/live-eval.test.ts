@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { createLiveScenarioRunner } from '../../evals/live';
+import { createLiveScenarioRunner, startIncidentViaApp } from '../../evals/live';
+import { POST } from '../../app/api/incidents/route';
 import { getIncident } from '../../src/db/incidents';
 import { runIdForScenario } from '../../src/incident/demo';
 import { startIncident } from '../../src/incident/start';
@@ -58,5 +59,45 @@ describe('runLiveScenario', () => {
       verifierOk: false,
       fixTouchesRespected: false,
     });
+  });
+});
+
+describe('startIncidentViaApp', () => {
+  // Live failure: `start()` from `workflow/api` in the `npm run eval` process (not compiled by Next) throws
+  // "'start' received an invalid workflow function", so the CLI starts incidents through the app.
+  it('POSTs the run id to /api/incidents and returns the incident', async () => {
+    const calls: { url: string; init?: RequestInit }[] = [];
+    const fetchFn = (async (url: URL, init?: RequestInit) => {
+      calls.push({ url: String(url), init });
+      return Response.json({ incident: { id: 'i1' }, created: true }, { status: 201 });
+    }) as typeof fetch;
+    const result = await startIncidentViaApp('http://localhost:3000', 'run-abc', fetchFn);
+    expect(result).toEqual({ incident: { id: 'i1' }, created: true });
+    expect(calls[0].url).toBe('http://localhost:3000/api/incidents');
+    expect(JSON.parse(String(calls[0].init?.body))).toEqual({ runId: 'run-abc' });
+  });
+
+  it('throws on an HTTP error', async () => {
+    const fetchFn = (async () => new Response('nope', { status: 400 })) as typeof fetch;
+    await expect(startIncidentViaApp('http://localhost:3000', 'run-abc', fetchFn)).rejects.toThrow(
+      /HTTP 400/,
+    );
+  });
+});
+
+describe('POST /api/incidents', () => {
+  it('starts the incident once and returns the existing one after', async () => {
+    h = await startHarness();
+    const run = runIdForScenario('apply-time-exit-1');
+    const post = (body: unknown) =>
+      POST(new Request('http://localhost/api/incidents', { method: 'POST', body: JSON.stringify(body) }));
+    const first = await post({ runId: run });
+    expect(first.status).toBe(201);
+    const second = await post({ runId: run });
+    expect(second.status).toBe(200);
+    expect((await second.json()).incident.id).toBe((await first.json()).incident.id);
+    expect(h.runs).toHaveLength(1);
+    await h.runs[0];
+    expect((await post({ runId: '../x' })).status).toBe(400);
   });
 });

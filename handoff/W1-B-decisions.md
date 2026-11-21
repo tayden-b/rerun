@@ -32,3 +32,13 @@ You MAY read `JEV_API_KEY` and `RERUN_ANTHROPIC_API_KEY` from your env for the l
 
 ## Done
 - CI green. PR title `W1-B: Jev/LLM decision providers, triage, router`. **Do not merge.** Report: PR URL, CI, the live Jev answer for the placeholder state (probabilities only), latency, input tokens.
+
+
+## Orchestrator notes (added after cross-brief review — these override anything above)
+- **Credentials in your env**: the scoped keys this brief allows you to use are org secrets that may not be in your shell env by default. Bind them per command via exec `env`, e.g. `{"JEV_API_KEY": "secret:org:JEV_API_KEY"}`, `{"RERUN_ANTHROPIC_API_KEY": "secret:org:RERUN_ANTHROPIC_API_KEY"}`, `{"TFE_TOKEN": "secret:org:TFE_TOKEN", "TFE_ORG": "secret:org:TFE_ORG"}`, `{"GITHUB_TOKEN": "secret:org:GITHUB_TOKEN"}`. Only the ones your brief names. Never print/echo/commit values. GitHub CI never has them.
+- **Workspace scope**: touch only the HCP Terraform workspace `rerun-fixtures` in `hashi-org-TF`. Never set `ENABLE_TF_OPERATIONS`.
+- **Shared files** (`package.json`, `package-lock.json`, `.github/workflows/ci.yml`): six Wave 1 workers run in parallel. Only add your deps/scripts to `package.json` (pinned, `save-exact`); do not reorder or reformat it. Do not edit `.github/workflows/ci.yml` unless this brief says so. Before your final push, `git merge origin/dev`; on lockfile conflicts take `dev`'s lockfile and re-run `npm install` to regenerate, never hand-edit it.
+- **AI SDK 6 / MCP API names**: where a brief names an API (`generateObject`, `experimental_createMCPClient`, `MockLanguageModelV3`), use the current non-deprecated equivalent in the pinned version (e.g. `generateText` with `output: Output.object(...)`, `createMCPClient` from `@ai-sdk/mcp`) and note the choice in your PR.
+- Do not change `src/shared/types.ts`. If a SPEC §11 type genuinely blocks you, explain in the PR and update `handoff/SPEC.md` §11 in the same PR.
+- Work fast: compute is free; the orchestrator is waiting on your PR to start the next wave.
+- `fixtures/scenarios/undeclared-reference/` is created in parallel by W1-A (its `mcp/` and `expected.json`); you create only `jev.json` there. Your tests must not depend on W1-A's files — use inline fixtures in `test/decisions/`.

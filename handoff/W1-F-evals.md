@@ -31,3 +31,15 @@ W1-B owns the decision providers and triage (`src/decisions/**`, `src/agents/tri
 
 ## Done
 - CI green. PR title `W1-F: eval harness and telemetry`. **Do not merge.** Report: PR URL, CI, the live table for the placeholder scenario if keys were present, and the `runLiveScenario` interface for Wave 2.
+
+
+## Orchestrator notes (added after cross-brief review — these override anything above)
+- **Credentials in your env**: the scoped keys this brief allows you to use are org secrets that may not be in your shell env by default. Bind them per command via exec `env`, e.g. `{"JEV_API_KEY": "secret:org:JEV_API_KEY"}`, `{"RERUN_ANTHROPIC_API_KEY": "secret:org:RERUN_ANTHROPIC_API_KEY"}`, `{"TFE_TOKEN": "secret:org:TFE_TOKEN", "TFE_ORG": "secret:org:TFE_ORG"}`, `{"GITHUB_TOKEN": "secret:org:GITHUB_TOKEN"}`. Only the ones your brief names. Never print/echo/commit values. GitHub CI never has them.
+- **Workspace scope**: touch only the HCP Terraform workspace `rerun-fixtures` in `hashi-org-TF`. Never set `ENABLE_TF_OPERATIONS`.
+- **Shared files** (`package.json`, `package-lock.json`, `.github/workflows/ci.yml`): six Wave 1 workers run in parallel. Only add your deps/scripts to `package.json` (pinned, `save-exact`); do not reorder or reformat it. Do not edit `.github/workflows/ci.yml` unless this brief says so. Before your final push, `git merge origin/dev`; on lockfile conflicts take `dev`'s lockfile and re-run `npm install` to regenerate, never hand-edit it.
+- **AI SDK 6 / MCP API names**: where a brief names an API (`generateObject`, `experimental_createMCPClient`, `MockLanguageModelV3`), use the current non-deprecated equivalent in the pinned version (e.g. `generateText` with `output: Output.object(...)`, `createMCPClient` from `@ai-sdk/mcp`) and note the choice in your PR.
+- Do not change `src/shared/types.ts`. If a SPEC §11 type genuinely blocks you, explain in the PR and update `handoff/SPEC.md` §11 in the same PR.
+- Work fast: compute is free; the orchestrator is waiting on your PR to start the next wave.
+- Do **not** edit `.github/workflows/ci.yml`. Instead, make the CI check a vitest test (`test/evals/recorded.test.ts`) that runs the harness with `--provider recorded` programmatically and validates the result with the zod schema — `npm test` in CI then covers it.
+- If `README.md` does not exist yet, create it with only a title line and the marker section; the Docs wave fills the rest.
+- The placeholder `undeclared-reference` scenario is added in parallel by W1-A/W1-B; your tests must use your own fixtures under `test/evals/` so they pass regardless of merge order; the CLI just iterates whatever scenarios exist.

@@ -27,3 +27,14 @@ You MAY read `TFE_TOKEN` and `TFE_ORG` from your env to run the real MCP server 
 
 ## Done
 - CI green. PR title `W1-A: scoped Terraform MCP client, mock server, recorder`. **Do not merge.** Report: PR URL, CI, the exact `--tools`/env invocation that worked for the real server, the `stage` rule you derived, and any tool whose arguments differed from the reference docs.
+
+
+## Orchestrator notes (added after cross-brief review — these override anything above)
+- **Credentials in your env**: the scoped keys this brief allows you to use are org secrets that may not be in your shell env by default. Bind them per command via exec `env`, e.g. `{"JEV_API_KEY": "secret:org:JEV_API_KEY"}`, `{"RERUN_ANTHROPIC_API_KEY": "secret:org:RERUN_ANTHROPIC_API_KEY"}`, `{"TFE_TOKEN": "secret:org:TFE_TOKEN", "TFE_ORG": "secret:org:TFE_ORG"}`, `{"GITHUB_TOKEN": "secret:org:GITHUB_TOKEN"}`. Only the ones your brief names. Never print/echo/commit values. GitHub CI never has them.
+- **Workspace scope**: touch only the HCP Terraform workspace `rerun-fixtures` in `hashi-org-TF`. Never set `ENABLE_TF_OPERATIONS`.
+- **Shared files** (`package.json`, `package-lock.json`, `.github/workflows/ci.yml`): six Wave 1 workers run in parallel. Only add your deps/scripts to `package.json` (pinned, `save-exact`); do not reorder or reformat it. Do not edit `.github/workflows/ci.yml` unless this brief says so. Before your final push, `git merge origin/dev`; on lockfile conflicts take `dev`'s lockfile and re-run `npm install` to regenerate, never hand-edit it.
+- **AI SDK 6 / MCP API names**: where a brief names an API (`generateObject`, `experimental_createMCPClient`, `MockLanguageModelV3`), use the current non-deprecated equivalent in the pinned version (e.g. `generateText` with `output: Output.object(...)`, `createMCPClient` from `@ai-sdk/mcp`) and note the choice in your PR.
+- Do not change `src/shared/types.ts`. If a SPEC §11 type genuinely blocks you, explain in the PR and update `handoff/SPEC.md` §11 in the same PR.
+- Work fast: compute is free; the orchestrator is waiting on your PR to start the next wave.
+- You also own `fixtures/scenarios/undeclared-reference/expected.json` (SPEC §8/§10 schema: `config_reference`, `plan`, `autoPr`, `fixTouches: ["main.tf"]`, `mustNotTouch: ["versions.tf"]`, `"placeholder": true`). W1-B adds `jev.json` in the same directory in parallel — do not create that file.
+- The real `--tools` list must match the SPEC §5 allowlist; if the 1.4 server names a tool differently, record the real name in `fixtures/mcp/tools-list.json`, use it, and list the difference in your PR.

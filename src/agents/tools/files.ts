@@ -56,11 +56,66 @@ export function fileTools(workdir: Workdir) {
 }
 
 const PROTECTED_PREFIXES = ['scenarios/', 'baseline/', '.github/'];
-const PROVIDER_SOURCE = /source\s*=\s*"([^"]+\/[^"]+)"/g;
 const PROVIDER_BLOCK = /^\s*provider\s+"([^"]+)"/gm;
+const REQUIRED_PROVIDERS = /\brequired_providers\s*\{/g;
+const PROVIDER_ENTRY = /^\s*"?([A-Za-z0-9_-]+)"?\s*=/;
 
-function matches(re: RegExp, text: string): Set<string> {
-  return new Set([...text.matchAll(re)].map((m) => m[1]));
+/** Bodies of every `required_providers { ... }` block (brace-matched). */
+function requiredProvidersBodies(text: string): string[] {
+  const bodies: string[] = [];
+  for (const m of text.matchAll(REQUIRED_PROVIDERS)) {
+    const start = (m.index ?? 0) + m[0].length;
+    let depth = 1;
+    let i = start;
+    for (; i < text.length && depth > 0; i++) {
+      if (text[i] === '{') depth++;
+      else if (text[i] === '}') depth--;
+    }
+    bodies.push(text.slice(start, i - 1));
+  }
+  return bodies;
+}
+
+/** Top-level entries of `required_providers` blocks: local name -> its source/version text. */
+function requiredProviders(text: string): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const body of requiredProvidersBodies(text)) {
+    let depth = 0;
+    let name: string | undefined;
+    for (const line of body.split('\n')) {
+      if (depth === 0) name = PROVIDER_ENTRY.exec(line)?.[1];
+      if (name !== undefined) out.set(name, `${out.get(name) ?? ''}${line}\n`);
+      depth = Math.max(0, depth + (line.match(/\{/g)?.length ?? 0) - (line.match(/\}/g)?.length ?? 0));
+      if (depth === 0) name = undefined;
+    }
+  }
+  return out;
+}
+
+const SOURCE_VALUE = /source\s*=\s*"([^"]+)"/;
+
+/** Multiset of `provider "x"` blocks, so an extra aliased block counts as an addition. */
+function providerBlockCounts(text: string): Map<string, number> {
+  const out = new Map<string, number>();
+  for (const m of text.matchAll(PROVIDER_BLOCK)) out.set(m[1], (out.get(m[1]) ?? 0) + 1);
+  return out;
+}
+
+function addedProviders(before: string, after: string): string[] {
+  const added: string[] = [];
+  const had = providerBlockCounts(before);
+  for (const [name, count] of providerBlockCounts(after)) {
+    if (count > (had.get(name) ?? 0)) added.push(`provider "${name}"`);
+  }
+  const hadRequired = requiredProviders(before);
+  for (const [name, entry] of requiredProviders(after)) {
+    const previous = hadRequired.get(name);
+    if (previous === undefined) added.push(`required_providers.${name}`);
+    else if (SOURCE_VALUE.exec(entry)?.[1] !== SOURCE_VALUE.exec(previous)?.[1]) {
+      added.push(`required_providers.${name} source`);
+    }
+  }
+  return added;
 }
 
 /**
@@ -91,11 +146,8 @@ export function writeRefusal(
   if (!versionFile && !/\.(tf|tfvars)$/.test(base)) {
     return `"${rel}" is not a Terraform file (.tf or .tfvars)`;
   }
-  for (const re of [PROVIDER_SOURCE, PROVIDER_BLOCK]) {
-    const had = matches(re, before ?? '');
-    const added = [...matches(re, after)].filter((name) => !had.has(name));
-    if (added.length > 0) return `adding providers is not allowed (${added.join(', ')})`;
-  }
+  const added = addedProviders(before ?? '', after);
+  if (added.length > 0) return `adding providers is not allowed (${added.join(', ')})`;
   return null;
 }
 

@@ -101,22 +101,26 @@ describe('recorded jev.json fixtures', () => {
     expect(RECORDED_SCENARIOS).toHaveLength(11);
   });
 
-  it.each(RECORDED_SCENARIOS)('%s replays a real Jev answer with the expected class', async (scenario) => {
-    const dirOf = path.join(SCENARIOS_DIR, scenario);
-    const raw = recordedDecisionSchema.parse(
-      JSON.parse(await readFile(path.join(dirOf, 'jev.json'), 'utf8')),
-    );
-    const expected = JSON.parse(await readFile(path.join(dirOf, 'expected.json'), 'utf8')) as {
-      failureClass: string;
-    };
-    expect(raw.placeholder).toBeUndefined();
-    expect(raw.provider).toBe('jev');
-    const { result } = await triage(sampleContext(), new RecordedDecisionProvider({ scenario }));
-    expect(result.failureClass.choice).toBe(expected.failureClass);
-    const sum = Object.values(result.failureClass.probabilities).reduce((a, b) => a + b, 0);
-    expect(sum).toBeCloseTo(1, 1);
-    expect(['autoPr', 'draftPr']).toContain(route(result));
-  });
+  it.each(RECORDED_SCENARIOS)(
+    '%s replays a real Jev answer with the expected class and route',
+    async (scenario) => {
+      const dirOf = path.join(SCENARIOS_DIR, scenario);
+      const raw = recordedDecisionSchema.parse(
+        JSON.parse(await readFile(path.join(dirOf, 'jev.json'), 'utf8')),
+      );
+      const expected = JSON.parse(await readFile(path.join(dirOf, 'expected.json'), 'utf8')) as {
+        failureClass: string;
+        route: string;
+      };
+      expect(raw.placeholder).toBeUndefined();
+      expect(raw.provider).toBe('jev');
+      const { result } = await triage(sampleContext(), new RecordedDecisionProvider({ scenario }));
+      expect(result.failureClass.choice).toBe(expected.failureClass);
+      const sum = Object.values(result.failureClass.probabilities).reduce((a, b) => a + b, 0);
+      expect(sum).toBeCloseTo(1, 1);
+      expect(route(result)).toBe(expected.route);
+    },
+  );
 });
 
 describe('createDecisionProvider', () => {

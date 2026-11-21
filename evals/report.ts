@@ -229,6 +229,9 @@ function jevView(r: EvalResults): ProviderResult | undefined {
   return r.providers.find((p) => p.provider === 'jev') ?? r.providers.find((p) => p.provider === 'recorded');
 }
 
+const label = (p: ProviderResult) =>
+  p.provider === 'recorded' ? 'recorded Jev answers' : `live ${p.provider} answers`;
+
 const ratio = (k: number, n: number) => (n === 0 ? dash : `${k}/${n}`);
 
 function renderPerClass(r: EvalResults): string {
@@ -287,7 +290,7 @@ function renderRewording(before: EvalResults, after: EvalResults): string | null
     ratio(matches(am), names.length),
   ]);
   return [
-    `Same scenarios and SPEC §4 thresholds (\`autoPr\` iff \`config_fixable\` ≥ 0.70, \`blast_radius\` ≤ 1.0, \`needs_human\` ≤ 0.40); only the question wording changed. Before: ${b.provider} answers of ${before.generatedAt.slice(0, 10)}. After: ${a.provider} answers of ${after.generatedAt.slice(0, 10)}.`,
+    `Same scenarios and SPEC §4 thresholds (\`autoPr\` iff \`config_fixable\` ≥ 0.70, \`blast_radius\` ≤ 1.0, \`needs_human\` ≤ 0.40); only the question wording changed. Before: ${label(b)} of ${before.generatedAt.slice(0, 10)}. After: ${label(a)} of ${after.generatedAt.slice(0, 10)}.`,
     table(
       [
         'Scenario',

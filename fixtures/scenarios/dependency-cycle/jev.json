@@ -1,6 +1,6 @@
 {
   "provider": "jev",
-  "recordedAt": "2026-11-21T01:12:06.856Z",
+  "recordedAt": "2026-11-21T01:26:59.879Z",
   "answers": {
     "failure_class": {
       "choice": "dependency_cycle",
@@ -21,16 +21,16 @@
       }
     },
     "config_fixable": {
-      "noul": 0.88
+      "noul": 0.92
     },
     "blast_radius": {
-      "score": 0.14,
-      "confidence": 0.84,
+      "score": 0.13,
+      "confidence": 0.87,
       "probabilities": {
-        "0": 0.9,
-        "1": 0.05,
-        "2": 0.04,
-        "3": 0.01
+        "0": 0.88,
+        "1": 0.11,
+        "2": 0.01,
+        "3": 0
       },
       "legend": {
         "0": "Nothing is destroyed or replaced",
@@ -40,9 +40,9 @@
       }
     },
     "needs_human": {
-      "noul": 0.69
+      "noul": 0.16
     }
   },
-  "inputTokens": 911,
-  "latencyMs": 45
+  "inputTokens": 1326,
+  "latencyMs": 50
 }

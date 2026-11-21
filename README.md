@@ -101,7 +101,7 @@ Generated 2026-11-21 from `evals/results.json`: 11 scenario(s), 5 perturbation(s
 
 | Provider | Scenarios | Errors | Class accuracy | Route accuracy | Mean latency | Mean input tokens | Triage cost / incident |
 | -------- | --------- | ------ | -------------- | -------------- | ------------ | ----------------- | ---------------------- |
-| recorded | 11        | 0      | 100%           | 27%            | 58 ms        | 995               | $0.000042              |
+| recorded | 11        | 0      | 100%           | 100%           | 57 ms        | 1410              | $0.000059              |
 
 ### Accuracy per failure class
 
@@ -119,27 +119,44 @@ Correct `failure_class` answers out of the scenarios of that class. Each cell is
 | `config_reference`    | 1         | 1/1      |
 | `missing_input`       | 1         | 1/1      |
 
+### Question rewording: before and after
+
+Same scenarios and SPEC §4 thresholds (`autoPr` iff `config_fixable` ≥ 0.70, `blast_radius` ≤ 1.0, `needs_human` ≤ 0.40); only the question wording changed. Before: recorded Jev answers of 2026-11-21. After: recorded Jev answers of 2026-11-21.
+
+| Scenario                    | Expected  | `config_fixable` before | after | `needs_human` before | after | Route before | after     |
+| --------------------------- | --------- | ----------------------- | ----- | -------------------- | ----- | ------------ | --------- |
+| `apply-time-exit-1`         | `autoPr`  | 0.88                    | 0.92  | 0.69                 | 0.29  | `draftPr`    | `autoPr`  |
+| `bad-http-url`              | `autoPr`  | 0.77                    | 0.90  | 0.56                 | 0.31  | `draftPr`    | `autoPr`  |
+| `check-block-failure`       | `autoPr`  | 0.83                    | 0.95  | 0.77                 | 0.29  | `draftPr`    | `autoPr`  |
+| `dependency-cycle`          | `autoPr`  | 0.88                    | 0.92  | 0.69                 | 0.16  | `draftPr`    | `autoPr`  |
+| `http-404-postcondition`    | `autoPr`  | 0.73                    | 0.92  | 0.69                 | 0.26  | `draftPr`    | `autoPr`  |
+| `missing-required-arg`      | `autoPr`  | 0.97                    | 0.98  | 0.49                 | 0.19  | `draftPr`    | `autoPr`  |
+| `module-source-typo`        | `draftPr` | 0.78                    | 0.79  | 0.55                 | 0.52  | `draftPr`    | `draftPr` |
+| `provider-version-conflict` | `draftPr` | 0.68                    | 0.85  | 0.63                 | 0.79  | `draftPr`    | `draftPr` |
+| `removed-argument`          | `autoPr`  | 0.94                    | 0.96  | 0.25                 | 0.12  | `autoPr`     | `autoPr`  |
+| `undeclared-reference`      | `autoPr`  | 0.96                    | 0.97  | 0.43                 | 0.18  | `draftPr`    | `autoPr`  |
+| `unset-variable`            | `autoPr`  | 0.59                    | 0.95  | 0.56                 | 0.30  | `draftPr`    | `autoPr`  |
+| Route matches expected      |           |                         |       |                      |       | 3/11         | 11/11     |
+
 ### Calibration
 
 Outcome: `autoPr` in `expected.json` means config-fixable = 1 and needs-human = 0. ECE = expected calibration error over 0.1-wide bins (lower is better).
 
 | Provider | Signal           | n   | ECE  |
 | -------- | ---------------- | --- | ---- |
-| recorded | `config_fixable` | 11  | 0.17 |
-| recorded | `needs_human`    | 11  | 0.39 |
+| recorded | `config_fixable` | 11  | 0.20 |
+| recorded | `needs_human`    | 11  | 0.25 |
 
 | Provider | Signal           | Bin     | n   | Mean predicted | Observed |
 | -------- | ---------------- | ------- | --- | -------------- | -------- |
-| recorded | `config_fixable` | 0.5–0.6 | 1   | 0.59           | 1.00     |
-| recorded | `config_fixable` | 0.6–0.7 | 1   | 0.68           | 0.00     |
-| recorded | `config_fixable` | 0.7–0.8 | 3   | 0.76           | 0.67     |
-| recorded | `config_fixable` | 0.8–0.9 | 3   | 0.86           | 1.00     |
-| recorded | `config_fixable` | 0.9–1.0 | 3   | 0.96           | 1.00     |
-| recorded | `needs_human`    | 0.2–0.3 | 1   | 0.25           | 0.00     |
-| recorded | `needs_human`    | 0.4–0.5 | 2   | 0.46           | 0.00     |
-| recorded | `needs_human`    | 0.5–0.6 | 3   | 0.56           | 0.33     |
-| recorded | `needs_human`    | 0.6–0.7 | 4   | 0.67           | 0.25     |
-| recorded | `needs_human`    | 0.7–0.8 | 1   | 0.77           | 0.00     |
+| recorded | `config_fixable` | 0.7–0.8 | 1   | 0.79           | 0.00     |
+| recorded | `config_fixable` | 0.8–0.9 | 1   | 0.85           | 0.00     |
+| recorded | `config_fixable` | 0.9–1.0 | 9   | 0.94           | 1.00     |
+| recorded | `needs_human`    | 0.1–0.2 | 4   | 0.16           | 0.00     |
+| recorded | `needs_human`    | 0.2–0.3 | 3   | 0.28           | 0.00     |
+| recorded | `needs_human`    | 0.3–0.4 | 2   | 0.30           | 0.00     |
+| recorded | `needs_human`    | 0.5–0.6 | 1   | 0.52           | 1.00     |
+| recorded | `needs_human`    | 0.7–0.8 | 1   | 0.79           | 1.00     |
 
 ### Robustness
 

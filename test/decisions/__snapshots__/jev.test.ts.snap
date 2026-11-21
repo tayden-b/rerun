@@ -11,11 +11,11 @@ exports[`Jev request mapping > matches the SPEC §4 request 1`] = `
         "Stateful or shared resources are replaced",
         "Data-bearing or network-critical resources are destroyed",
       ],
-      "instructions": "How much existing infrastructure would the failing change destroy or replace if it were applied as planned?",
+      "instructions": "How much existing infrastructure would the failing change destroy or replace if it were applied as planned? Judge from the plan summary: the resource actions and what each resource type holds. Creates, in-place updates and runs with no plan destroy nothing. Replacing a resource that holds no data, such as one that only runs a command or stores a generated value, is the second level, not higher.",
       "type": "score",
     },
     "config_fixable": {
-      "instructions": "Can this failure be fixed by changing only the Terraform configuration files, without new credentials, quota, or changes to external systems?",
+      "instructions": "Can this failure be fixed by editing only the Terraform files (.tf and .tfvars) in the repository? Such an edit can change any argument, reference, expression, URL, command or literal value; add or remove blocks; add variable defaults or tfvars values; and change provider or Terraform version constraints and module sources. Answer yes when the cause is something written in the configuration, including a configured value that an external endpoint, provisioner command or assertion then rejects. Answer no only when the fix needs something a file edit cannot provide: credentials or secret values, quota or permissions, or changes to systems outside Terraform.",
       "type": "noul",
     },
     "failure_class": {
@@ -37,7 +37,7 @@ exports[`Jev request mapping > matches the SPEC §4 request 1`] = `
       "type": "choice",
     },
     "needs_human": {
-      "instructions": "Does fixing this safely require a human decision (ambiguous intent, security-sensitive change, or more than one reasonable fix)?",
+      "instructions": "Does fixing this require a person to supply information or make a decision that cannot be derived from the repository, run logs, plan, state and provider documentation? Every fix is opened as a pull request that a human reviews and must approve before it merges, so needing review is not a reason to answer yes, and neither is the existence of several equivalent ways to write the fix. Answer yes for: credentials or secret values; a choice between materially different outcomes that only the owners can make; accepting the destruction or replacement of stateful data; or changes outside Terraform. A fix that edits a module block's source or version, or a required_providers or required_version constraint, counts as such a choice even when it looks like a simple correction, because it changes which dependency code the configuration installs; failures to install a module or to resolve a provider version are fixed this way. Otherwise answer no when the correct change follows from the configuration and the error, for example correcting a misspelled reference, adding a missing argument, removing an unsupported one, giving a non-secret input a default or tfvars value that the reviewer can adjust, breaking a dependency loop, or changing a configured value so that it satisfies the check, endpoint or command that rejected it. An assertion, validation rule or condition in the configuration already states the owners' intent, so meeting it is not a new decision.",
       "type": "noul",
     },
   },

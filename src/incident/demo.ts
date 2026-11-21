@@ -3,6 +3,7 @@ import path from 'node:path';
 import { MockLanguageModelV3 } from 'ai/test';
 import { config } from '../config';
 import { DEMO_BASELINE_FILES } from '../github/demoBaseline';
+import { REPLAY_MARKER } from '../telemetry/replay';
 import type { RunSummary } from '../watch/runs';
 
 // Demo mode (SPEC §1): every external system is replaced by a recording. The agents replay a scripted
@@ -11,7 +12,7 @@ import type { RunSummary } from '../watch/runs';
 
 export const SCENARIOS_DIR = path.join(process.cwd(), 'fixtures', 'scenarios');
 /** The configured agent model, marked as a replay so the transcript is never mistaken for a live call. */
-export const DEMO_AGENT_MODEL_ID = `${config.models.agent} · replay`;
+export const DEMO_AGENT_MODEL_ID = `${config.models.agent}${REPLAY_MARKER}`;
 
 type AgentKey = 'config' | 'reality' | 'fix';
 

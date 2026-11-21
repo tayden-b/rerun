@@ -13,6 +13,7 @@ import { Section, SectionSkeleton } from '@/components/war-room/section';
 import { TriageCard } from '@/components/war-room/triage-card';
 import { Verification } from '@/components/war-room/verification';
 import { buildIncidentView } from '@/lib/ui/incident-view';
+import { baseModel, isReplay } from '@/src/telemetry/replay';
 import { formatCost, formatTokens, prLabel, runUrl } from '@/lib/ui/format';
 import { ROUTE_LABELS } from '@/lib/ui/status';
 import { formatDuration } from '@/lib/ui/time';
@@ -92,13 +93,18 @@ export function WarRoom({ detail, org, now }: { detail: IncidentDetail; org: str
             <Section
               title="Cost"
               meta={
-                <span className="text-foreground font-mono tabular-nums">{formatCost(detail.costUsd)}</span>
+                <span className="text-foreground font-mono tabular-nums">
+                  {formatCost(detail.costUsd)}
+                  {view.usage.some((u) => isReplay(u.model)) && (
+                    <span className="text-muted-foreground"> est.</span>
+                  )}
+                </span>
               }
             >
               <div className="bg-card grid gap-2 rounded-lg border p-4 text-xs" data-testid="cost-card">
                 {view.usage.map((u) => (
                   <div key={u.model} className="flex justify-between gap-4">
-                    <span className="text-muted-foreground truncate font-mono">{u.model}</span>
+                    <span className="text-muted-foreground truncate font-mono">{baseModel(u.model)}</span>
                     <span className="text-muted-foreground shrink-0 font-mono tabular-nums">
                       {formatTokens(u.inputTokens)} in · {formatTokens(u.outputTokens)} out
                     </span>

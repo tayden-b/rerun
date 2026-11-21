@@ -27,6 +27,8 @@ export interface GitHubClient {
   /** Commits on top of the branch head; files not in `files` are kept unchanged. Returns the new commit SHA. */
   commitFiles(branch: string, files: PatchFile[], message: string): Promise<{ sha: string }>;
   openPullRequest(input: OpenPullRequestInput): Promise<PullRequest>;
+  /** Converts a draft pull request to ready for review (no-op when it is not a draft). */
+  markReadyForReview(number: number): Promise<void>;
   mergePullRequest(number: number, opts?: { method?: 'squash' | 'merge' | 'rebase' }): Promise<MergeResult>;
   commentOnPullRequest(number: number, body: string): Promise<{ id: number; url: string }>;
   closePullRequest(number: number): Promise<void>;

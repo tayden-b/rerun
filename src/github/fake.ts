@@ -125,6 +125,12 @@ export class FakeGitHub implements GitHubClient {
     return { number: pr.number, url: pr.url, branch: pr.branch, draft: pr.draft };
   }
 
+  async markReadyForReview(number: number): Promise<void> {
+    const pr = this.pull(number);
+    if (pr.state !== 'open') throw new Error(`Pull request #${number} is ${pr.state}`);
+    pr.draft = false;
+  }
+
   async mergePullRequest(
     number: number,
     opts: { method?: 'squash' | 'merge' | 'rebase' } = {},

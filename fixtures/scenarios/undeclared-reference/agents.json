@@ -1,0 +1,94 @@
+{
+  "repo": [
+    {
+      "path": "main.tf",
+      "oldText": "    cluster = random_pet.cluster.id\n    api",
+      "newText": "    cluster = random_pet.svc.id\n    api"
+    }
+  ],
+  "agents": {
+    "config": [
+      {
+        "toolCalls": [
+          {
+            "toolName": "grep_log",
+            "input": {
+              "pattern": "undeclared|random_pet",
+              "log": "plan"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2210,
+          "outputTokens": 88
+        }
+      },
+      {
+        "toolCalls": [
+          {
+            "toolName": "search_files",
+            "input": {
+              "pattern": "random_pet\\."
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2560,
+          "outputTokens": 70
+        }
+      },
+      {
+        "output": {
+          "rootCause": "main.tf references random_pet.svc in terraform_data.announce, but the only random_pet resource is random_pet.cluster.",
+          "evidence": [
+            {
+              "kind": "log",
+              "ref": "plan:4",
+              "excerpt": "Error: Reference to undeclared resource"
+            },
+            {
+              "kind": "file",
+              "ref": "main.tf:85",
+              "excerpt": "cluster = random_pet.svc.id"
+            }
+          ],
+          "suggestedChange": "In main.tf change random_pet.svc.id to random_pet.cluster.id.",
+          "confidence": 0.96
+        },
+        "usage": {
+          "inputTokens": 3720,
+          "outputTokens": 260
+        }
+      }
+    ],
+    "fix": [
+      {
+        "toolCalls": [
+          {
+            "toolName": "edit_file",
+            "input": {
+              "path": "main.tf",
+              "oldText": "    cluster = random_pet.svc.id\n    api",
+              "newText": "    cluster = random_pet.cluster.id\n    api",
+              "rationale": "random_pet.svc is not declared; the resource is random_pet.cluster."
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 3150,
+          "outputTokens": 120
+        }
+      },
+      {
+        "output": {
+          "title": "Reference random_pet.cluster in terraform_data.announce",
+          "summary": "terraform_data.announce read random_pet.svc, which does not exist, so the plan failed. It now reads random_pet.cluster, the declared resource."
+        },
+        "usage": {
+          "inputTokens": 3400,
+          "outputTokens": 130
+        }
+      }
+    ]
+  }
+}

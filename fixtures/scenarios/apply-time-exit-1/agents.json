@@ -1,0 +1,177 @@
+{
+  "repo": [
+    {
+      "path": "main.tf",
+      "oldText": "resource \"terraform_data\" \"announce\" {",
+      "newText": "resource \"terraform_data\" \"bootstrap\" {\n  provisioner \"local-exec\" {\n    command = \"echo bootstrapping rerun-fixtures && exit 1\"\n  }\n}\n\nresource \"terraform_data\" \"announce\" {"
+    }
+  ],
+  "agents": {
+    "config": [
+      {
+        "toolCalls": [
+          {
+            "toolName": "grep_log",
+            "input": {
+              "pattern": "Error|exit",
+              "log": "apply",
+              "context": 2
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2140,
+          "outputTokens": 96
+        }
+      },
+      {
+        "toolCalls": [
+          {
+            "toolName": "search_files",
+            "input": {
+              "pattern": "local-exec|exit 1"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2610,
+          "outputTokens": 74
+        }
+      },
+      {
+        "toolCalls": [
+          {
+            "toolName": "read_file",
+            "input": {
+              "path": "main.tf"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2890,
+          "outputTokens": 58
+        }
+      },
+      {
+        "output": {
+          "rootCause": "main.tf declares terraform_data.bootstrap with a local-exec provisioner whose command ends in `exit 1`, so the apply fails every time the resource is created.",
+          "evidence": [
+            {
+              "kind": "log",
+              "ref": "apply:12",
+              "excerpt": "Error running command 'echo bootstrapping rerun-fixtures && exit 1': exit status 1."
+            },
+            {
+              "kind": "file",
+              "ref": "main.tf:83",
+              "excerpt": "command = \"echo bootstrapping rerun-fixtures && exit 1\""
+            }
+          ],
+          "suggestedChange": "In main.tf, drop `&& exit 1` from the terraform_data.bootstrap local-exec command.",
+          "confidence": 0.93
+        },
+        "usage": {
+          "inputTokens": 4120,
+          "outputTokens": 312
+        }
+      }
+    ],
+    "reality": [
+      {
+        "toolCalls": [
+          {
+            "toolName": "get_state_resource",
+            "input": {
+              "address": "terraform_data.bootstrap"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2050,
+          "outputTokens": 61
+        }
+      },
+      {
+        "toolCalls": [
+          {
+            "toolName": "grep_log",
+            "input": {
+              "pattern": "bootstrap",
+              "log": "apply"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 2380,
+          "outputTokens": 57
+        }
+      },
+      {
+        "output": {
+          "rootCause": "Nothing outside the configuration is wrong: terraform_data.bootstrap is not in state yet and the provisioner fails deterministically on its own exit code, not on a remote API or drift.",
+          "evidence": [
+            {
+              "kind": "state",
+              "ref": "terraform_data.bootstrap",
+              "excerpt": "not found in the latest state version"
+            },
+            {
+              "kind": "log",
+              "ref": "apply:6",
+              "excerpt": "terraform_data.bootstrap: Provisioning with 'local-exec'..."
+            }
+          ],
+          "suggestedChange": "Fix the command in main.tf; no state or workspace change is needed.",
+          "confidence": 0.82
+        },
+        "usage": {
+          "inputTokens": 3310,
+          "outputTokens": 240
+        }
+      }
+    ],
+    "fix": [
+      {
+        "toolCalls": [
+          {
+            "toolName": "read_file",
+            "input": {
+              "path": "main.tf"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 3020,
+          "outputTokens": 52
+        }
+      },
+      {
+        "toolCalls": [
+          {
+            "toolName": "edit_file",
+            "input": {
+              "path": "main.tf",
+              "oldText": "echo bootstrapping rerun-fixtures && exit 1",
+              "newText": "echo bootstrapping rerun-fixtures",
+              "rationale": "The bootstrap provisioner exits 1 unconditionally, which fails every apply."
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 3480,
+          "outputTokens": 118
+        }
+      },
+      {
+        "output": {
+          "title": "Stop the bootstrap provisioner from exiting 1",
+          "summary": "The terraform_data.bootstrap local-exec command ended in `exit 1`, so every apply failed. The command now only echoes; nothing else in the configuration changes."
+        },
+        "usage": {
+          "inputTokens": 3900,
+          "outputTokens": 140
+        }
+      }
+    ]
+  }
+}

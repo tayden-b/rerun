@@ -121,3 +121,66 @@ describe('poller', () => {
     expect(h.runs).toHaveLength(first.length);
   });
 });
+
+describe('review hardening', () => {
+  it('redacts tokens in change-request comments before posting them', async () => {
+    let open!: () => void;
+    const gate = new Promise<void>((r) => (open = r));
+    h = await startHarness({ awaitApproval: waitHere(gate) });
+    const { incident } = await startIncident(RUN);
+    for (
+      let i = 0;
+      i < 200 &&
+      !['awaiting_approval', 'needs_human'].includes((await getIncident(h.db, incident.id))?.status ?? '');
+      i++
+    ) {
+      await new Promise((r) => setTimeout(r, 20));
+    }
+    await requestChanges(incident.id, 'use Bearer abcdefghijklmnopqrstuvwxyz0123456789 here');
+    const github = incidentServices().github('apply-time-exit-1') as FakeGitHub;
+    expect(github.pulls.get(1)?.comments.at(-1)).not.toContain('abcdefghijklmnopqrstuvwxyz0123456789');
+    open();
+    await h.runs[0];
+  });
+
+  it('retries resuming the workflow from merged without merging again', async () => {
+    let fail = true;
+    h = await startHarness({
+      awaitApproval: waitHere(new Promise(() => {})),
+      override: {
+        resumeApproval: async () => {
+          if (fail) throw new Error('world unavailable');
+          return true;
+        },
+      },
+    });
+    const { incident } = await startIncident(RUN);
+    for (let i = 0; i < 200 && (await getIncident(h.db, incident.id))?.status !== 'awaiting_approval'; i++) {
+      await new Promise((r) => setTimeout(r, 20));
+    }
+    await expect(approveIncident(incident.id)).rejects.toThrow('world unavailable');
+    expect((await getIncident(h.db, incident.id))?.status).toBe('merged');
+    fail = false;
+    const retried = await approveIncident(incident.id);
+    expect(retried.resumed).toBe(true);
+    const github = incidentServices().github('apply-time-exit-1') as FakeGitHub;
+    expect(github.pulls.get(1)?.state).toBe('merged');
+  });
+
+  it('retries a failed workflow dispatch on the next trigger', async () => {
+    let calls = 0;
+    h = await startHarness({
+      override: {
+        startWorkflow: async () => {
+          calls += 1;
+          if (calls === 1) throw new Error('dispatch failed');
+          return 'ok';
+        },
+      },
+    });
+    await expect(startIncident(RUN)).rejects.toThrow('dispatch failed');
+    const again = await startIncident(RUN);
+    expect(again.created).toBe(true);
+    expect(calls).toBe(2);
+  });
+});

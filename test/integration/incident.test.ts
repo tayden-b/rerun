@@ -134,7 +134,7 @@ describe('incident workflow (demo mode, inline)', () => {
             {
               id: runIdForScenario('undeclared-reference'),
               status: 'errored',
-              createdAt: '2026-11-20T15:10:05Z',
+              createdAt: new Date(Date.now() + 60_000).toISOString(),
             },
           ],
         }),

@@ -21,7 +21,7 @@ import type {
   TriageResult,
   VerifyResult,
 } from '../shared/types';
-import { watchForNextRun } from '../watch/runs';
+import { watchForNextRun, type RunLister } from '../watch/runs';
 import { patchToDiff } from './diff';
 import { incidentServices } from './services';
 import { startIncident } from './start';
@@ -57,10 +57,22 @@ export interface ConfirmResult {
 export interface ApprovalRecord {
   approvedBy: string;
   mergeSha: string;
+  /** ISO time of the merge; confirmation ignores runs created before it (e.g. PR speculative plans). */
+  approvedAt: string;
 }
 
 export const fixKey = (attempt: number) => (attempt === 1 ? 'fix' : `fix#${attempt}`);
 export const verifyKey = (attempt: number) => (attempt === 1 ? 'verify' : `verify#${attempt}`);
+
+/** `redact()` covers tokens, not PEM blocks; plan JSON and state can hold generated private keys. */
+function scrubPrivateKeys<T>(value: T): T {
+  return JSON.parse(
+    JSON.stringify(value).replace(
+      /-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----(?:[^"\\]|\\.)*?-----END [A-Z0-9 ]*PRIVATE KEY-----(?:\\n)?/g,
+      '[REDACTED:private_key]',
+    ),
+  ) as T;
+}
 
 const errorMessage = (error: unknown) => redact(error instanceof Error ? error.message : String(error));
 
@@ -174,10 +186,12 @@ async function agentDeps(db: Db, incidentId: string, scenario: string | null, fi
 export function collectStep(incidentId: string, runId: string): Promise<CollectResult> {
   return once(incidentId, 'collect', 'collect', 'collecting', async (db) => {
     const scenario = incidentServices().scenarioFor(runId) ?? null;
-    const artifacts = await withMcp(scenario, (mcp) =>
-      collectRunArtifacts(mcp, runId, async (event) => {
-        await appendEvent(db, incidentId, event);
-      }),
+    const artifacts = scrubPrivateKeys(
+      await withMcp(scenario, (mcp) =>
+        collectRunArtifacts(mcp, runId, async (event) => {
+          await appendEvent(db, incidentId, scrubPrivateKeys(event));
+        }),
+      ),
     );
     if (artifacts.planLogs)
       await addArtifact(db, incidentId, { type: 'log', name: 'plan.log', content: artifacts.planLogs });
@@ -448,10 +462,12 @@ export function confirmStep(incidentId: string): Promise<ConfirmResult> {
       title: 'list_runs',
       payload: { toolCallId: 'confirm-1', tool: 'list_runs', args: { afterRunId: incident.runId } },
     });
+    const approval = await completedResult<ApprovalRecord>(db, incidentId, 'await');
+    const approvedAt = approval?.approvedAt ? Date.parse(approval.approvedAt) : 0;
     let next: { runId: string; status: string };
     try {
       next = await withMcp(scenario, (mcp) =>
-        watchForNextRun(services.runLister(mcp, incident.runId), {
+        watchForNextRun(afterMerge(services.runLister(mcp, incident.runId), incident.runId, approvedAt), {
           afterRunId: incident.runId,
           ...services.watch,
         }),
@@ -500,6 +516,16 @@ export function confirmStep(incidentId: string): Promise<ConfirmResult> {
     );
     return { nextRunId: next.runId, nextStatus: next.status, childIncidentId };
   });
+}
+
+/** Only the failed run (the watcher's anchor) and runs created after the merge count as "next". */
+function afterMerge(lister: RunLister, anchorRunId: string, approvedAt: number): RunLister {
+  return {
+    listRuns: async (opts) =>
+      (await lister.listRuns(opts)).filter(
+        (r) => r.id === anchorRunId || Date.parse(r.createdAt) >= approvedAt,
+      ),
+  };
 }
 
 /** An unrecoverable step error: the incident is `failed` with the message in the Trace. */

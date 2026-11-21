@@ -1,4 +1,5 @@
 import { appendEvent, getIncident } from '../db/incidents';
+import { redact } from '../shared/redact';
 import type { IncidentStatus } from '../shared/types';
 import { incidentServices } from './services';
 import type { ApprovalRecord, CollectResult, ProposeResult } from './steps';
@@ -16,12 +17,12 @@ export class IncidentActionError extends Error {
 
 const DECIDABLE: IncidentStatus[] = ['awaiting_approval', 'needs_human'];
 
-async function decidable(incidentId: string) {
+async function decidable(incidentId: string, allowed: IncidentStatus[] = DECIDABLE) {
   const services = incidentServices();
   const db = await services.db();
   const incident = await getIncident(db, incidentId);
   if (!incident) throw new IncidentActionError(404, `Unknown incident ${incidentId}`);
-  if (!DECIDABLE.includes(incident.status as IncidentStatus)) {
+  if (!allowed.includes(incident.status as IncidentStatus)) {
     throw new IncidentActionError(
       409,
       `Incident is ${incident.status}; expected awaiting_approval or needs_human`,
@@ -37,15 +38,26 @@ async function decidable(incidentId: string) {
 
 /** Approve (SPEC §2 step 7): mark a draft ready, squash-merge, `merged`, then resume the workflow. */
 export async function approveIncident(incidentId: string, approvedBy = 'dashboard') {
-  const { services, db, pr, github } = await decidable(incidentId);
-  if (pr.draft) await github.markReadyForReview(pr.number);
-  const merge = await github.mergePullRequest(pr.number, { method: 'squash' });
-  if (!merge.merged) throw new IncidentActionError(409, `Pull request #${pr.number} was not merged`);
-  const record: ApprovalRecord = { approvedBy, mergeSha: merge.sha };
-  await enterStatus(db, incidentId, 'await', 'merged', undefined, { ...record, prNumber: pr.number });
-  await markCompleted(db, incidentId, 'await', 'await', record);
+  const { services, db, pr, github } = await decidable(incidentId, [...DECIDABLE, 'merged']);
+  // `merged` is accepted only to retry resuming the workflow after a failed delivery; it never re-merges.
+  let record = await completedResult<ApprovalRecord>(db, incidentId, 'await');
+  if (!record) {
+    if (pr.draft) await github.markReadyForReview(pr.number);
+    const merge = await github.mergePullRequest(pr.number, { method: 'squash' });
+    if (!merge.merged) throw new IncidentActionError(409, `Pull request #${pr.number} was not merged`);
+    record = { approvedBy, mergeSha: merge.sha, approvedAt: new Date().toISOString() };
+    await enterStatus(db, incidentId, 'await', 'merged', undefined, { ...record, prNumber: pr.number });
+    await markCompleted(db, incidentId, 'await', 'await', record);
+  } else if (
+    (await getIncident(db, incidentId))?.status !== 'merged' ||
+    (await completedResult(db, incidentId, 'await_resumed')) !== undefined
+  ) {
+    throw new IncidentActionError(409, 'Incident was already approved');
+  }
+  const merge = { sha: record.mergeSha };
   const resumed = await services.resumeApproval(incidentId, record);
-  if (!resumed) {
+  if (resumed) await markCompleted(db, incidentId, 'await', 'await_resumed', true);
+  else {
     await appendEvent(db, incidentId, {
       step: 'await',
       kind: 'error',
@@ -59,7 +71,7 @@ export async function approveIncident(incidentId: string, approvedBy = 'dashboar
 /** Request changes: comment on the PR and hand the incident to a human. */
 export async function requestChanges(incidentId: string, comment: string | undefined) {
   const { db, pr, github } = await decidable(incidentId);
-  const text = comment?.trim();
+  const text = comment?.trim() ? redact(comment.trim()) : undefined;
   const body = text
     ? `**Changes requested** from the Rerun dashboard:\n\n${text}`
     : '**Changes requested** from the Rerun dashboard.';

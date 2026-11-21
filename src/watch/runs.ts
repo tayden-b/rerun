@@ -56,7 +56,9 @@ export async function watchForNextRun(
   let baseline: Set<string> | undefined;
   for (;;) {
     opts.signal?.throwIfAborted();
-    const runs = await mcp.listRuns({ pageSize: opts.pageSize ?? 20 });
+    const runs = await beforeDeadline(mcp.listRuns({ pageSize: opts.pageSize ?? 20 }), deadline, () => {
+      return new RunWatchTimeoutError(opts.afterRunId, opts.timeoutMs);
+    });
     const after = runs.find((r) => r.id === opts.afterRunId);
     if (after && anchor === undefined) anchor = Date.parse(after.createdAt);
     baseline ??= new Set(runs.map((r) => r.id));
@@ -97,6 +99,17 @@ export function toRunLister<T>(
   map: (item: T) => RunSummary,
 ): RunLister {
   return { listRuns: async (opts) => (await source.listRuns(opts)).map(map) };
+}
+
+/** Rejects with `onTimeout()` if `promise` has not settled by `deadline`. */
+function beforeDeadline<T>(promise: Promise<T>, deadline: number, onTimeout: () => Error): Promise<T> {
+  const remaining = deadline - Date.now();
+  if (remaining <= 0) return Promise.reject(onTimeout());
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(onTimeout()), remaining);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
 function sleep(ms: number, signal?: AbortSignal): Promise<void> {

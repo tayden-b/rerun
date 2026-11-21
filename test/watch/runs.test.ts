@@ -79,6 +79,18 @@ describe('watchForNextRun', () => {
   });
 });
 
+describe('watchForNextRun deadline', () => {
+  it('times out when listRuns hangs past the deadline, even if it later returns a terminal run', async () => {
+    const mcp: RunLister = {
+      listRuns: () =>
+        new Promise((resolve) => setTimeout(() => resolve([run('run-new', 'applied', 5)]), 300)),
+    };
+    await expect(
+      watchForNextRun(mcp, { afterRunId: 'run-old', timeoutMs: 50, pollMs: 5 }),
+    ).rejects.toBeInstanceOf(RunWatchTimeoutError);
+  });
+});
+
 describe('pollErroredRuns', () => {
   it('returns new errored runs since a time, oldest first, and remembers them', async () => {
     const page = [

@@ -2,6 +2,7 @@ import './load-env';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { inArray } from 'drizzle-orm';
+import { config } from '../src/config';
 import { schema, type Db } from '../src/db';
 import { DEMO_BASELINE_FILES } from '../src/github/demoBaseline';
 import { addArtifact, addDecision, appendEvent, createIncident, setStatus } from '../src/db/incidents';
@@ -705,7 +706,11 @@ export function buildEvents(s: Scenario, startMs: number): EventInput[] {
 }
 
 /** Replaces the three demo incidents in `db`; timestamps are relative to now so ages read naturally. */
-export async function seedDemo(db: Db, now: number = Date.now()): Promise<number> {
+export async function seedDemo(
+  db: Db,
+  now: number = Date.now(),
+  mode: 'demo' | 'live' = config.mode,
+): Promise<number> {
   const scenarios = [unsetVariable(), providerVersionConflict(), applyTimeExit1()];
   // `npm run demo` may have started its own incident for a seeded run; `incidents.run_id` is unique.
   const sameRun = await db
@@ -717,7 +722,14 @@ export async function seedDemo(db: Db, now: number = Date.now()): Promise<number
         scenarios.map((s) => s.runId),
       ),
     );
-  const ids = [...new Set([...scenarios.map((s) => s.id), ...sameRun.map((r) => r.id)])];
+  const others = sameRun.filter((r) => !scenarios.some((s) => s.id === r.id));
+  // The seeded runs are real HCP runs: outside demo mode such an incident may be a live investigation.
+  if (others.length > 0 && mode !== 'demo') {
+    throw new Error(
+      `seed:demo: incidents ${others.map((r) => r.id).join(', ')} already hold seeded runs; not deleting them outside demo mode`,
+    );
+  }
+  const ids = [...scenarios.map((s) => s.id), ...others.map((r) => r.id)];
   await db.delete(schema.incidentEvents).where(inArray(schema.incidentEvents.incidentId, ids));
   await db.delete(schema.decisions).where(inArray(schema.decisions.incidentId, ids));
   await db.delete(schema.artifacts).where(inArray(schema.artifacts.incidentId, ids));

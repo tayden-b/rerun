@@ -74,6 +74,21 @@ describe('renderMarkdown', () => {
     expect(md).toMatch(/\| `missing-required-arg` \| `autoPr` \|/);
   });
 
+  it('skips the rewording table when a replay produced the same answers', () => {
+    const replay = structuredClone(baseline);
+    replay.generatedAt = '2026-11-22T00:00:00.000Z';
+    expect(renderMarkdown(replay, { baseline })).not.toContain('Question rewording');
+  });
+
+  it('scores the rewording on the scenarios both runs share', () => {
+    const subset = rerecorded();
+    for (const p of subset.providers)
+      p.scenarios = p.scenarios.filter(
+        (s) => s.scenario === 'removed-argument' || s.scenario === 'unset-variable',
+      );
+    expect(renderMarkdown(subset, { baseline })).toMatch(/Route matches expected[ |]+1\/2 \| 2\/2 \|/);
+  });
+
   it('renders one live row per scenario with verifier and PR link', () => {
     const r = structuredClone(baseline);
     r.live = {

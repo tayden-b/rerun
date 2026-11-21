@@ -59,9 +59,10 @@ export function renderMarkdown(r: EvalResults, opts: { baseline?: EvalResults } 
   );
   out.push(renderPerClass(r));
 
-  if (opts.baseline) {
+  const rewording = opts.baseline ? renderRewording(opts.baseline, r) : null;
+  if (rewording) {
     out.push('### Question rewording: before and after');
-    out.push(renderRewording(opts.baseline, r));
+    out.push(rewording);
   }
 
   out.push('### Calibration');
@@ -245,17 +246,21 @@ function renderPerClass(r: EvalResults): string {
   );
 }
 
-function renderRewording(before: EvalResults, after: EvalResults): string {
+/** Before/after on the scenarios both runs scored; null when no answer changed (e.g. a replay of the baseline). */
+function renderRewording(before: EvalResults, after: EvalResults): string | null {
   const b = jevView(before);
   const a = jevView(after);
-  if (!b || !a) return 'No Jev answers in one of the two runs.';
+  if (!b || !a) return null;
   const byName = (p: ProviderResult) => new Map(p.scenarios.map((s) => [s.scenario, s]));
   const bm = byName(b);
   const am = byName(a);
-  const names = [...new Set([...bm.keys(), ...am.keys()])];
+  const names = [...bm.keys()].filter((n) => am.has(n));
+  const same = (x?: ScenarioResult, y?: ScenarioResult) =>
+    JSON.stringify(x?.predicted) === JSON.stringify(y?.predicted);
+  if (names.every((n) => same(bm.get(n), am.get(n)))) return null;
   const cell = (s: ScenarioResult | undefined, f: (x: NonNullable<ScenarioResult['predicted']>) => string) =>
     s?.predicted ? f(s.predicted) : dash;
-  const matches = (m: Map<string, ScenarioResult>) => [...m.values()].filter((s) => s.routeCorrect).length;
+  const matches = (m: Map<string, ScenarioResult>) => names.filter((n) => m.get(n)?.routeCorrect).length;
   const rows = names.map((n) => {
     const x = bm.get(n);
     const y = am.get(n);
@@ -278,8 +283,8 @@ function renderRewording(before: EvalResults, after: EvalResults): string {
     '',
     '',
     '',
-    ratio(matches(bm), bm.size),
-    ratio(matches(am), am.size),
+    ratio(matches(bm), names.length),
+    ratio(matches(am), names.length),
   ]);
   return [
     `Same scenarios and SPEC §4 thresholds (\`autoPr\` iff \`config_fixable\` ≥ 0.70, \`blast_radius\` ≤ 1.0, \`needs_human\` ≤ 0.40); only the question wording changed. Before: ${b.provider} answers of ${before.generatedAt.slice(0, 10)}. After: ${a.provider} answers of ${after.generatedAt.slice(0, 10)}.`,

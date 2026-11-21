@@ -27,15 +27,7 @@ async function main(): Promise<number> {
   const md = async (body: string) => format(body, options);
 
   let readme = readFileSync(readmePath, 'utf8');
-  readme = replaceSection(
-    readme,
-    'evals',
-    await md(
-      renderMarkdown(results, {
-        baseline: baseline && baseline.generatedAt !== results.generatedAt ? baseline : undefined,
-      }),
-    ),
-  );
+  readme = replaceSection(readme, 'evals', await md(renderMarkdown(results, { baseline })));
   readme = replaceSection(readme, 'mcp-tools', await md(renderMcpTools()));
   writeFileSync(readmePath, readme);
 

@@ -3,7 +3,7 @@ import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { loadConfig } from '../src/config';
 import { initTelemetry } from '../src/telemetry';
-import { resolveDeps, type ProviderName } from './deps';
+import { productionDeps, type ProviderName } from './deps';
 import { runEval } from './harness';
 import { renderMarkdown } from './report';
 
@@ -65,7 +65,7 @@ export async function main(argv: string[]): Promise<number> {
         config,
         log: (line) => console.error(line),
       },
-      await resolveDeps(),
+      productionDeps,
     );
     const out = path.resolve(values.out);
     mkdirSync(path.dirname(out), { recursive: true });

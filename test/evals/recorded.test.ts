@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
-import { resolveDeps } from '../../evals/deps';
+import { productionDeps } from '../../evals/deps';
 import { runEval } from '../../evals/harness';
 import { renderMarkdown } from '../../evals/report';
 import { main } from '../../evals/cli';
@@ -46,7 +46,7 @@ describe('eval harness (recorded provider, offline)', () => {
   });
 
   it('derives the stage and routes deterministic providers through perturbations', async () => {
-    const deps = await resolveDeps();
+    const deps = productionDeps;
     const fake = keywordProvider();
     const results = await runEval(
       { providers: ['llm'], scenariosDir: TEST_SCENARIOS_DIR, perturbations: 2, seed: 1, live: false },
@@ -60,7 +60,7 @@ describe('eval harness (recorded provider, offline)', () => {
   });
 
   it('counts provider errors as wrong and redacts tokens in error messages', async () => {
-    const deps = await resolveDeps();
+    const deps = productionDeps;
     const good = keywordProvider();
     const results = await runEval(
       { providers: ['llm'], scenariosDir: TEST_SCENARIOS_DIR, perturbations: 0, seed: 1, live: false },
@@ -91,7 +91,7 @@ describe('eval harness (recorded provider, offline)', () => {
   it('live rows record the Wave 2 stub as an error with the live columns present', async () => {
     const results = await runEval(
       { providers: ['recorded'], scenariosDir: TEST_SCENARIOS_DIR, perturbations: 0, seed: 1, live: true },
-      await resolveDeps(),
+      productionDeps,
     );
     expect(results.live.ran).toBe(true);
     expect(results.live.rows[0]).toMatchObject({

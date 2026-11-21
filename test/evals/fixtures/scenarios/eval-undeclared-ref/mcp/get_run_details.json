@@ -1,8 +1,57 @@
 {
   "placeholder": true,
+  "tool": "get_run_details",
+  "args": {
+    "run_id": "run-PLACEHOLDER0002"
+  },
   "result": {
-    "id": "run-EVALFIXTURE0002",
-    "type": "runs",
-    "attributes": { "status": "errored", "message": "scenario: undeclared-reference", "has-changes": false }
+    "data": {
+      "type": "runs",
+      "id": "run-PLACEHOLDER0002",
+      "attributes": {
+        "status": "errored",
+        "message": "scenario: undeclared-reference",
+        "source": "tfe-api",
+        "trigger-reason": "manual",
+        "is-destroy": false,
+        "auto-apply": true,
+        "plan-only": false,
+        "has-changes": false,
+        "created-at": "2026-11-20T15:10:05Z",
+        "terraform-version": "1.14.9",
+        "status-timestamps": {
+          "queuing-at": "2026-11-20T15:10:05Z",
+          "plan-queued-at": "2026-11-20T15:10:05Z",
+          "planning-at": "2026-11-20T15:10:08Z",
+          "errored-at": "2026-11-20T15:10:19Z"
+        }
+      },
+      "relationships": {
+        "workspace": {
+          "data": {
+            "type": "workspaces",
+            "id": "ws-PLACEHOLDER01"
+          }
+        },
+        "plan": {
+          "data": {
+            "type": "plans",
+            "id": "plan-PLACEHOLDER02"
+          }
+        },
+        "apply": {
+          "data": {
+            "type": "applies",
+            "id": "apply-PLACEHOLDER02"
+          }
+        },
+        "configuration-version": {
+          "data": {
+            "type": "configuration-versions",
+            "id": "cv-PLACEHOLDER02"
+          }
+        }
+      }
+    }
   }
 }

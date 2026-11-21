@@ -191,7 +191,7 @@ async function evalLive(
 /** Runs triage accuracy, calibration, robustness (and optionally live e2e); returns schema-validated results. */
 export async function runEval(opts: EvalOptions, deps: EvalDeps): Promise<EvalResults> {
   const config = opts.config ?? loadConfig();
-  const scenarios = loadScenarios(opts.scenariosDir ?? DEFAULT_SCENARIOS_DIR, opts.scenarios);
+  const scenarios = await loadScenarios(opts.scenariosDir ?? DEFAULT_SCENARIOS_DIR, opts.scenarios, config);
   if (scenarios.length === 0)
     throw new Error(
       `No scenarios with expected.json and mcp/ in ${opts.scenariosDir ?? DEFAULT_SCENARIOS_DIR}`,
@@ -204,7 +204,7 @@ export async function runEval(opts: EvalOptions, deps: EvalDeps): Promise<EvalRe
   }
   const liveRows = opts.live ? await evalLive(scenarios, opts.runLive ?? defaultRunLive, opts.log) : [];
 
-  const notes = [`triage: ${deps.sources.triage}; route: ${deps.sources.route}.`];
+  const notes: string[] = [];
   const placeholders = scenarios.filter((s) => s.placeholder).length;
   if (placeholders)
     notes.push(`${placeholders} of ${scenarios.length} scenario(s) use placeholder fixtures.`);

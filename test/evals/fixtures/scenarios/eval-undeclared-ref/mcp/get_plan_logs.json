@@ -1,4 +1,8 @@
 {
   "placeholder": true,
-  "result": "Terraform v1.14.3\non linux_amd64\nInitializing plugins and modules...\n╷\n│ Error: Reference to undeclared resource\n│\n│   on main.tf line 41, in resource \"terraform_data\" \"bootstrap\":\n│   41:   input = random_pet.servce.id\n│\n│ A managed resource \"random_pet\" \"servce\" has not been declared in the root module.\n╵\nOperation failed: failed running terraform plan (exit 1)\n"
+  "tool": "get_plan_logs",
+  "args": {
+    "plan_id": "plan-PLACEHOLDER02"
+  },
+  "result": "Terraform v1.14.9\non linux_amd64\nInitializing plugins and modules...\n{\"@level\": \"info\", \"@message\": \"Terraform 1.14.9\", \"@module\": \"terraform.ui\", \"@timestamp\": \"2026-11-20T15:10:15.101Z\", \"terraform\": \"1.14.9\", \"type\": \"version\", \"ui\": \"1.2\"}\n{\"@level\": \"error\", \"@message\": \"Error: Reference to undeclared resource\", \"@module\": \"terraform.ui\", \"@timestamp\": \"2026-11-20T15:10:18.902Z\", \"diagnostic\": {\"severity\": \"error\", \"summary\": \"Reference to undeclared resource\", \"detail\": \"A managed resource \\\"random_pet\\\" \\\"svc\\\" has not been declared in the root module.\", \"range\": {\"filename\": \"main.tf\", \"start\": {\"line\": 41, \"column\": 20, \"byte\": 912}, \"end\": {\"line\": 41, \"column\": 34, \"byte\": 926}}, \"snippet\": {\"context\": \"resource \\\"terraform_data\\\" \\\"announce\\\"\", \"code\": \"  input = random_pet.svc.id\", \"start_line\": 41, \"highlight_start_offset\": 10, \"highlight_end_offset\": 24, \"values\": []}}, \"type\": \"diagnostic\"}\nOperation failed: failed running terraform plan (exit 1)\n"
 }

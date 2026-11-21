@@ -45,6 +45,7 @@ async function startOnce(runId: string, opts: { parentIncidentId?: string }): Pr
       workspace: services.config.workspace,
       parentIncidentId: opts.parentIncidentId ?? null,
     }));
+  if (retry) await setStatus(db, incident.id, 'collecting');
   try {
     await services.startWorkflow(incident.id, runId);
   } catch (error) {

@@ -69,16 +69,16 @@ One workflow run per incident (`workflows/`); every step writes events that the 
 1. **Collect.** The poller (or webhook) sees an `errored` run. Rerun pulls the run, plan, logs, plan JSON, apply and current state through MCP, and cuts a 120-line error excerpt with secrets redacted.
 2. **Triage.** One Jev request answers four questions: failure class (12 closed classes), whether a configuration change alone can fix it, blast radius, and whether a human must decide. The answers are probabilities, not prose.
 
-   ![Triage card: failure class and the three routing signals as probability bars, above the error excerpt](docs/media/triage.png)
+   <img src="docs/media/triage.png" alt="Triage card: failure class and the three routing signals as probability bars, above the error excerpt" width="360">
 
 3. **Diagnose.** The Config agent reads the repository and the log; the Reality agent also reads state and apply output when the failure happened at apply time or outside the configuration. Both cite evidence (file and line, log line, provider doc).
 
-   ![Two agent panels with their tool calls and cited evidence](docs/media/subagents.png)
+   <img src="docs/media/subagents.png" alt="Two agent panels with their tool calls and cited evidence" width="720">
 
 4. **Fix.** The Fix agent edits a working copy of the configuration and gives a rationale per file.
 5. **Verify.** `terraform fmt -check`, `terraform validate` and a speculative remote plan run in `hashicorp/terraform:1.14`. On failure the fix is retried once with the verifier output; then the incident goes to a human.
 
-   ![The proposed diff next to the verifier output for fmt, validate and plan](docs/media/fix-verify.png)
+   <img src="docs/media/fix-verify.png" alt="The proposed diff next to the verifier output for fmt, validate and plan" width="720">
 
 6. **Propose.** Rerun opens the pull request with the evidence in its body. The router (`autoPr` iff `config_fixable` ≥ 0.70, `blast_radius` ≤ 1.0 and `needs_human` ≤ 0.40) decides between a ready-for-review PR and a draft flagged for a human.
 7. **Approve.** A human reads the war room and presses Approve, which merges the PR, or Request changes, which posts a PR comment.

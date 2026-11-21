@@ -131,19 +131,35 @@ export function renderMarkdown(r: EvalResults, opts: { baseline?: EvalResults } 
   }
   const vs = (expected?: string, actual?: string | null) =>
     expected === undefined ? dash : actual === expected ? actual : `${expected} → ${actual ?? dash}`;
-  const liveRows = r.live.rows.map((row) => [
-    row.scenario,
-    vs(row.expectedClass, row.failureClass),
-    vs(row.expectedRoute, row.route),
+  const liveRows = r.live.rows.map((row) =>
+    // A blocked row has no result of its own: every result column reads as not run.
     row.blocked
-      ? `blocked: ${row.blocked.reason}`
-      : (row.reachedStatus ?? (row.error ? `error: ${row.error.replace(/\|/g, '\\|')}` : dash)),
-    yesNo(row.verifierOk),
-    row.prUrl ? `[PR](${row.prUrl})${row.draft ? ' (draft)' : ''}` : dash,
-    yesNo(row.fixTouchesRespected),
-    row.durationMs === null ? dash : `${(row.durationMs / 1000).toFixed(0)} s`,
-    row.costUsd === undefined ? dash : `$${row.costUsd.toFixed(3)}`,
-  ]);
+      ? [
+          row.scenario,
+          vs(row.expectedClass, null),
+          vs(row.expectedRoute, null),
+          `blocked: ${row.blocked.reason}`,
+          dash,
+          dash,
+          dash,
+          dash,
+          dash,
+        ]
+      : liveRow(row),
+  );
+  function liveRow(row: EvalResults['live']['rows'][number]): string[] {
+    return [
+      row.scenario,
+      vs(row.expectedClass, row.failureClass),
+      vs(row.expectedRoute, row.route),
+      row.reachedStatus ?? (row.error ? `error: ${row.error.replace(/\|/g, '\\|')}` : dash),
+      yesNo(row.verifierOk),
+      row.prUrl ? `[PR](${row.prUrl})${row.draft ? ' (draft)' : ''}` : dash,
+      yesNo(row.fixTouchesRespected),
+      row.durationMs === null ? dash : `${(row.durationMs / 1000).toFixed(0)} s`,
+      row.costUsd === undefined ? dash : `$${row.costUsd.toFixed(3)}`,
+    ];
+  }
   out.push(
     table(
       [

@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { createLiveScenarioRunner, startIncidentViaApp } from '../../evals/live';
+import { createLiveScenarioRunner, liveAppUrl, startIncidentViaApp } from '../../evals/live';
+import { fixturesDriver } from '../../evals/liveFixtures';
 import { POST } from '../../app/api/incidents/route';
 import { getIncident } from '../../src/db/incidents';
 import { runIdForScenario } from '../../src/incident/demo';
@@ -99,5 +100,36 @@ describe('POST /api/incidents', () => {
     expect(h.runs).toHaveLength(1);
     await h.runs[0];
     expect((await post({ runId: '../x' })).status).toBe(400);
+  });
+});
+
+describe('live eval guards', () => {
+  it('treats a blank RERUN_APP_URL as unset', () => {
+    expect(liveAppUrl({ RERUN_APP_URL: '', PORT: '' })).toBe('http://localhost:3000');
+    expect(liveAppUrl({ RERUN_APP_URL: 'http://app.test' })).toBe('http://app.test');
+  });
+
+  it('refuses to drive the fixtures scripts in demo mode', () => {
+    expect(() => fixturesDriver({ mcp: async () => ({}) as never })).toThrow(/RERUN_MODE=live/);
+  });
+
+  it('keeps waiting when one incident read fails instead of cleaning up mid-incident', async () => {
+    let reads = 0;
+    const cleanups: (string | undefined)[] = [];
+    const run = createLiveScenarioRunner({
+      runIdFor: () => 'run-x',
+      start: async () => ({ incident: { id: 'i1' } }),
+      load: async () => {
+        reads += 1;
+        if (reads === 2) throw new Error('Failed query: select ... from incident_events');
+        return { status: reads === 1 ? 'collecting' : 'awaiting_approval', events: [] } as never;
+      },
+      expected: () => expected,
+      cleanup: async (detail) => void cleanups.push(detail?.status),
+      pollMs: 1,
+    });
+    expect(await run('x')).toMatchObject({ reachedStatus: 'awaiting_approval' });
+    expect(reads).toBe(3);
+    expect(cleanups).toEqual(['awaiting_approval']);
   });
 });

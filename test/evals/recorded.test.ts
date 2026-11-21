@@ -143,7 +143,14 @@ describe('eval harness (recorded provider, offline)', () => {
       },
     });
     expect(md).toContain('0 of 1 reached a passing verifier and an open PR.');
-    expect(md).toContain('| blocked: Anthropic credit balance |');
+    const row = md.split('\n').find((l) => l.startsWith('| eval-apply-exit '))!;
+    // verifierOk false must not render as "no": a blocked row has no verifier result.
+    expect(
+      row
+        .split('|')
+        .map((c) => c.trim())
+        .slice(4, 10),
+    ).toEqual(['blocked: Anthropic credit balance', '—', '—', '—', '—', '—']);
     expect(md).toContain('Approve → resolved (eval-apply-exit): blocked: Anthropic credit balance.');
   });
 });

@@ -161,7 +161,11 @@ Each scenario state is perturbed without changing its meaning (consistent resour
 
 ### What the question rewording changed
 
-The first live recording put `needs_human` above 0.40 in 10 of 11 scenarios while getting the class and stage right in all 11. The question asked whether a fix needed "a human decision (ambiguous intent, security-sensitive change, or more than one reasonable fix)". Almost every Terraform change has more than one reasonable fix, and the question did not say that every fix is a reviewed pull request, so the model answered yes for a missing argument and a renamed reference alike.
+The first live recording got the class and stage right in all 11 scenarios but put `needs_human` above 0.40 in 10 of them. The old question asked whether a fix needed "a human decision (ambiguous intent, security-sensitive change, or more than one reasonable fix)". Almost every Terraform change has more than one reasonable fix, so the model answered yes for a missing argument and a misspelled reference alike.
+
+The rewrite in `src/decisions/questions.ts` leaves the class question alone. Most of it is general: each routing question now says what Rerun can change (any `.tf` or `.tfvars` file, through a pull request a human approves) and what it cannot (credentials, quota, systems outside Terraform), and `needs_human` says that review always happens, so several equivalent ways to write a fix no longer counts as needing a human. The blast-radius question gained one clarification: replacing a resource that holds no data is the second level, not higher.
+
+One sentence is domain policy chosen with the fixtures in view: a fix that edits a module source or version, or a `required_providers` or `required_version` constraint, counts as an owner decision because it changes which dependency code gets installed. We think that is the right default for a platform team, but it is also what keeps the two init-stage scenarios on `draftPr`, so part of the 11/11 is that policy rather than better judgment. `apply-time-exit-1` has no margin: its `blast_radius` sits at the 1.0 limit (Jev 1.00, LLM 1.02). Eleven scenarios is a small set; the wording needs its own scenarios on any real estate before `autoPr` is trusted.
 
 ## Things we learned
 

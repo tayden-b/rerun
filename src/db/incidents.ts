@@ -64,7 +64,7 @@ export async function createIncident(db: Db, input: CreateIncidentInput): Promis
   return row;
 }
 
-/** Sets the status (plus any other columns in `patch`); `resolved` stamps `resolvedAt` if unset. */
+/** Sets the status (plus any other columns in `patch`); `resolved` stamps `resolvedAt` unless already set. */
 export async function setStatus(
   db: Db,
   id: string,
@@ -72,7 +72,9 @@ export async function setStatus(
   patch: IncidentPatch = {},
 ): Promise<Incident> {
   const resolvedAt =
-    status === 'resolved' && patch.resolvedAt === undefined ? new Date().toISOString() : patch.resolvedAt;
+    status === 'resolved' && patch.resolvedAt === undefined
+      ? sql`COALESCE(${incidents.resolvedAt}, ${new Date().toISOString()})`
+      : patch.resolvedAt;
   const [row] = await db
     .update(incidents)
     .set({ ...patch, status, ...(resolvedAt !== undefined ? { resolvedAt } : {}) })

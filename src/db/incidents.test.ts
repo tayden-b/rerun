@@ -69,6 +69,11 @@ describe('incidents repository', () => {
     detail = await getIncident(db, inc.id);
     expect(detail?.status).toBe('resolved');
     expect(detail?.resolvedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+
+    const firstResolvedAt = detail?.resolvedAt;
+    await new Promise((r) => setTimeout(r, 5));
+    await setStatus(db, inc.id, 'resolved');
+    expect((await getIncident(db, inc.id))?.resolvedAt).toBe(firstResolvedAt);
   });
 
   it('throws when setting status on a missing incident', async () => {

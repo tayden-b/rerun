@@ -120,7 +120,7 @@ function ok(stdout: string, durationMs: number, exitCode = 0) {
 
 function applyTimeExit1(): Scenario {
   const scenario = 'apply-time-exit-1';
-  const run = fixture<{ result: { id: string } }>(scenario, 'mcp/get_run_details.json').result;
+  const run = fixture<{ result: { data: { id: string } } }>(scenario, 'mcp/get_run_details.json').result.data;
   const log = fixture<{ result: string }>(scenario, 'mcp/get_apply_logs.json').result;
   const plan = fixture<{ result: unknown }>(scenario, 'mcp/get_plan_json_output.json').result;
   const expected = fixture<{ failureClass: FailureClass; stage: Stage; route: Route; humanSummary: string }>(

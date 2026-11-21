@@ -113,7 +113,11 @@ export function renameResources(
 }
 
 function shuffleArrays(value: unknown, rand: () => number): unknown {
-  if (Array.isArray(value)) return shuffle(value, rand).map((v) => shuffleArrays(v, rand));
+  if (Array.isArray(value)) {
+    // Scalar arrays (e.g. `actions: ['delete', 'create']`) are ordered evidence; only reorder entries.
+    const items = value.map((v) => shuffleArrays(v, rand));
+    return items.every(isRecord) ? shuffle(items, rand) : items;
+  }
   if (value && typeof value === 'object') {
     return Object.fromEntries(
       shuffle(Object.entries(value), rand).map(([k, v]) => [k, shuffleArrays(v, rand)]),
@@ -136,7 +140,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 /**
  * Deterministic for a given `(state, seed)`. Applies, in order: consistent resource renames, a UUID
- * comment line appended to `errorExcerpt`, a shuffle of every array/object order inside `planSummary`
+ * comment line appended to `errorExcerpt`, a shuffle of entry arrays and object keys inside `planSummary`
  * (and `changedFiles`), and trailing-space/blank-line noise in `errorExcerpt`.
  */
 export function perturbState(

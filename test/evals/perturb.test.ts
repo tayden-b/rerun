@@ -65,6 +65,24 @@ describe('perturbState', () => {
     expect(seen.size).toBeGreaterThan(1);
   });
 
+  it('never reorders scalar arrays such as replacement actions', () => {
+    const state = {
+      planSummary: {
+        resources: [
+          { address: 'random_pet.a', actions: ['delete', 'create'] },
+          { address: 'random_pet.b', actions: ['no-op'] },
+        ],
+      },
+    };
+    for (let seed = 0; seed < 20; seed++) {
+      const out = perturbState(state, seed, ['reorder']).state as typeof state;
+      expect(out.planSummary.resources.find((r) => r.address === 'random_pet.a')?.actions).toEqual([
+        'delete',
+        'create',
+      ]);
+    }
+  });
+
   it('perturbingProvider passes the perturbed state to the inner provider', async () => {
     const inner = keywordProvider();
     await perturbingProvider(inner, 5).decide(sampleState, {});

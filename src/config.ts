@@ -19,6 +19,8 @@ export interface Config {
   models: { agent: string; fast: string };
   langfuse: { publicKey?: string; secretKey?: string; baseUrl?: string };
   databaseUrl: string;
+  /** Demo only: replay at simulated model and verifier speed instead of instantly. */
+  demoPace: boolean;
 }
 
 type Env = Record<string, string | undefined>;
@@ -64,6 +66,7 @@ export function loadConfig(env: Env = process.env): Config {
       baseUrl: str(env, 'LANGFUSE_BASE_URL'),
     },
     databaseUrl: str(env, 'DATABASE_URL') ?? 'file:data/rerun.db',
+    demoPace: str(env, 'RERUN_DEMO_PACE') === '1',
   };
 }
 

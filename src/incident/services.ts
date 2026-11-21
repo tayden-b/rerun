@@ -64,7 +64,7 @@ function github(config: Config, scenario?: string): GitHubClient {
 function defaults(config: Config): IncidentServices {
   const demo = config.mode === 'demo';
   // Set by `npm run demo` so the replay streams at a believable pace; tests replay instantly.
-  const pace = demo && process.env.RERUN_DEMO_PACE === '1';
+  const pace = demo && config.demoPace;
   return {
     config,
     db: () => getDb(config.databaseUrl),

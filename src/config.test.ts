@@ -13,6 +13,10 @@ describe('loadConfig', () => {
     expect(c.databaseUrl).toBe('file:data/rerun.db');
   });
 
+  it('points demo mode at the mock MCP port, clear of the terraform-mcp sidecar', () => {
+    expect(loadConfig({ RERUN_MODE: 'demo' }).terraformMcpUrl).toBe('http://127.0.0.1:8081/mcp');
+  });
+
   it('prefers RERUN_ANTHROPIC_API_KEY over ANTHROPIC_API_KEY', () => {
     expect(loadConfig({ RERUN_ANTHROPIC_API_KEY: 'alias' }).anthropicApiKey).toBe('alias');
     expect(

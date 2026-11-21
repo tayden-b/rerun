@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
+    "test:live": "vitest run --config vitest.live.config.mts",
     "test:e2e": "node scripts/not-implemented.mjs test:e2e W1-E",
     "eval": "node scripts/not-implemented.mjs eval W1-F",
     "eval:readme": "node scripts/not-implemented.mjs eval:readme W1-F",

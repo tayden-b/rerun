@@ -35,7 +35,12 @@ export async function pollOnce(seen: Set<string>, since: Date): Promise<string[]
   }
   const started: string[] = [];
   for (const runId of fresh) {
-    if ((await startIncident(runId)).created) started.push(runId);
+    try {
+      if ((await startIncident(runId)).created) started.push(runId);
+    } catch (error) {
+      seen.delete(runId);
+      console.log(`[poller] ${runId}: ${redact(error instanceof Error ? error.message : String(error))}`);
+    }
   }
   return started;
 }

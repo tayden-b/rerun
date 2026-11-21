@@ -14,6 +14,9 @@ test('incident list shows the seeded incidents and filters them', async ({ page 
     'awaiting_approval',
   );
   await expect(rows.first().getByRole('link').first()).toBeVisible();
+  // Fake GitHub PR numbers would collide with real PRs, so demo mode never links them.
+  await expect(rows.first().getByTestId('pr-ref')).toHaveText(/^#\d+ · demo$/);
+  await expect(page.locator('a[href*="/pull/"]')).toHaveCount(0);
   await page.mouse.move(0, 0);
   await page.screenshot({ path: `${SCREENSHOTS}/list.png` });
 

@@ -32,7 +32,7 @@ async function main(): Promise<void> {
   const secret = (process.env.TFC_WEBHOOK_SECRET ??= randomBytes(32).toString('hex'));
 
   const { startMockServer } = await import('../src/mcp/mock/server');
-  const mock = await startMockServer({ port: Number(process.env.MOCK_MCP_PORT ?? 8080) });
+  const mock = await startMockServer({ port: Number(process.env.MOCK_MCP_PORT ?? 8081) });
   process.env.TERRAFORM_MCP_URL = mock.url;
 
   const { config } = await import('../src/config');

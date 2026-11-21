@@ -15,7 +15,17 @@ import { useIncidentStream } from '@/lib/ui/use-incident-stream';
 
 const ALL = 'all';
 
-export function IncidentTable({ incidents, org, now }: { incidents: Incident[]; org: string; now: number }) {
+export function IncidentTable({
+  incidents,
+  org,
+  now,
+  demo = false,
+}: {
+  incidents: Incident[];
+  org: string;
+  now: number;
+  demo?: boolean;
+}) {
   const router = useRouter();
   const [status, setStatus] = useState<string>(ALL);
   const [failureClass, setFailureClass] = useState<string>(ALL);
@@ -113,9 +123,7 @@ export function IncidentTable({ incidents, org, now }: { incidents: Incident[]; 
                 </TableCell>
                 <TableCell>
                   {incident.prUrl ? (
-                    <ExternalLink href={incident.prUrl}>
-                      {prLabel(incident.prUrl, incident.prNumber)}
-                    </ExternalLink>
+                    <PrRef url={incident.prUrl} number={incident.prNumber} demo={demo} />
                   ) : (
                     <span className="text-muted-foreground text-xs">—</span>
                   )}
@@ -132,6 +140,20 @@ export function IncidentTable({ incidents, org, now }: { incidents: Incident[]; 
         </Table>
       </div>
     </div>
+  );
+}
+
+/** Demo PRs live in the fake GitHub, so their numbers are plain text rather than links to real PRs. */
+export function PrRef({ url, number, demo }: { url: string; number?: number | null; demo: boolean }) {
+  if (!demo) return <ExternalLink href={url}>{prLabel(url, number)}</ExternalLink>;
+  return (
+    <span
+      className="text-muted-foreground font-mono text-xs"
+      data-testid="pr-ref"
+      title="Opened in the demo's fake GitHub"
+    >
+      {prLabel(url, number)} · demo
+    </span>
   );
 }
 

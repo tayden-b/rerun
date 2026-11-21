@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ChevronLeftIcon } from 'lucide-react';
 import type { IncidentDetail } from '@/src/db/incidents';
-import { ExternalLink } from '@/components/incidents/incident-table';
+import { ExternalLink, PrRef } from '@/components/incidents/incident-table';
 import { RelativeTime } from '@/components/incidents/relative-time';
 import { StatusPill } from '@/components/incidents/status-pill';
 import { ConfirmationBar } from '@/components/war-room/confirmation-bar';
@@ -14,7 +14,7 @@ import { TriageCard } from '@/components/war-room/triage-card';
 import { Verification } from '@/components/war-room/verification';
 import { buildIncidentView } from '@/lib/ui/incident-view';
 import { baseModel, isReplay } from '@/src/telemetry/replay';
-import { formatCost, formatTokens, prLabel, runUrl } from '@/lib/ui/format';
+import { formatCost, formatTokens, runUrl } from '@/lib/ui/format';
 import { ROUTE_LABELS } from '@/lib/ui/status';
 import { formatDuration } from '@/lib/ui/time';
 import { useIncidentStream } from '@/lib/ui/use-incident-stream';
@@ -22,7 +22,17 @@ import type { Route } from '@/src/shared/types';
 
 const SETTLED = new Set(['resolved', 'failed', 'needs_human']);
 
-export function WarRoom({ detail, org, now }: { detail: IncidentDetail; org: string; now: number }) {
+export function WarRoom({
+  detail,
+  org,
+  now,
+  demo = false,
+}: {
+  detail: IncidentDetail;
+  org: string;
+  now: number;
+  demo?: boolean;
+}) {
   useIncidentStream({ id: detail.id, enabled: !SETTLED.has(detail.status) });
   const view = buildIncidentView(detail);
   const prUrl = detail.prUrl ?? view.pr?.url;
@@ -47,9 +57,7 @@ export function WarRoom({ detail, org, now }: { detail: IncidentDetail; org: str
             <StatusPill status={detail.status} />
             {detail.route && <span>{ROUTE_LABELS[detail.route as Route] ?? detail.route}</span>}
             <ExternalLink href={runUrl(org, detail.workspace, detail.runId)}>{detail.runId}</ExternalLink>
-            {prUrl && (
-              <ExternalLink href={prUrl}>{prLabel(prUrl, detail.prNumber ?? view.pr?.number)}</ExternalLink>
-            )}
+            {prUrl && <PrRef url={prUrl} number={detail.prNumber ?? view.pr?.number} demo={demo} />}
             <RelativeTime iso={detail.createdAt} now={now} />
           </div>
         </header>

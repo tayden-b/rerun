@@ -44,6 +44,21 @@ describe('0001_incidents_run_id_unique', () => {
         createdAt: '2026-11-21T00:01:00.000Z',
       },
       {
+        id: 'third',
+        runId: 'run-pr',
+        workspace: 'w',
+        status: 'collecting',
+        createdAt: '2026-11-21T00:03:00.000Z',
+      },
+      {
+        id: 'with-pr',
+        runId: 'run-pr',
+        workspace: 'w',
+        status: 'awaiting_approval',
+        prNumber: 7,
+        createdAt: '2026-11-21T00:04:00.000Z',
+      },
+      {
         id: 'other',
         runId: 'run-other',
         workspace: 'w',
@@ -59,7 +74,8 @@ describe('0001_incidents_run_id_unique', () => {
 
     const db = await openDb(url);
     const ids = (await db.select({ id: schema.incidents.id }).from(schema.incidents)).map((r) => r.id).sort();
-    expect(ids).toEqual(['first', 'other']);
+    // Earliest wins, unless a later duplicate owns the fix PR that approval needs.
+    expect(ids).toEqual(['first', 'other', 'with-pr']);
     const events = await db
       .select({ incidentId: schema.incidentEvents.incidentId })
       .from(schema.incidentEvents);

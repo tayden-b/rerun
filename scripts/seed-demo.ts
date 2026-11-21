@@ -707,7 +707,17 @@ export function buildEvents(s: Scenario, startMs: number): EventInput[] {
 /** Replaces the three demo incidents in `db`; timestamps are relative to now so ages read naturally. */
 export async function seedDemo(db: Db, now: number = Date.now()): Promise<number> {
   const scenarios = [unsetVariable(), providerVersionConflict(), applyTimeExit1()];
-  const ids = scenarios.map((s) => s.id);
+  // `npm run demo` may have started its own incident for a seeded run; `incidents.run_id` is unique.
+  const sameRun = await db
+    .select({ id: schema.incidents.id })
+    .from(schema.incidents)
+    .where(
+      inArray(
+        schema.incidents.runId,
+        scenarios.map((s) => s.runId),
+      ),
+    );
+  const ids = [...new Set([...scenarios.map((s) => s.id), ...sameRun.map((r) => r.id)])];
   await db.delete(schema.incidentEvents).where(inArray(schema.incidentEvents.incidentId, ids));
   await db.delete(schema.decisions).where(inArray(schema.decisions.incidentId, ids));
   await db.delete(schema.artifacts).where(inArray(schema.artifacts.incidentId, ids));

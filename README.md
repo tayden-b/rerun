@@ -6,7 +6,7 @@ When an HCP Terraform run fails, Rerun reads the failure through the Terraform M
 [![Triage eval](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Ftayden-b%2Frerun%2Fdev%2Fdocs%2Fbadges%2Feval.json)](#evals)
 [![Terraform MCP tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Ftayden-b%2Frerun%2Fdev%2Fdocs%2Fbadges%2Fmcp-tools.json)](#why-the-terraform-mcp-server)
 
-![The incident war room in demo mode: triage, investigation, fix, verification and approval for one failed run](docs/media/war-room.png)
+![Demo mode: a failed apply goes from collection through triage, diagnosis, fix and verification to Awaiting approval](docs/media/rerun.gif)
 
 ## Why the Terraform MCP server
 
@@ -211,7 +211,7 @@ Demo mode needs no credentials. It runs the real incident workflow on the record
 ```bash
 git clone https://github.com/tayden-b/rerun && cd rerun
 npm ci
-npm run demo -- --fresh   # app on http://localhost:3000, mock Terraform MCP server on :8080; --fresh starts a new incident
+npm run demo -- --fresh   # app on http://localhost:3000, mock Terraform MCP server on :8081; --fresh starts a new incident
 ```
 
 Live mode needs an HCP Terraform workspace that applies from a GitHub repository (fork [rerun-fixtures](https://github.com/tayden-b/rerun-fixtures)), Docker, and the keys listed in `.env.example`.

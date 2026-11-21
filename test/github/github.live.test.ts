@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { GitHubRestClient } from '../../src/github/client';
 
-const token = process.env.GITHUB_TOKEN;
 const repo = process.env.RERUN_FIXTURES_REPO ?? 'tayden-b/rerun-fixtures';
 
-describe.runIf(Boolean(token))('GitHubRestClient (live: GITHUB_TOKEN)', () => {
+describe('GitHubRestClient (live: GITHUB_TOKEN)', () => {
   it('snapshot → branch → commit → draft PR → comment → close → delete', { timeout: 120_000 }, async () => {
-    const gh = new GitHubRestClient({ token: token!, repo });
+    const token = process.env.GITHUB_TOKEN;
+    if (!token) throw new Error('GITHUB_TOKEN is required for the live GitHub test');
+    const gh = new GitHubRestClient({ token, repo });
     const branch = `rerun/test-${Date.now()}`;
     const snap = await gh.getRepoSnapshot('main');
     expect(snap.headSha).toMatch(/^[0-9a-f]{40}$/);

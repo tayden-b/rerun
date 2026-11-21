@@ -9,14 +9,14 @@
  */
 import { getIncident, type IncidentDetail } from '../src/db/incidents';
 import { incidentServices } from '../src/incident/services';
-import { startIncidentViaApp } from './live';
+import { liveAppUrl, startIncidentViaApp } from './live';
 import { fixturesDriver } from './liveFixtures';
 
 const POLL_MS = 5_000;
 
 async function main(scenario: string): Promise<void> {
   const services = incidentServices();
-  const appUrl = process.env.RERUN_APP_URL ?? `http://localhost:${process.env.PORT ?? 3000}`;
+  const appUrl = liveAppUrl();
   const log = (line: string) => console.error(`resolve ${scenario}: ${line}`);
   const fixtures = fixturesDriver({ dir: process.env.RERUN_FIXTURES_DIR, mcp: () => services.mcp(), log });
   const load = async (id: string) => getIncident(await services.db(), id);

@@ -75,11 +75,13 @@ export function createLiveScenarioRunner(deps: LiveScenarioDeps): RunLiveScenari
     let detail: IncidentDetail | null | undefined;
     try {
       const { incident } = await deps.start(runId);
-      detail = await deps.load(incident.id);
+      // A failed read must not end the wait: cleanup resets the shared workspace under a running incident.
+      const load = () => deps.load(incident.id).catch(() => detail);
+      detail = await load();
       while (!detail || !SETTLED.includes(detail.status as IncidentStatus)) {
         if (now() - t1 > timeoutMs) break;
         await new Promise((resolve) => setTimeout(resolve, pollMs));
-        detail = await deps.load(incident.id);
+        detail = await load();
       }
     } finally {
       await deps.cleanup?.(detail, runId);
@@ -147,7 +149,7 @@ export const runLiveScenario: RunLiveScenario = async (name) => {
   const fixtures = fixturesDriver({ dir: process.env.RERUN_FIXTURES_DIR, mcp: () => services.mcp(), log });
   const preset = process.env[`RERUN_LIVE_RUN_${name.toUpperCase().replace(/-/g, '_')}`];
   const github = services.github();
-  const appUrl = process.env.RERUN_APP_URL ?? `http://localhost:${process.env.PORT ?? 3000}`;
+  const appUrl = liveAppUrl();
   const run = createLiveScenarioRunner({
     runIdFor: async (n) => preset ?? (await fixtures.break(n)),
     start: (runId) => {
@@ -180,6 +182,11 @@ export const runLiveScenario: RunLiveScenario = async (name) => {
   }
   return result;
 };
+
+/** The running app the live eval starts incidents through; a blank `RERUN_APP_URL` means the default. */
+export function liveAppUrl(env: Record<string, string | undefined> = process.env): string {
+  return env.RERUN_APP_URL || `http://localhost:${env.PORT || 3000}`;
+}
 
 /**
  * `POST /api/incidents` on the running app. `start()` from `workflow/api` only works inside the Next

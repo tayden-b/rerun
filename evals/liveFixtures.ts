@@ -1,6 +1,7 @@
 import { execFile } from 'node:child_process';
 import path from 'node:path';
 import { promisify } from 'node:util';
+import { requireLive } from '../src/config';
 import type { RunListItem, TerraformMcp } from '../src/mcp/terraform';
 import { watchForNextRun, type RunLister } from '../src/watch/runs';
 
@@ -32,9 +33,13 @@ export function workspaceRunLister(mcp: TerraformMcp): RunLister {
   };
 }
 
-/** Drives `scripts/break.sh` / `scripts/reset.sh` and waits for the HCP Terraform run each push produces. */
+/**
+ * Drives `scripts/break.sh` / `scripts/reset.sh` and waits for the HCP Terraform run each push produces.
+ * Live only: the scripts push to the real fixtures repo.
+ */
 export function fixturesDriver(opts: FixturesDriverOptions) {
-  const dir = path.resolve(opts.dir ?? path.join(process.cwd(), '..', 'rerun-fixtures'));
+  requireLive(['tfe', 'github']);
+  const dir = path.resolve(opts.dir || path.join(process.cwd(), '..', 'rerun-fixtures'));
   const timeoutMs = opts.timeoutMs ?? 20 * 60_000;
   const pollMs = opts.pollMs ?? 10_000;
   const log = opts.log ?? (() => {});

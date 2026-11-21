@@ -57,7 +57,7 @@ Touch only the paths your brief assigns. Everything else is read-only; if you ne
 
 Every variable is listed in `.env.example` and parsed in `src/config.ts` (SPEC §9).
 
-- `RERUN_ANTHROPIC_API_KEY` is accepted as an alias for `ANTHROPIC_API_KEY`; `ANTHROPIC_API_KEY` wins when both are set.
+- `RERUN_ANTHROPIC_API_KEY` wins over `ANTHROPIC_API_KEY` when both are set (`src/config.ts`), so an unrelated org-wide `ANTHROPIC_API_KEY` is ignored.
 - `RERUN_MODE` is `live` (default) or `demo`.
 - `DATABASE_URL` defaults to `file:data/rerun.db`; `data/` is gitignored. Tests use `file::memory:`.
 - `NEXT_DIST_DIR` overrides `.next` so a test dev server does not collide with your own `npm run dev`.

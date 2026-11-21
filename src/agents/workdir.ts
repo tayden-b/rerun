@@ -48,10 +48,10 @@ export async function materializeRepo({
   const rationales = new Map<string, string>();
 
   async function put(file: string, content: string) {
+    current.set(file, content);
     const abs = path.join(dir, file);
     await mkdir(path.dirname(abs), { recursive: true });
     await writeFile(abs, content, 'utf8');
-    current.set(file, content);
   }
 
   for (const [file, content] of Object.entries(files)) {

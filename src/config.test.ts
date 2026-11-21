@@ -41,7 +41,6 @@ describe('requireLive', () => {
       expect((err as LiveConfigError).missing).toEqual([
         'ANTHROPIC_API_KEY (or RERUN_ANTHROPIC_API_KEY)',
         'JEV_API_KEY',
-        'TFE_TOKEN',
         'TFE_ORG',
         'GITHUB_TOKEN',
       ]);

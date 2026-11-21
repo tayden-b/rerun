@@ -10,7 +10,6 @@ export interface Config {
   anthropicApiKey?: string;
   jevApiKey?: string;
   tfeOrg?: string;
-  hasTfeToken: boolean;
   workspace: string;
   githubToken?: string;
   fixturesRepo: string;
@@ -49,8 +48,6 @@ export function loadConfig(env: Env = process.env): Config {
     anthropicApiKey: str(env, 'ANTHROPIC_API_KEY') ?? str(env, 'RERUN_ANTHROPIC_API_KEY'),
     jevApiKey: str(env, 'JEV_API_KEY'),
     tfeOrg: str(env, 'TFE_ORG'),
-    // The app never uses TFE_TOKEN itself (it is passed to the MCP container); only presence is tracked.
-    hasTfeToken: str(env, 'TFE_TOKEN') !== undefined,
     workspace: str(env, 'RERUN_WORKSPACE') ?? 'rerun-fixtures',
     githubToken: str(env, 'GITHUB_TOKEN'),
     fixturesRepo: str(env, 'RERUN_FIXTURES_REPO') ?? 'tayden-b/rerun-fixtures',
@@ -75,7 +72,8 @@ export type LiveRequirement = 'anthropic' | 'jev' | 'tfe' | 'github';
 const LIVE_CHECKS: Record<LiveRequirement, (c: Config) => string[]> = {
   anthropic: (c) => (c.anthropicApiKey ? [] : ['ANTHROPIC_API_KEY (or RERUN_ANTHROPIC_API_KEY)']),
   jev: (c) => (c.jevApiKey ? [] : ['JEV_API_KEY']),
-  tfe: (c) => [...(c.hasTfeToken ? [] : ['TFE_TOKEN']), ...(c.tfeOrg ? [] : ['TFE_ORG'])],
+  // TFE_TOKEN belongs to the terraform-mcp sidecar (SPEC §9); the app never reads it.
+  tfe: (c) => (c.tfeOrg ? [] : ['TFE_ORG']),
   github: (c) => (c.githubToken ? [] : ['GITHUB_TOKEN']),
 };
 

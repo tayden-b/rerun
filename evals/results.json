@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-21T01:38:28.559Z",
+  "generatedAt": "2026-11-21T01:50:53.774Z",
   "options": {
-    "providers": ["recorded"],
+    "providers": ["jev", "llm"],
     "scenarios": [
       "apply-time-exit-1",
       "bad-http-url",
@@ -16,14 +16,14 @@
       "undeclared-reference",
       "unset-variable"
     ],
-    "perturbations": 5,
+    "perturbations": 2,
     "seed": 42,
     "live": false
   },
   "pricesAsOf": "2026-11-20",
   "providers": [
     {
-      "provider": "recorded",
+      "provider": "jev",
       "scenarios": [
         {
           "scenario": "apply-time-exit-1",
@@ -39,12 +39,12 @@
             "stage": "apply",
             "route": "autoPr",
             "configFixable": 0.92,
-            "needsHuman": 0.29,
+            "needsHuman": 0.27,
             "blastRadius": 1
           },
           "classCorrect": true,
           "routeCorrect": true,
-          "latencyMs": 75,
+          "latencyMs": 93,
           "inputTokens": 1514,
           "costUsd": 0.000063588
         },
@@ -62,12 +62,12 @@
             "stage": "plan",
             "route": "autoPr",
             "configFixable": 0.9,
-            "needsHuman": 0.31,
-            "blastRadius": 0.03
+            "needsHuman": 0.29,
+            "blastRadius": 0.02
           },
           "classCorrect": true,
           "routeCorrect": true,
-          "latencyMs": 41,
+          "latencyMs": 47,
           "inputTokens": 1431,
           "costUsd": 0.000060102
         },
@@ -85,12 +85,12 @@
             "stage": "plan",
             "route": "autoPr",
             "configFixable": 0.95,
-            "needsHuman": 0.29,
+            "needsHuman": 0.3,
             "blastRadius": 0.03
           },
           "classCorrect": true,
           "routeCorrect": true,
-          "latencyMs": 64,
+          "latencyMs": 57,
           "inputTokens": 1475,
           "costUsd": 0.00006195
         },
@@ -109,7 +109,7 @@
             "route": "autoPr",
             "configFixable": 0.92,
             "needsHuman": 0.16,
-            "blastRadius": 0.13
+            "blastRadius": 0.14
           },
           "classCorrect": true,
           "routeCorrect": true,
@@ -130,13 +130,13 @@
             "classConfidence": 0.98,
             "stage": "plan",
             "route": "autoPr",
-            "configFixable": 0.92,
-            "needsHuman": 0.26,
-            "blastRadius": 0.03
+            "configFixable": 0.91,
+            "needsHuman": 0.27,
+            "blastRadius": 0.05
           },
           "classCorrect": true,
           "routeCorrect": true,
-          "latencyMs": 120,
+          "latencyMs": 52,
           "inputTokens": 1392,
           "costUsd": 0.00005846400000000001
         },
@@ -154,12 +154,12 @@
             "stage": "plan",
             "route": "autoPr",
             "configFixable": 0.98,
-            "needsHuman": 0.19,
-            "blastRadius": 0.1
+            "needsHuman": 0.2,
+            "blastRadius": 0.06
           },
           "classCorrect": true,
           "routeCorrect": true,
-          "latencyMs": 47,
+          "latencyMs": 43,
           "inputTokens": 1372,
           "costUsd": 0.000057624
         },
@@ -173,16 +173,16 @@
           },
           "predicted": {
             "failureClass": "module_source",
-            "classConfidence": 0.97,
+            "classConfidence": 0.96,
             "stage": "init",
             "route": "draftPr",
-            "configFixable": 0.79,
-            "needsHuman": 0.52,
+            "configFixable": 0.81,
+            "needsHuman": 0.41,
             "blastRadius": 0
           },
           "classCorrect": true,
           "routeCorrect": true,
-          "latencyMs": 41,
+          "latencyMs": 61,
           "inputTokens": 1384,
           "costUsd": 0.000058128
         },
@@ -199,13 +199,13 @@
             "classConfidence": 1,
             "stage": "init",
             "route": "draftPr",
-            "configFixable": 0.85,
-            "needsHuman": 0.79,
+            "configFixable": 0.84,
+            "needsHuman": 0.81,
             "blastRadius": 0
           },
           "classCorrect": true,
           "routeCorrect": true,
-          "latencyMs": 42,
+          "latencyMs": 53,
           "inputTokens": 1433,
           "costUsd": 0.00006018600000000001
         },
@@ -224,11 +224,11 @@
             "route": "autoPr",
             "configFixable": 0.96,
             "needsHuman": 0.12,
-            "blastRadius": 0.06
+            "blastRadius": 0.05
           },
           "classCorrect": true,
           "routeCorrect": true,
-          "latencyMs": 44,
+          "latencyMs": 45,
           "inputTokens": 1422,
           "costUsd": 0.000059724000000000006
         },
@@ -246,12 +246,12 @@
             "stage": "plan",
             "route": "autoPr",
             "configFixable": 0.97,
-            "needsHuman": 0.18,
+            "needsHuman": 0.16,
             "blastRadius": 0.02
           },
           "classCorrect": true,
           "routeCorrect": true,
-          "latencyMs": 62,
+          "latencyMs": 39,
           "inputTokens": 1379,
           "costUsd": 0.000057918000000000003
         },
@@ -269,7 +269,7 @@
             "stage": "plan",
             "route": "autoPr",
             "configFixable": 0.95,
-            "needsHuman": 0.3,
+            "needsHuman": 0.31,
             "blastRadius": 0
           },
           "classCorrect": true,
@@ -284,7 +284,7 @@
         "errors": 0,
         "classAccuracy": 1,
         "routeAccuracy": 1,
-        "latencyMsMean": 57.36363636363637,
+        "latencyMsMean": 53.18181818181818,
         "inputTokensMean": 1409.909090909091,
         "costUsdTotal": 0.0006513780000000001,
         "costUsdPerIncident": 0.000059216181818181825
@@ -356,7 +356,7 @@
       ],
       "calibration": {
         "configFixable": {
-          "ece": 0.19727272727272738,
+          "ece": 0.19909090909090912,
           "n": 11,
           "bins": [
             {
@@ -411,28 +411,28 @@
             {
               "lo": 0.7,
               "hi": 0.8,
-              "count": 1,
-              "meanPredicted": 0.79,
-              "observedRate": 0
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
             },
             {
               "lo": 0.8,
               "hi": 0.9,
-              "count": 1,
-              "meanPredicted": 0.85,
+              "count": 2,
+              "meanPredicted": 0.825,
               "observedRate": 0
             },
             {
               "lo": 0.9,
               "hi": 1,
               "count": 9,
-              "meanPredicted": 0.941111111111111,
+              "meanPredicted": 0.94,
               "observedRate": 1
             }
           ]
         },
         "needsHuman": {
-          "ece": 0.2536363636363636,
+          "ece": 0.26,
           "n": 11,
           "bins": [
             {
@@ -445,15 +445,15 @@
             {
               "lo": 0.1,
               "hi": 0.2,
-              "count": 4,
-              "meanPredicted": 0.16249999999999998,
+              "count": 3,
+              "meanPredicted": 0.1466666666666667,
               "observedRate": 0
             },
             {
               "lo": 0.2,
               "hi": 0.3,
-              "count": 3,
-              "meanPredicted": 0.27999999999999997,
+              "count": 4,
+              "meanPredicted": 0.2575,
               "observedRate": 0
             },
             {
@@ -466,16 +466,16 @@
             {
               "lo": 0.4,
               "hi": 0.5,
-              "count": 0,
-              "meanPredicted": null,
-              "observedRate": null
+              "count": 1,
+              "meanPredicted": 0.41,
+              "observedRate": 1
             },
             {
               "lo": 0.5,
               "hi": 0.6,
-              "count": 1,
-              "meanPredicted": 0.52,
-              "observedRate": 1
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
             },
             {
               "lo": 0.6,
@@ -487,16 +487,16 @@
             {
               "lo": 0.7,
               "hi": 0.8,
-              "count": 1,
-              "meanPredicted": 0.79,
-              "observedRate": 1
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
             },
             {
               "lo": 0.8,
               "hi": 0.9,
-              "count": 0,
-              "meanPredicted": null,
-              "observedRate": null
+              "count": 1,
+              "meanPredicted": 0.81,
+              "observedRate": 1
             },
             {
               "lo": 0.9,
@@ -509,64 +509,614 @@
         }
       },
       "robustness": {
-        "perturbations": 5,
-        "runs": 55,
+        "perturbations": 2,
+        "runs": 22,
         "flips": 0,
         "flipRate": 0,
         "perScenario": [
           {
             "scenario": "apply-time-exit-1",
-            "runs": 5,
+            "runs": 2,
             "flips": 0
           },
           {
             "scenario": "bad-http-url",
-            "runs": 5,
+            "runs": 2,
             "flips": 0
           },
           {
             "scenario": "check-block-failure",
-            "runs": 5,
+            "runs": 2,
             "flips": 0
           },
           {
             "scenario": "dependency-cycle",
-            "runs": 5,
+            "runs": 2,
             "flips": 0
           },
           {
             "scenario": "http-404-postcondition",
-            "runs": 5,
+            "runs": 2,
             "flips": 0
           },
           {
             "scenario": "missing-required-arg",
-            "runs": 5,
+            "runs": 2,
             "flips": 0
           },
           {
             "scenario": "module-source-typo",
-            "runs": 5,
+            "runs": 2,
             "flips": 0
           },
           {
             "scenario": "provider-version-conflict",
-            "runs": 5,
+            "runs": 2,
             "flips": 0
           },
           {
             "scenario": "removed-argument",
-            "runs": 5,
+            "runs": 2,
             "flips": 0
           },
           {
             "scenario": "undeclared-reference",
-            "runs": 5,
+            "runs": 2,
             "flips": 0
           },
           {
             "scenario": "unset-variable",
-            "runs": 5,
+            "runs": 2,
+            "flips": 0
+          }
+        ]
+      }
+    },
+    {
+      "provider": "llm",
+      "scenarios": [
+        {
+          "scenario": "apply-time-exit-1",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "apply_runtime",
+            "stage": "apply",
+            "route": "autoPr"
+          },
+          "predicted": {
+            "failureClass": "apply_runtime",
+            "classConfidence": 0.8653846153846154,
+            "stage": "apply",
+            "route": "draftPr",
+            "configFixable": 0.85,
+            "needsHuman": 0.3,
+            "blastRadius": 1.02
+          },
+          "classCorrect": true,
+          "routeCorrect": false,
+          "latencyMs": 3482,
+          "inputTokens": 3863,
+          "costUsd": 0.0003863
+        },
+        {
+          "scenario": "bad-http-url",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "provider_api_error",
+            "stage": "plan",
+            "route": "autoPr"
+          },
+          "predicted": {
+            "failureClass": "provider_api_error",
+            "classConfidence": 0.85,
+            "stage": "plan",
+            "route": "autoPr",
+            "configFixable": 0.8,
+            "needsHuman": 0.25,
+            "blastRadius": 0.08
+          },
+          "classCorrect": true,
+          "routeCorrect": true,
+          "latencyMs": 4172,
+          "inputTokens": 3754,
+          "costUsd": 0.0003754
+        },
+        {
+          "scenario": "check-block-failure",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "precondition_failed",
+            "stage": "plan",
+            "route": "autoPr"
+          },
+          "predicted": {
+            "failureClass": "precondition_failed",
+            "classConfidence": 0.85,
+            "stage": "plan",
+            "route": "autoPr",
+            "configFixable": 0.75,
+            "needsHuman": 0.2,
+            "blastRadius": 0.16999999999999998
+          },
+          "classCorrect": true,
+          "routeCorrect": true,
+          "latencyMs": 2508,
+          "inputTokens": 3836,
+          "costUsd": 0.0003836
+        },
+        {
+          "scenario": "dependency-cycle",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "dependency_cycle",
+            "stage": "plan",
+            "route": "autoPr"
+          },
+          "predicted": {
+            "failureClass": "dependency_cycle",
+            "classConfidence": 0.9,
+            "stage": "plan",
+            "route": "autoPr",
+            "configFixable": 0.9,
+            "needsHuman": 0.07,
+            "blastRadius": 0.35000000000000003
+          },
+          "classCorrect": true,
+          "routeCorrect": true,
+          "latencyMs": 3713,
+          "inputTokens": 3615,
+          "costUsd": 0.0003615
+        },
+        {
+          "scenario": "http-404-postcondition",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "precondition_failed",
+            "stage": "plan",
+            "route": "autoPr"
+          },
+          "predicted": {
+            "failureClass": "precondition_failed",
+            "classConfidence": 0.7920792079207921,
+            "stage": "plan",
+            "route": "autoPr",
+            "configFixable": 0.93,
+            "needsHuman": 0.08,
+            "blastRadius": 0.045
+          },
+          "classCorrect": true,
+          "routeCorrect": true,
+          "latencyMs": 3400,
+          "inputTokens": 3692,
+          "costUsd": 0.00036920000000000003
+        },
+        {
+          "scenario": "missing-required-arg",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "config_syntax",
+            "stage": "plan",
+            "route": "autoPr"
+          },
+          "predicted": {
+            "failureClass": "config_syntax",
+            "classConfidence": 0.9,
+            "stage": "plan",
+            "route": "autoPr",
+            "configFixable": 0.95,
+            "needsHuman": 0.04,
+            "blastRadius": 0.045
+          },
+          "classCorrect": true,
+          "routeCorrect": true,
+          "latencyMs": 1702,
+          "inputTokens": 3679,
+          "costUsd": 0.00036790000000000005
+        },
+        {
+          "scenario": "module-source-typo",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "module_source",
+            "stage": "init",
+            "route": "draftPr"
+          },
+          "predicted": {
+            "failureClass": "module_source",
+            "classConfidence": 0.8118811881188118,
+            "stage": "init",
+            "route": "draftPr",
+            "configFixable": 0.88,
+            "needsHuman": 0.8,
+            "blastRadius": 0.045
+          },
+          "classCorrect": true,
+          "routeCorrect": true,
+          "latencyMs": 3024,
+          "inputTokens": 3697,
+          "costUsd": 0.00036970000000000004
+        },
+        {
+          "scenario": "provider-version-conflict",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "provider_version",
+            "stage": "init",
+            "route": "draftPr"
+          },
+          "predicted": {
+            "failureClass": "provider_version",
+            "classConfidence": 0.88,
+            "stage": "init",
+            "route": "draftPr",
+            "configFixable": 0.75,
+            "needsHuman": 0.85,
+            "blastRadius": 0.04
+          },
+          "classCorrect": true,
+          "routeCorrect": true,
+          "latencyMs": 2970,
+          "inputTokens": 3770,
+          "costUsd": 0.000377
+        },
+        {
+          "scenario": "removed-argument",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "config_syntax",
+            "stage": "plan",
+            "route": "autoPr"
+          },
+          "predicted": {
+            "failureClass": "config_syntax",
+            "classConfidence": 0.8415841584158416,
+            "stage": "plan",
+            "route": "autoPr",
+            "configFixable": 0.95,
+            "needsHuman": 0.05,
+            "blastRadius": 0.06
+          },
+          "classCorrect": true,
+          "routeCorrect": true,
+          "latencyMs": 1731,
+          "inputTokens": 3782,
+          "costUsd": 0.00037820000000000003
+        },
+        {
+          "scenario": "undeclared-reference",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "config_reference",
+            "stage": "plan",
+            "route": "autoPr"
+          },
+          "predicted": {
+            "failureClass": "config_reference",
+            "classConfidence": 0.9207920792079208,
+            "stage": "plan",
+            "route": "autoPr",
+            "configFixable": 0.97,
+            "needsHuman": 0.03,
+            "blastRadius": 0.045
+          },
+          "classCorrect": true,
+          "routeCorrect": true,
+          "latencyMs": 1795,
+          "inputTokens": 3692,
+          "costUsd": 0.00036920000000000003
+        },
+        {
+          "scenario": "unset-variable",
+          "placeholder": false,
+          "expected": {
+            "failureClass": "missing_input",
+            "stage": "plan",
+            "route": "autoPr"
+          },
+          "predicted": {
+            "failureClass": "missing_input",
+            "classConfidence": 0.92,
+            "stage": "plan",
+            "route": "autoPr",
+            "configFixable": 0.9,
+            "needsHuman": 0.2,
+            "blastRadius": 0
+          },
+          "classCorrect": true,
+          "routeCorrect": true,
+          "latencyMs": 3740,
+          "inputTokens": 3684,
+          "costUsd": 0.0003684
+        }
+      ],
+      "summary": {
+        "n": 11,
+        "errors": 0,
+        "classAccuracy": 1,
+        "routeAccuracy": 0.9090909090909091,
+        "latencyMsMean": 2930.6363636363635,
+        "inputTokensMean": 3733.090909090909,
+        "costUsdTotal": 0.0041064000000000005,
+        "costUsdPerIncident": 0.00037330909090909096
+      },
+      "perClass": [
+        {
+          "failureClass": "config_syntax",
+          "support": 2,
+          "predicted": 2,
+          "precision": 1,
+          "recall": 1
+        },
+        {
+          "failureClass": "config_reference",
+          "support": 1,
+          "predicted": 1,
+          "precision": 1,
+          "recall": 1
+        },
+        {
+          "failureClass": "missing_input",
+          "support": 1,
+          "predicted": 1,
+          "precision": 1,
+          "recall": 1
+        },
+        {
+          "failureClass": "provider_version",
+          "support": 1,
+          "predicted": 1,
+          "precision": 1,
+          "recall": 1
+        },
+        {
+          "failureClass": "provider_api_error",
+          "support": 1,
+          "predicted": 1,
+          "precision": 1,
+          "recall": 1
+        },
+        {
+          "failureClass": "apply_runtime",
+          "support": 1,
+          "predicted": 1,
+          "precision": 1,
+          "recall": 1
+        },
+        {
+          "failureClass": "precondition_failed",
+          "support": 2,
+          "predicted": 2,
+          "precision": 1,
+          "recall": 1
+        },
+        {
+          "failureClass": "module_source",
+          "support": 1,
+          "predicted": 1,
+          "precision": 1,
+          "recall": 1
+        },
+        {
+          "failureClass": "dependency_cycle",
+          "support": 1,
+          "predicted": 1,
+          "precision": 1,
+          "recall": 1
+        }
+      ],
+      "calibration": {
+        "configFixable": {
+          "ece": 0.12999999999999992,
+          "n": 11,
+          "bins": [
+            {
+              "lo": 0,
+              "hi": 0.1,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.1,
+              "hi": 0.2,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.2,
+              "hi": 0.3,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.3,
+              "hi": 0.4,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.4,
+              "hi": 0.5,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.5,
+              "hi": 0.6,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.6,
+              "hi": 0.7,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.7,
+              "hi": 0.8,
+              "count": 2,
+              "meanPredicted": 0.75,
+              "observedRate": 0.5
+            },
+            {
+              "lo": 0.8,
+              "hi": 0.9,
+              "count": 3,
+              "meanPredicted": 0.8433333333333333,
+              "observedRate": 0.6666666666666666
+            },
+            {
+              "lo": 0.9,
+              "hi": 1,
+              "count": 6,
+              "meanPredicted": 0.9333333333333335,
+              "observedRate": 1
+            }
+          ]
+        },
+        "needsHuman": {
+          "ece": 0.14272727272727273,
+          "n": 11,
+          "bins": [
+            {
+              "lo": 0,
+              "hi": 0.1,
+              "count": 5,
+              "meanPredicted": 0.054000000000000006,
+              "observedRate": 0
+            },
+            {
+              "lo": 0.1,
+              "hi": 0.2,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.2,
+              "hi": 0.3,
+              "count": 3,
+              "meanPredicted": 0.21666666666666667,
+              "observedRate": 0
+            },
+            {
+              "lo": 0.3,
+              "hi": 0.4,
+              "count": 1,
+              "meanPredicted": 0.3,
+              "observedRate": 0
+            },
+            {
+              "lo": 0.4,
+              "hi": 0.5,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.5,
+              "hi": 0.6,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.6,
+              "hi": 0.7,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.7,
+              "hi": 0.8,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            },
+            {
+              "lo": 0.8,
+              "hi": 0.9,
+              "count": 2,
+              "meanPredicted": 0.825,
+              "observedRate": 1
+            },
+            {
+              "lo": 0.9,
+              "hi": 1,
+              "count": 0,
+              "meanPredicted": null,
+              "observedRate": null
+            }
+          ]
+        }
+      },
+      "robustness": {
+        "perturbations": 2,
+        "runs": 22,
+        "flips": 0,
+        "flipRate": 0,
+        "perScenario": [
+          {
+            "scenario": "apply-time-exit-1",
+            "runs": 2,
+            "flips": 0
+          },
+          {
+            "scenario": "bad-http-url",
+            "runs": 2,
+            "flips": 0
+          },
+          {
+            "scenario": "check-block-failure",
+            "runs": 2,
+            "flips": 0
+          },
+          {
+            "scenario": "dependency-cycle",
+            "runs": 2,
+            "flips": 0
+          },
+          {
+            "scenario": "http-404-postcondition",
+            "runs": 2,
+            "flips": 0
+          },
+          {
+            "scenario": "missing-required-arg",
+            "runs": 2,
+            "flips": 0
+          },
+          {
+            "scenario": "module-source-typo",
+            "runs": 2,
+            "flips": 0
+          },
+          {
+            "scenario": "provider-version-conflict",
+            "runs": 2,
+            "flips": 0
+          },
+          {
+            "scenario": "removed-argument",
+            "runs": 2,
+            "flips": 0
+          },
+          {
+            "scenario": "undeclared-reference",
+            "runs": 2,
+            "flips": 0
+          },
+          {
+            "scenario": "unset-variable",
+            "runs": 2,
             "flips": 0
           }
         ]
@@ -577,5 +1127,5 @@
     "ran": false,
     "rows": []
   },
-  "notes": ["The recorded provider replays a fixed answer, so its flip rate is 0 by construction."]
+  "notes": ["LLM decision cost counts input tokens only (DecisionProvider does not report output tokens)."]
 }

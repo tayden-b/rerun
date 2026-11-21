@@ -57,4 +57,12 @@ describe('materializeRepo', () => {
     await expect(wd.write('../x.tf', '')).rejects.toThrow(/outside/);
     await wd.cleanup();
   });
+
+  it('rolls back a write that fails on disk so it never reaches the patch', async () => {
+    const wd = await materializeRepo({ files: { 'main.tf': 'a\n' } });
+    await expect(wd.write('main.tf/child.tf', 'x\n', 'r')).rejects.toThrow();
+    expect(wd.read('main.tf/child.tf')).toBeUndefined();
+    expect(wd.diff()).toEqual([]);
+    await wd.cleanup();
+  });
 });

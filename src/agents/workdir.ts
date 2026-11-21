@@ -48,10 +48,19 @@ export async function materializeRepo({
   const rationales = new Map<string, string>();
 
   async function put(file: string, content: string) {
+    const previous = current.get(file);
     current.set(file, content);
-    const abs = path.join(dir, file);
-    await mkdir(path.dirname(abs), { recursive: true });
-    await writeFile(abs, content, 'utf8');
+    try {
+      const abs = path.join(dir, file);
+      await mkdir(path.dirname(abs), { recursive: true });
+      await writeFile(abs, content, 'utf8');
+    } catch (error) {
+      if (current.get(file) === content) {
+        if (previous === undefined) current.delete(file);
+        else current.set(file, previous);
+      }
+      throw error;
+    }
   }
 
   for (const [file, content] of Object.entries(files)) {

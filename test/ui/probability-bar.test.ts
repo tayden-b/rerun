@@ -33,3 +33,14 @@ describe('ProbabilityBar', () => {
     );
   });
 });
+
+describe('ProbabilityBar valueText', () => {
+  it('shows the given text instead of a percentage', () => {
+    const html = renderToStaticMarkup(
+      createElement(ProbabilityBar, { label: 'Blast radius', value: 2 / 3, valueText: '2.0 / 3' }),
+    );
+    expect(html).toContain('2.0 / 3');
+    expect(html).toContain('aria-valuetext="2.0 / 3"');
+    expect(html).not.toContain('67%');
+  });
+});

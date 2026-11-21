@@ -3,19 +3,24 @@ import { clamp01, formatPercent } from '@/lib/ui/format';
 
 export interface ProbabilityBarProps {
   label: string;
+  /** Fill fraction, 0–1. */
   value: number;
+  /** Replaces the percentage, for values on another scale. */
+  valueText?: string;
   detail?: string;
   /** Muted bars for values where high is bad, so the accent only marks the decisive signal. */
   emphasis?: 'brand' | 'muted';
 }
 
-export function ProbabilityBar({ label, value, detail, emphasis = 'brand' }: ProbabilityBarProps) {
+export function ProbabilityBar({ label, value, valueText, detail, emphasis = 'brand' }: ProbabilityBarProps) {
   const clamped = clamp01(value);
   return (
     <div data-testid="probability-bar" className="grid gap-1.5">
       <div className="flex items-baseline justify-between gap-3 text-xs">
         <span className="text-foreground">{label}</span>
-        <span className="text-muted-foreground font-mono tabular-nums">{formatPercent(clamped)}</span>
+        <span className="text-muted-foreground font-mono tabular-nums">
+          {valueText ?? formatPercent(clamped)}
+        </span>
       </div>
       <div
         role="meter"
@@ -23,6 +28,7 @@ export function ProbabilityBar({ label, value, detail, emphasis = 'brand' }: Pro
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(clamped * 100)}
+        aria-valuetext={valueText}
         className="bg-muted h-1.5 overflow-hidden rounded-full"
       >
         <div

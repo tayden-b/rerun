@@ -30,6 +30,14 @@ function likeliestLegend(blast: TriageResult['blastRadius']): string | undefined
   return top ? blast.legend[top[0]] : undefined;
 }
 
+/** Highest level on the Jev score scale (SPEC §3 blast_radius has levels 0–3). */
+function scoreMax(answer: TriageResult['blastRadius']): number {
+  const levels = [...Object.keys(answer.legend), ...Object.keys(answer.probabilities)]
+    .map(Number)
+    .filter(Number.isFinite);
+  return levels.length > 0 ? Math.max(...levels) : 3;
+}
+
 export function TriageCard({ triage }: { triage?: TriageResult }) {
   return (
     <Card size="sm" data-testid="triage-card" className="gap-4">
@@ -61,7 +69,8 @@ export function TriageCard({ triage }: { triage?: TriageResult }) {
               <ProbabilityBar label="Fixable in config" value={triage.configFixable.noul} />
               <ProbabilityBar
                 label="Blast radius"
-                value={triage.blastRadius.score}
+                value={triage.blastRadius.score / scoreMax(triage.blastRadius)}
+                valueText={`${triage.blastRadius.score.toFixed(1)} / ${scoreMax(triage.blastRadius)}`}
                 detail={likeliestLegend(triage.blastRadius)}
                 emphasis="muted"
               />

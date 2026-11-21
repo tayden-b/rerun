@@ -59,6 +59,24 @@ describe('FakeGitHub', () => {
     expect(gh.pulls.get(1)).toMatchObject({ state: 'merged', comments: ['hello'] });
   });
 
+  it('squash merges apply only the branch changes, so parallel PRs do not undo each other', async () => {
+    const gh = new FakeGitHub({ files: seed });
+    const { headSha } = await gh.getRepoSnapshot('main');
+    for (const [branch, path] of [
+      ['rerun/a', 'main.tf'],
+      ['rerun/b', 'README.md'],
+    ]) {
+      await gh.createBranch(branch, headSha);
+      await gh.commitFiles(branch, [{ path, before: null, after: `${branch}\n`, rationale: 'r' }], 'c');
+    }
+    const a = await gh.openPullRequest({ branch: 'rerun/a', title: 'A', body: '', draft: false });
+    const b = await gh.openPullRequest({ branch: 'rerun/b', title: 'B', body: '', draft: false });
+    await gh.mergePullRequest(a.number);
+    await gh.mergePullRequest(b.number);
+    expect(gh.filesAt('main')['main.tf']).toBe('rerun/a\n');
+    expect(gh.filesAt('main')['README.md']).toBe('rerun/b\n');
+  });
+
   it('refuses to merge drafts, and close + delete leave no branch behind', async () => {
     const gh = new FakeGitHub({ files: seed });
     const { headSha } = await gh.getRepoSnapshot('main');

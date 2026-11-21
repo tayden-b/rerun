@@ -34,6 +34,8 @@ export class FakeGitHub implements GitHubClient {
   readonly commits = new Map<string, { files: Record<string, string>; parent?: string; message: string }>();
   readonly branches = new Map<string, string>();
   readonly pulls = new Map<number, FakePullRequest>();
+  /** Commit each branch was created from, so squash merges apply only that branch's changes. */
+  private readonly branchBases = new Map<string, string>();
   private nextNumber = 1;
   private nextCommentId = 1;
 
@@ -88,7 +90,9 @@ export class FakeGitHub implements GitHubClient {
   async createBranch(name: string, fromSha: string): Promise<void> {
     this.guard(name);
     if (this.branches.has(name)) throw new Error(`Reference already exists: refs/heads/${name}`);
-    this.branches.set(name, this.resolve(fromSha));
+    const sha = this.resolve(fromSha);
+    this.branches.set(name, sha);
+    this.branchBases.set(name, sha);
   }
 
   async commitFiles(branch: string, files: PatchFile[], message: string): Promise<{ sha: string }> {
@@ -130,7 +134,12 @@ export class FakeGitHub implements GitHubClient {
     if (pr.state !== 'open') throw new Error(`Pull request #${number} is ${pr.state}`);
     if (pr.draft) throw new Error(`Pull request #${number} is a draft and cannot be merged`);
     const base = this.resolve(pr.base);
-    const sha = this.addCommit(this.filesAt(pr.branch), `${pr.title} (#${number})`, base);
+    const head = this.filesAt(pr.branch);
+    const forkPoint = this.commits.get(this.branchBases.get(pr.branch) ?? base)!.files;
+    const merged = this.filesAt(base);
+    for (const [path, content] of Object.entries(head))
+      if (forkPoint[path] !== content) merged[path] = content;
+    const sha = this.addCommit(merged, `${pr.title} (#${number})`, base);
     this.branches.set(pr.base, sha);
     pr.state = 'merged';
     pr.mergeSha = sha;
@@ -152,5 +161,6 @@ export class FakeGitHub implements GitHubClient {
   async deleteBranch(name: string): Promise<void> {
     this.guard(name);
     if (!this.branches.delete(name)) throw new Error(`Reference does not exist: refs/heads/${name}`);
+    this.branchBases.delete(name);
   }
 }

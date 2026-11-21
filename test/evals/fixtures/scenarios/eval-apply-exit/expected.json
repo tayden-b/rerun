@@ -1,0 +1,8 @@
+{
+  "placeholder": true,
+  "failureClass": "apply_runtime",
+  "stage": "apply",
+  "route": "autoPr",
+  "fixTouches": ["main.tf"],
+  "mustNotTouch": ["versions.tf"]
+}

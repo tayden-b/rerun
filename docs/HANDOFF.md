@@ -248,8 +248,9 @@ npm run dev
 
 - **One workspace, one repository.** The scope guard allows only `RERUN_WORKSPACE`; fix PRs go to `RERUN_FIXTURES_REPO`.
 - **Polling interval.** New errored runs are found up to `RERUN_POLL_SECONDS` (30 s) late, and confirmation polls every 15 s. The webhook removes the first delay but needs a URL HCP Terraform can reach, which a laptop does not have.
-- **Demo GitHub is in memory.** In demo mode the PR is created by a fake GitHub client and lives only in the running process. Its number starts at 1, so the PR link in the war room points at an unrelated real PR (`rerun-fixtures#1`); do not click it in a demo. Restarting the demo forgets the PR.
+- **Demo GitHub is in memory.** In demo mode the PR is created by a fake GitHub client and lives only in the running process; the war room shows it as plain text (`#1 · demo`), not a link. Restarting the demo forgets the PR.
 - **No unique index on `incidents.run_id` yet** (not on `dev` as of this writing; assigned to W2-L). Within one process `startIncident` dedupes, but two processes on the same database (for example `npm run dev` plus a live eval) can each create an incident for the same run. Run one process per database.
+- **Live eval is incomplete: 9/11.** The `RERUN_ANTHROPIC_API_KEY` account is out of credits (`credit balance is too low`), so `bad-http-url`, `apply-time-exit-1` and approve → resolved have not run live yet. They need a funded key; the org `ANTHROPIC_API_KEY` is deliberately not used. Until then the live checklist (steps 5–9) is unproven end to end.
 - **`blast_radius` is at the edge for `apply-time-exit-1`.** Jev answers 1.00 against the `≤ 1.0` autoPr limit (the LLM provider answers 1.02). Any extra probability on a higher level routes it to a draft PR with Needs a human. Approve works either way.
 - **A speculative plan cannot prove an apply-time fix.** For `apply_runtime` the verifier proves the plan succeeds; only the post-merge apply confirms the fix.
 - **No dashboard authentication.** Anyone who can reach `localhost:3000` can approve a merge. Keep it on localhost.
@@ -343,8 +344,7 @@ If no incident appeared by 2:30, switch to demo mode. It runs the same workflow 
 
 ```bash
 # Ctrl-C to stop npm run dev, then:
-docker compose stop
 npm run demo -- --fresh
 ```
 
-`docker compose stop` frees port 8080 for the mock MCP server. Reload `http://localhost:3000` (the top bar now shows `demo`), open the incident, and continue at 2:30. Approve resolves in about 4 s. Do not click the PR link in demo mode: the PR exists only in memory and the link points at an unrelated PR. After the demo, `scripts/reset.sh` in the **fixtures** tab undoes the live break.
+`terraform-mcp` can keep running: the demo's mock MCP server listens on port 8081. Reload `http://localhost:3000` (the top bar now shows `demo`), open the incident, and continue at 2:30. Approve resolves in about 4 s. In demo mode the PR is plain text (`#1 · demo`), so skip the GitHub tab at 4:00. After the demo, `scripts/reset.sh` in the **fixtures** tab undoes the live break.

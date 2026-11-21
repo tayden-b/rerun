@@ -1,0 +1,4 @@
+{
+  "placeholder": true,
+  "result": "Terraform v1.14.3\non linux_amd64\nInitializing plugins and modules...\nrandom_pet.service: Refreshing state... [id=bold-otter]\ntls_private_key.ca: Refreshing state... [id=4f3c2a1b]\nterraform_data.bootstrap: Creating...\nterraform_data.bootstrap: Provisioning with 'local-exec'...\nterraform_data.bootstrap (local-exec): Executing: [\"/bin/sh\" \"-c\" \"echo bootstrapping rerun-fixtures && exit 1\"]\nterraform_data.bootstrap (local-exec): bootstrapping rerun-fixtures\n╷\n│ Error: local-exec provisioner error\n│\n│   with terraform_data.bootstrap,\n│   on main.tf line 58, in resource \"terraform_data\" \"bootstrap\":\n│   58:   provisioner \"local-exec\" {\n│\n│ Error running command 'echo bootstrapping rerun-fixtures && exit 1': exit\n│ status 1. Output: bootstrapping rerun-fixtures\n╵\nOperation failed: failed running terraform apply (exit 1)\n"
+}

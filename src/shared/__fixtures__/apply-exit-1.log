@@ -1,0 +1,400 @@
+Running apply in HCP Terraform. Output will stream here. Pressing Ctrl-C
+will cancel the remote apply if it's still pending. If the apply started it
+will stop streaming the logs, but will not stop the apply running remotely.
+
+Preparing the remote apply...
+
+To view this run in a browser, visit:
+https://app.terraform.io/app/hashi-org-TF/rerun-fixtures/runs/run-PLACEHOLDER0001
+
+Waiting for the plan to start...
+
+Terraform v1.14.3
+on linux_amd64
+Initializing plugins and modules...
+
+random_pet.service[0]: Refreshing state... [id=svc-6305]
+random_pet.service[1]: Refreshing state... [id=svc-3471]
+random_pet.service[2]: Refreshing state... [id=svc-7468]
+random_pet.service[3]: Refreshing state... [id=svc-1791]
+random_pet.service[4]: Refreshing state... [id=svc-2186]
+random_pet.service[5]: Refreshing state... [id=svc-9779]
+random_pet.service[6]: Refreshing state... [id=svc-2542]
+random_pet.service[7]: Refreshing state... [id=svc-6991]
+random_pet.service[8]: Refreshing state... [id=svc-1950]
+random_pet.service[9]: Refreshing state... [id=svc-9313]
+random_pet.service[10]: Refreshing state... [id=svc-4517]
+random_pet.service[11]: Refreshing state... [id=svc-1614]
+random_pet.service[12]: Refreshing state... [id=svc-2408]
+random_pet.service[13]: Refreshing state... [id=svc-8104]
+random_pet.service[14]: Refreshing state... [id=svc-7851]
+random_pet.service[15]: Refreshing state... [id=svc-2144]
+random_pet.service[16]: Refreshing state... [id=svc-4943]
+random_pet.service[17]: Refreshing state... [id=svc-2486]
+random_pet.service[18]: Refreshing state... [id=svc-7955]
+random_pet.service[19]: Refreshing state... [id=svc-1968]
+random_pet.service[20]: Refreshing state... [id=svc-3028]
+random_pet.service[21]: Refreshing state... [id=svc-4657]
+random_pet.service[22]: Refreshing state... [id=svc-2013]
+random_pet.service[23]: Refreshing state... [id=svc-7499]
+random_pet.service[24]: Refreshing state... [id=svc-1812]
+random_pet.service[25]: Refreshing state... [id=svc-4622]
+random_pet.service[26]: Refreshing state... [id=svc-1763]
+random_pet.service[27]: Refreshing state... [id=svc-3181]
+random_pet.service[28]: Refreshing state... [id=svc-5744]
+random_pet.service[29]: Refreshing state... [id=svc-7867]
+random_pet.service[30]: Refreshing state... [id=svc-3363]
+random_pet.service[31]: Refreshing state... [id=svc-9858]
+random_pet.service[32]: Refreshing state... [id=svc-2929]
+random_pet.service[33]: Refreshing state... [id=svc-6054]
+random_pet.service[34]: Refreshing state... [id=svc-3961]
+random_pet.service[35]: Refreshing state... [id=svc-2688]
+random_pet.service[36]: Refreshing state... [id=svc-4078]
+random_pet.service[37]: Refreshing state... [id=svc-7101]
+random_pet.service[38]: Refreshing state... [id=svc-2596]
+random_pet.service[39]: Refreshing state... [id=svc-9974]
+random_pet.service[40]: Refreshing state... [id=svc-2028]
+random_pet.service[41]: Refreshing state... [id=svc-1976]
+random_pet.service[42]: Refreshing state... [id=svc-4374]
+random_pet.service[43]: Refreshing state... [id=svc-9133]
+random_pet.service[44]: Refreshing state... [id=svc-9711]
+random_pet.service[45]: Refreshing state... [id=svc-8005]
+random_pet.service[46]: Refreshing state... [id=svc-6146]
+random_pet.service[47]: Refreshing state... [id=svc-8628]
+random_pet.service[48]: Refreshing state... [id=svc-8424]
+random_pet.service[49]: Refreshing state... [id=svc-6924]
+random_pet.service[50]: Refreshing state... [id=svc-5911]
+random_pet.service[51]: Refreshing state... [id=svc-5070]
+random_pet.service[52]: Refreshing state... [id=svc-3945]
+random_pet.service[53]: Refreshing state... [id=svc-4999]
+random_pet.service[54]: Refreshing state... [id=svc-2341]
+random_pet.service[55]: Refreshing state... [id=svc-5919]
+random_pet.service[56]: Refreshing state... [id=svc-9604]
+random_pet.service[57]: Refreshing state... [id=svc-9111]
+random_pet.service[58]: Refreshing state... [id=svc-6627]
+random_pet.service[59]: Refreshing state... [id=svc-8353]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # random_id.shard[0] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[1] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[2] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[3] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[4] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[5] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[6] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[7] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[8] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[9] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[10] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[11] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[12] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[13] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[14] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[15] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[16] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[17] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[18] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+  # random_id.shard[19] will be created
+  + resource "random_id" "shard" {
+      + b64_std     = (known after apply)
+      + byte_length = 8
+      + id          = (known after apply)
+    }
+
+Plan: 20 to add, 0 to change, 0 to destroy.
+
+module.naming[0].random_pet.this: retrying after transient error 0 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 1 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 2 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 3 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 4 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 5 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 6 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 7 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 8 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 9 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 10 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 11 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 12 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 13 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 14 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 15 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 16 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 17 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 18 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 19 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 20 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 21 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 22 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 23 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 24 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 25 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 26 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 27 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 28 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 29 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 30 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 31 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 32 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 33 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 34 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 35 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 36 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 37 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 38 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 39 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 40 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 41 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 42 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 43 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 44 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 45 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 46 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 47 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 48 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 49 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 50 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 51 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 52 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 53 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 54 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 55 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 56 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 57 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 58 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 59 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 60 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 61 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 62 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 63 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 64 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 65 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 66 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 67 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 68 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 69 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 70 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 71 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 72 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 73 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 74 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 75 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 76 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 77 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 78 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 79 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 80 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 81 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 82 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 83 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 84 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 85 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 86 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 87 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 88 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 89 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 90 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 91 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 92 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 93 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 94 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 95 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 96 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 97 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 98 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 99 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 100 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 101 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 102 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 103 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 104 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 105 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 106 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 107 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 108 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 109 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 110 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 111 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 112 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 113 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 114 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 115 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 116 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 117 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 118 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 119 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 120 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 121 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 122 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 123 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 124 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 125 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 126 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 127 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 128 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 129 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 130 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 131 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 132 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 133 (attempt 2)
+module.naming[0].random_pet.this: retrying after transient error 134 (attempt 3)
+module.naming[1].random_pet.this: retrying after transient error 135 (attempt 1)
+module.naming[0].random_pet.this: retrying after transient error 136 (attempt 2)
+module.naming[1].random_pet.this: retrying after transient error 137 (attempt 3)
+module.naming[0].random_pet.this: retrying after transient error 138 (attempt 1)
+module.naming[1].random_pet.this: retrying after transient error 139 (attempt 2)
+terraform_data.bootstrap: Creating...
+terraform_data.bootstrap: Provisioning with 'local-exec'...
+terraform_data.bootstrap (local-exec): Executing: ["/bin/sh" "-c" "echo bootstrapping && exit 1"]
+terraform_data.bootstrap (local-exec): bootstrapping
+╷
+│ Error: local-exec provisioner error
+│ 
+│   with terraform_data.bootstrap,
+│   on main.tf line 58, in resource "terraform_data" "bootstrap":
+│   58:   provisioner "local-exec" {
+│ 
+│ Error running command 'echo bootstrapping && exit 1': exit status 1.
+│ Output: bootstrapping
+╵
+Operation failed: failed running terraform apply (exit 1)
+[379] Cleaning up remote apply workspace...
+[380] Cleaning up remote apply workspace...
+[381] Cleaning up remote apply workspace...
+[382] Cleaning up remote apply workspace...
+[383] Cleaning up remote apply workspace...
+[384] Cleaning up remote apply workspace...
+[385] Cleaning up remote apply workspace...
+[386] Cleaning up remote apply workspace...
+[387] Cleaning up remote apply workspace...
+[388] Cleaning up remote apply workspace...
+[389] Cleaning up remote apply workspace...
+[390] Cleaning up remote apply workspace...
+[391] Cleaning up remote apply workspace...
+[392] Cleaning up remote apply workspace...
+[393] Cleaning up remote apply workspace...
+[394] Cleaning up remote apply workspace...
+[395] Cleaning up remote apply workspace...
+[396] Cleaning up remote apply workspace...
+[397] Cleaning up remote apply workspace...
+[398] Cleaning up remote apply workspace...
+[399] Cleaning up remote apply workspace...

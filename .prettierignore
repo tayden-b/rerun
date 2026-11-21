@@ -1,0 +1,15 @@
+node_modules/
+.next/
+.next-*/
+.workflow-data/
+data/
+coverage/
+package-lock.json
+next-env.d.ts
+drizzle/
+handoff/
+public/
+# SPEC §11 verbatim — do not reformat.
+src/shared/types.ts
+src/shared/__fixtures__/
+app/.well-known/workflow/

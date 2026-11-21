@@ -1,0 +1,31 @@
+{
+  "placeholder": true,
+  "result": {
+    "id": "run-PLACEHOLDER0001",
+    "type": "runs",
+    "attributes": {
+      "status": "errored",
+      "message": "scenario: apply-time-exit-1",
+      "source": "tfe-api",
+      "trigger-reason": "manual",
+      "is-destroy": false,
+      "auto-apply": true,
+      "plan-only": false,
+      "has-changes": true,
+      "created-at": "2026-11-20T15:02:11.000Z",
+      "status-timestamps": {
+        "queuing-at": "2026-11-20T15:02:11.000Z",
+        "planning-at": "2026-11-20T15:02:14.000Z",
+        "planned-at": "2026-11-20T15:02:41.000Z",
+        "applying-at": "2026-11-20T15:02:45.000Z",
+        "errored-at": "2026-11-20T15:02:58.000Z"
+      }
+    },
+    "relationships": {
+      "workspace": { "data": { "id": "ws-PLACEHOLDER01", "type": "workspaces" } },
+      "plan": { "data": { "id": "plan-PLACEHOLDER01", "type": "plans" } },
+      "apply": { "data": { "id": "apply-PLACEHOLDER01", "type": "applies" } },
+      "configuration-version": { "data": { "id": "cv-PLACEHOLDER01", "type": "configuration-versions" } }
+    }
+  }
+}

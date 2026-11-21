@@ -1,0 +1,16 @@
+# Terraform MCP server sidecar (SPEC §1, §5). Start: `TFE_TOKEN=... docker compose up terraform-mcp`.
+# The transport is chosen with the `streamable-http` subcommand, not TRANSPORT_MODE: in 1.4.x, setting
+# TRANSPORT_MODE makes the server ignore `--tools` and enable all toolsets (see AGENTS.md).
+services:
+  terraform-mcp:
+    image: hashicorp/terraform-mcp-server:1.4
+    environment:
+      TFE_TOKEN: ${TFE_TOKEN:-}
+      TFE_ADDRESS: https://app.terraform.io
+    command:
+      - streamable-http
+      - --transport-host=0.0.0.0
+      - --transport-port=8080
+      - --tools=list_workspaces,get_workspace_details,list_runs,get_run_details,get_plan_details,get_plan_logs,get_plan_json_output,get_apply_details,get_apply_logs,list_state_versions,get_state_version,get_run_comments,whoami,search_provider_docs,get_provider_details,get_latest_provider_version,get_provider_capabilities
+    ports:
+      - '127.0.0.1:8080:8080'

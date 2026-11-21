@@ -46,10 +46,11 @@ export default defineConfig({
       env: E2E_ENV,
     },
     {
-      command: 'npx tsx scripts/demo.ts --fresh',
+      // After the dashboard server is up: `next build` and `next dev` both generate app/.well-known/workflow.
+      command: `until curl -sf -o /dev/null http://127.0.0.1:${PORT}; do sleep 2; done; npx tsx scripts/demo.ts --fresh`,
       url: `http://127.0.0.1:${DEMO_PORT}`,
       reuseExistingServer: !process.env.CI,
-      timeout: 300_000,
+      timeout: 600_000,
       env: DEMO_ENV,
     },
   ],

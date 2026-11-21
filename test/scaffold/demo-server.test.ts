@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-// Boots `npm run demo` (mock MCP + seeded DB + `next dev`) and drives the Workflow SDK ping through the Local World.
+// Boots `npm run demo` (mock MCP + `next dev` + the apply-time-exit-1 incident workflow) and drives the Workflow SDK ping through the Local World.
 
 const root = path.resolve(__dirname, '..', '..');
 const tmp = mkdtempSync(path.join(tmpdir(), 'rerun-demo-'));
@@ -82,14 +82,14 @@ afterAll(() => {
 });
 
 describe('npm run demo', () => {
-  it('serves / listing the seeded placeholder incident', async () => {
+  it('serves / listing the demo incident once triage has classified it', async () => {
     const html = await waitFor(
       async () => {
         const body = await (await fetch(baseUrl)).text();
-        return body.includes('run-3ytwwidAGVQdc3HA') ? body : undefined;
+        return body.includes('run-3ytwwidAGVQdc3HA') && body.includes('apply_runtime') ? body : undefined;
       },
       60_000,
-      'the seeded incident on /',
+      'the triaged demo incident on /',
     );
     expect(html).toContain('apply_runtime');
   }, 90_000);

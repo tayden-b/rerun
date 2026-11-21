@@ -6,7 +6,7 @@ When an HCP Terraform run fails, Rerun reads the failure through the Terraform M
 [![Triage eval](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Ftayden-b%2Frerun%2Fdev%2Fdocs%2Fbadges%2Feval.json)](#evals)
 [![Terraform MCP tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Ftayden-b%2Frerun%2Fdev%2Fdocs%2Fbadges%2Fmcp-tools.json)](#why-the-terraform-mcp-server)
 
-<!-- screenshot pending (W2-I/W2-D): docs/media/war-room.png "The incident war room in demo mode: triage, investigation, fix, verification and approval for one failed run" -->
+![The incident war room in demo mode: triage, investigation, fix, verification and approval for one failed run](docs/media/war-room.png)
 
 ## Why the Terraform MCP server
 
@@ -69,21 +69,21 @@ One workflow run per incident (`workflows/`); every step writes events that the 
 1. **Collect.** The poller (or webhook) sees an `errored` run. Rerun pulls the run, plan, logs, plan JSON, apply and current state through MCP, and cuts a 120-line error excerpt with secrets redacted.
 2. **Triage.** One Jev request answers four questions: failure class (12 closed classes), whether a configuration change alone can fix it, blast radius, and whether a human must decide. The answers are probabilities, not prose.
 
-   <!-- screenshot pending (W2-I/W2-D): docs/media/triage.png "Triage card: failure class and the three routing signals as probability bars, above the error excerpt" -->
+   ![Triage card: failure class and the three routing signals as probability bars, above the error excerpt](docs/media/triage.png)
 
 3. **Diagnose.** The Config agent reads the repository and the log; the Reality agent also reads state and apply output when the failure happened at apply time or outside the configuration. Both cite evidence (file and line, log line, provider doc).
 
-   <!-- screenshot pending (W2-I/W2-D): docs/media/subagents.png "Two agent panels with their tool calls and cited evidence" -->
+   ![Two agent panels with their tool calls and cited evidence](docs/media/subagents.png)
 
 4. **Fix.** The Fix agent edits a working copy of the configuration and gives a rationale per file.
 5. **Verify.** `terraform fmt -check`, `terraform validate` and a speculative remote plan run in `hashicorp/terraform:1.14`. On failure the fix is retried once with the verifier output; then the incident goes to a human.
 
-   <!-- screenshot pending (W2-I/W2-D): docs/media/fix-verify.png "The proposed diff next to the verifier output for fmt, validate and plan" -->
+   ![The proposed diff next to the verifier output for fmt, validate and plan](docs/media/fix-verify.png)
 
 6. **Propose.** Rerun opens the pull request with the evidence in its body. The router (`autoPr` iff `config_fixable` ≥ 0.70, `blast_radius` ≤ 1.0 and `needs_human` ≤ 0.40) decides between a ready-for-review PR and a draft flagged for a human.
 7. **Approve.** A human reads the war room and presses Approve, which merges the PR, or Request changes, which posts a PR comment.
 
-   <!-- screenshot pending (W2-I/W2-D): docs/media/approve.png "Approve and Request changes, with cost and duration per step" -->
+   ![The approval bar: Approve and merge or Request changes, with the incident cost, duration and tokens](docs/media/approve.png)
 
 8. **Confirm.** The fixtures repository's GitHub Actions applies the merge. Rerun watches the next run: `applied` resolves the incident, `errored` opens a new incident linked to this one.
 

@@ -1,17 +1,12 @@
 import { writeFileSync } from 'node:fs';
-import { createAnthropic } from '@ai-sdk/anthropic';
 import { describe, expect, it } from 'vitest';
 import { runDiagnosis } from '../../src/agents/diagnose';
 import { runFix } from '../../src/agents/fix';
 import type { AgentEvent } from '../../src/agents/runtime';
-import { DEFAULT_MODELS } from '../../src/config';
+import { agentModel } from '../../src/models';
 import { fakeContext, fakeMcpTools, UNDECLARED_REFERENCE_FILES } from './fakes';
 
-// Opt-in: RERUN_LIVE_TESTS=1 plus an Anthropic key (never in CI).
-const apiKey =
-  process.env.RERUN_LIVE_TESTS === '1'
-    ? (process.env.ANTHROPIC_API_KEY ?? process.env.RERUN_ANTHROPIC_API_KEY)
-    : undefined;
+// Live: `npm run test:live` with RERUN_ANTHROPIC_API_KEY set; agentModel() throws a clear error if it is missing.
 
 function summarize(events: AgentEvent[]) {
   const done = events.filter((e) => (e.payload as { done?: boolean })?.done);
@@ -21,10 +16,9 @@ function summarize(events: AgentEvent[]) {
   };
 }
 
-describe.runIf(apiKey)('live agents (undeclared-reference)', () => {
-  const model = createAnthropic({ apiKey })(process.env.RERUN_MODEL_AGENT ?? DEFAULT_MODELS.agent);
-
+describe('live agents (undeclared-reference)', () => {
   it('Config names outputs.tf and Fix removes the bad reference', { timeout: 300_000 }, async () => {
+    const model = agentModel();
     const events: AgentEvent[] = [];
     const deps = {
       model,

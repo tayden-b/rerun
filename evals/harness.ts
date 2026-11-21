@@ -1,4 +1,5 @@
 import { loadConfig, type Config } from '../src/config';
+import { redact } from '../src/shared/redact';
 import type { TriageResult } from '../src/shared/types';
 import { estimateCostUsd, jevCostUsd, PRICES_AS_OF } from '../src/telemetry/cost';
 import type { EvalDeps, ProviderName } from './deps';
@@ -33,7 +34,8 @@ function decisionCostUsd(provider: ProviderName, inputTokens: number, config: Co
   return jevCostUsd(inputTokens);
 }
 
-const errorMessage = (err: unknown) => (err instanceof Error ? `${err.name}: ${err.message}` : String(err));
+const errorMessage = (err: unknown) =>
+  redact(err instanceof Error ? `${err.name}: ${err.message}` : String(err));
 
 async function runOne(
   deps: EvalDeps,
@@ -103,7 +105,7 @@ async function evalProvider(
   }
 
   const ok = rows.filter((r) => r.predicted !== null);
-  const outcomes: Outcome[] = ok.map((r) => ({ expected: r.expected, predicted: r.predicted! }));
+  const outcomes: Outcome[] = rows.map((r) => ({ expected: r.expected, predicted: r.predicted }));
   const autoPr = (r: ScenarioResult): 0 | 1 => (r.expected.route === 'autoPr' ? 1 : 0);
 
   const perScenario: ProviderResult['robustness']['perScenario'] = [];

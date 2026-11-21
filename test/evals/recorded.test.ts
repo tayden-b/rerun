@@ -59,6 +59,35 @@ describe('eval harness (recorded provider, offline)', () => {
     expect(fake.states).toHaveLength(6);
   });
 
+  it('counts provider errors as wrong and redacts tokens in error messages', async () => {
+    const deps = await resolveDeps();
+    const good = keywordProvider();
+    const results = await runEval(
+      { providers: ['llm'], scenariosDir: TEST_SCENARIOS_DIR, perturbations: 0, seed: 1, live: false },
+      {
+        ...deps,
+        createProvider: (_name, scenario) =>
+          scenario.name === 'eval-apply-exit'
+            ? good
+            : {
+                name: 'llm',
+                decide: async () => {
+                  throw new Error('upstream said: Bearer abcdefghijklmnopqrstuvwxyz0123456789');
+                },
+              },
+      },
+    );
+    const [llm] = results.providers;
+    expect(llm.summary).toMatchObject({ n: 2, errors: 1, classAccuracy: 0.5, routeAccuracy: 0.5 });
+    expect(llm.perClass.find((c) => c.failureClass === 'config_reference')).toMatchObject({
+      support: 1,
+      recall: 0,
+    });
+    const error = llm.scenarios[1].error ?? '';
+    expect(error).toContain('[REDACTED:bearer]');
+    expect(error).not.toContain('abcdefghijklmnopqrstuvwxyz0123456789');
+  });
+
   it('live rows record the Wave 2 stub as an error with the live columns present', async () => {
     const results = await runEval(
       { providers: ['recorded'], scenariosDir: TEST_SCENARIOS_DIR, perturbations: 0, seed: 1, live: true },

@@ -12,8 +12,16 @@ describe('metrics', () => {
     o('config_reference', 'config_syntax', 'draftPr', 'draftPr'),
   ];
 
-  it('computes class and route accuracy', () => {
+  it('computes class and route accuracy, counting failed runs as wrong', () => {
     expect(accuracy(outcomes)).toEqual({ classAccuracy: 0.5, routeAccuracy: 0.75 });
+    const failed = {
+      expected: { failureClass: 'apply_runtime', route: 'autoPr' },
+      predicted: null,
+    } as Outcome;
+    expect(accuracy([...outcomes, failed])).toEqual({ classAccuracy: 0.4, routeAccuracy: 0.6 });
+    expect(perClass([failed])).toEqual([
+      { failureClass: 'apply_runtime', support: 1, predicted: 0, precision: null, recall: 0 },
+    ]);
     expect(accuracy([])).toEqual({ classAccuracy: null, routeAccuracy: null });
   });
 

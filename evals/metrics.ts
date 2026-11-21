@@ -3,7 +3,8 @@ import { FAILURE_CLASSES, type Calibration, type PerClass } from './schema';
 
 export interface Outcome {
   expected: { failureClass: FailureClass; route: Route };
-  predicted: { failureClass: FailureClass; route: Route };
+  /** Null when the provider failed; counted as wrong. */
+  predicted: { failureClass: FailureClass; route: Route } | null;
 }
 
 const mean = (xs: number[]): number | null => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
@@ -13,8 +14,8 @@ export function accuracy(outcomes: Outcome[]): {
   routeAccuracy: number | null;
 } {
   return {
-    classAccuracy: mean(outcomes.map((o) => (o.expected.failureClass === o.predicted.failureClass ? 1 : 0))),
-    routeAccuracy: mean(outcomes.map((o) => (o.expected.route === o.predicted.route ? 1 : 0))),
+    classAccuracy: mean(outcomes.map((o) => (o.expected.failureClass === o.predicted?.failureClass ? 1 : 0))),
+    routeAccuracy: mean(outcomes.map((o) => (o.expected.route === o.predicted?.route ? 1 : 0))),
   };
 }
 
@@ -22,10 +23,10 @@ export function accuracy(outcomes: Outcome[]): {
 export function perClass(outcomes: Outcome[]): PerClass[] {
   return FAILURE_CLASSES.flatMap((cls) => {
     const support = outcomes.filter((o) => o.expected.failureClass === cls).length;
-    const predicted = outcomes.filter((o) => o.predicted.failureClass === cls).length;
+    const predicted = outcomes.filter((o) => o.predicted?.failureClass === cls).length;
     if (support === 0 && predicted === 0) return [];
     const tp = outcomes.filter(
-      (o) => o.expected.failureClass === cls && o.predicted.failureClass === cls,
+      (o) => o.expected.failureClass === cls && o.predicted?.failureClass === cls,
     ).length;
     return [
       {

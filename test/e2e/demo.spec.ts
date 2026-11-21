@@ -1,5 +1,32 @@
+import { spawn, type ChildProcess } from 'node:child_process';
 import { expect, test, type APIRequestContext } from '@playwright/test';
+import { DEMO_ENV } from '../../playwright.config';
 import { runIdForScenario } from '../../src/incident/demo';
+
+// Starts `npm run demo --fresh` (its own port, DB, workflow data and dist dir) rather than a config
+// webServer, so it never runs alongside the dashboard project's `next build`/`next start`.
+let demo: ChildProcess | undefined;
+
+test.beforeAll(async () => {
+  test.setTimeout(300_000);
+  demo = spawn('npx', ['tsx', 'scripts/demo.ts', '--fresh'], {
+    detached: true,
+    stdio: 'inherit',
+    env: { ...process.env, ...DEMO_ENV },
+  });
+  await expect
+    .poll(
+      async () => (await fetch(`http://localhost:${DEMO_ENV.PORT}/api/incidents`).catch(() => null))?.status,
+      {
+        timeout: 280_000,
+      },
+    )
+    .toBe(200);
+});
+
+test.afterAll(() => {
+  if (demo?.pid) process.kill(-demo.pid, 'SIGTERM');
+});
 
 const RUN_ID = runIdForScenario('apply-time-exit-1');
 

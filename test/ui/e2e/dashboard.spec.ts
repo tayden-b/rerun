@@ -18,7 +18,7 @@ test('incident list shows the seeded incidents and filters them', async ({ page 
   await expect(rows.first().getByTestId('pr-ref')).toHaveText(/^#\d+ · demo$/);
   await expect(page.locator('a[href*="/pull/"]')).toHaveCount(0);
   await page.mouse.move(0, 0);
-  await page.screenshot({ path: `${SCREENSHOTS}/list.png` });
+  await page.screenshot({ path: `${SCREENSHOTS}/list.png`, animations: 'disabled' });
 
   await page.getByRole('combobox', { name: 'Filter by status' }).click();
   await page.getByRole('option', { name: 'Resolved' }).click();
@@ -48,7 +48,7 @@ test('war room renders the awaiting-approval investigation', async ({ page }) =>
   await expect(page.getByTestId('approve')).toBeEnabled();
 
   await page.mouse.move(0, 0);
-  await page.screenshot({ path: `${SCREENSHOTS}/war-room.png` });
+  await page.screenshot({ path: `${SCREENSHOTS}/war-room.png`, animations: 'disabled' });
 });
 
 test('approve posts an empty body and shows an error toast while the route is missing', async ({ page }) => {
@@ -105,5 +105,5 @@ test('about page lists every allowlisted MCP tool', async ({ page }) => {
   await expect(page.getByTestId('mcp-tool')).toHaveCount(ALLOWED_TOOLS.length);
   for (const tool of ALLOWED_TOOLS) await expect(page.getByTestId('mcp-tools')).toContainText(tool);
   await page.mouse.move(0, 0);
-  await page.screenshot({ path: `${SCREENSHOTS}/about.png` });
+  await page.screenshot({ path: `${SCREENSHOTS}/about.png`, animations: 'disabled' });
 });
